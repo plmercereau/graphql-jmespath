@@ -1,85 +1,86 @@
-import { ObjectType } from './jmespath';
-import { TreeInterpreter, ASTNode, Runtime, compile } from './jmespath';
-// const { setProperty} =require('dot-prop')
-import { getProperty, setProperty} from 'dot-prop'
+import {  ASTNode, compile } from './jmespath'
+import merge from 'deepmerge'
+import { setProperty } from 'dot-prop'
 
-export class Intercepter extends TreeInterpreter {
-  // constructor(
-  //   runtime: Runtime
-  // ) {
-  //   super(runtime)
-  // }
+type OperationResult = { value: any; path: string }
+type OperationFunction = (
+    
+    node: ASTNode,
+    path: string
+) => OperationResult
 
-  graphql(node: ASTNode): any {
-    return this.graphqlVisit(node, null);
-  }
+const mergeOperation: OperationFunction = ( node, path) => {
+    const [left, right] = node.children
+    const leftResult = recursiveJmespathToObject(left, path)
+    const rightResult = recursiveJmespathToObject(right, path)
+    return { path, value: merge(leftResult.value, rightResult.value) }
+}
 
-  graphqlVisit(node: ASTNode,  path: string | null): {value: any, path: string} {
-    // let result, field, i;
-    // let matched,
-    //   current,
-    //   result,
-    //   first,
-    //   second,
-    //   field,
-    //   left,
-    //   right,
-    //   collected,
-    //   i
-    switch (node.type) {
-      case 'Field':
-        // if (value === null) {
-        //   return null;
-        // } else if (isObject(value)) {
-        //   field = value[node.name];
-        //   if (field === undefined) {
-        //     return null;
-        //   } else {
-        //     return field;
-        //   }
-        // } else {
-        //   return null;
-        // }
-        console.log('Field', node.name);
-        return {value: true, path: node.name}
-        // if (value === null) {
-        //   console.log('Field::null');
-        //   return { [node.name]: true };
-        // } else if (typeof value === 'object' && Object.keys(value).length) {
-        //   field = value[node.name];
-        //   if (field === undefined) {
-        //     // * Here is OK
-        //     // const res = { [node.name]: value };
-        //     // const res = { [Object.keys(value)[0]]: { [node.name]: true } };
-        //     const res = { [Object.keys(value)[0]]: { [node.name]: true } };
-        //     console.log('Field::new', res);
-        //     return res;
-        //   } else {
-        //     console.log('Field::value', field);
-        //     return { [node.name]: true };
-        //   }
-        // } else {
-        //   const res = { [node.name]: true };
-        //   console.log('Field::other', res);
+const recursiveJmespathToObject = (node:ASTNode, path: string = '') => {
+  const operation = OPERATIONS[node.type]
+  if (!operation) throw new Error('Unknown node type: ' + node.type)
+  return operation( node, path)
+}
 
-        //   return res;
-        // }
-        break;
+export const jmespathToObject = (node:ASTNode) => recursiveJmespathToObject(node).value
 
-      case 'Subexpression':
-        console.log('Subexpression');
+export const toGraphQL = (expression: string): any => {
+  const node = compile(expression)
+  console.log('Compiled', JSON.stringify(node, null, 2))
+  // TODO convert object to graphql query
+  return jmespathToObject(node)
+}
+
+const OPERATIONS: Record<string, OperationFunction> = {
+    Field: (node) => {
+        console.log(node)
+        return { value: { [node.name]: true }, path: node.name }
+    },
+    Subexpression: ( node, path) => {
+        console.log('Subexpression')
         const [right, left] = node.children
-        const rightResult = this.graphqlVisit(right, path)
-        const leftResult = this.graphqlVisit(left, path)
+        const rightResult = recursiveJmespathToObject(right, path)
+        const leftResult = recursiveJmespathToObject(left, path)
         const result = {
-          value:{},
-          path: rightResult.path + '.' + leftResult.path
+            value: {},
+            path: rightResult.path + '.' + leftResult.path
         }
         console.log('path', result.path)
-        setProperty(result.value, result.path, leftResult.value)
-        console.log('--> ', result);
-        return result;
-      /*
+        setProperty(result.value, rightResult.path, leftResult.value)
+        console.log('--> ', result)
+        return result
+    },
+    OrExpression: mergeOperation,
+    Comparator: mergeOperation,
+    AndExpression: mergeOperation,
+    FilterProjection: ( node, path) => {
+        const [first, second, third] = node.children
+        const firstResult = recursiveJmespathToObject(first, path)
+        const secondResult = recursiveJmespathToObject(second, path)
+        const thirdResult = recursiveJmespathToObject(third, path)
+        console.log('first', first, firstResult)
+        console.log('second', second, secondResult)
+        console.log('third', third, thirdResult)
+        const value = firstResult.value
+        setProperty(value, firstResult.path, thirdResult.value)
+        return { path, value }
+    },
+    Identity: ( node, path) => {
+        return { path, value: true }
+    },
+    Literal: ( node, path) => {
+        console.log('Literal', node, path)
+
+        return { path, value: true }
+    }
+}
+
+    // graphqlVisit(node: ASTNode, path: string): OperationResult {
+    //     const operation = OPERATIONS[node.type]
+    //     if (!operation) throw new Error('Unknown node type: ' + node.type)
+    //     return operation(this, node, path)
+
+        /*
       case 'IndexExpression':
         left = this.visit(node.children[0], value)
         right = this.visit(node.children[1], left)
@@ -265,16 +266,6 @@ export class Intercepter extends TreeInterpreter {
         refNode.jmespathType = TOK_EXPREF
         return refNode
         */
-      default:
-        throw new Error('Unknown node type: ' + node.type);
-    }
-  }
-}
+    // }
+// }
 
-export const toGraphQL = (expression: string): any => {
-  const runtime = new Runtime();
-  const interpreter = new Intercepter(runtime);
-  const node = compile(expression);
-  console.log('Compiled', JSON.stringify(node, null, 2));
-  return interpreter.graphql(node);
-};
