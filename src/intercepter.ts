@@ -53,11 +53,12 @@ const OPERATIONS: Record<string, OperationFunction> = {
     AndExpression: mergeOperation,
     FilterProjection: (node, path) => {
         // TODO test with nested filters (check if path is correctly passed)
-        const [first, _, third] = node.children
+        const [first, second, third] = node.children
         const firstResult = recursiveJmespathToObject(first, path)
+        const secondResult = recursiveJmespathToObject(second, path)
         const thirdResult = recursiveJmespathToObject(third, path)
         const value = firstResult.value
-        setProperty(value, firstResult.path, thirdResult.value)
+        setProperty(value, firstResult.path, merge(secondResult.value, thirdResult.value))
         return { path, value }
     },
     Identity: identityOperation,

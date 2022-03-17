@@ -1,3 +1,3 @@
-# GraphQL JmesPath
+# GraphQL JMESPath
 
 Work in progress

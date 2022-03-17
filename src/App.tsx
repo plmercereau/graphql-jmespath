@@ -51,12 +51,13 @@ const testedExpressions = [
     'outer.foo || outer.bar',
     'foo\n.\nbar\n.baz',
     'a.b.c.d',
-    'a.b.c.d.e.f.g.h'
+    'a.b.c.d.e.f.g.h',
+    'foo[?a==`1`].b.c',
+
 ]
 
 const expressions = [
-    // 'reservations[].instances[?bar==`1`][]',
-    'foo[?a==`1`].b.c',
+    'reservations[].instances[?bar==`1`][]',
     // 'foo[?@ < `5`]',
 ]
 
