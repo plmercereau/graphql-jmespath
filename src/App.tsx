@@ -9,23 +9,6 @@ import { Expression } from './Expression'
 *[?[0] == `0`]
 */
 
-// TODO
-/*
-foo[?key == `{\"bar\": [0]}`]
-foo[?key == `null`]
-reservations[].instances[?bar==`1`]
-reservations[].instances[?bar==`1`][]
-foo[?bar==`1`].bar[0]
-foo[?a==`1`].b.c
-foo[?name == 'a' || name == 'b']
-foo[?a == `1` && b == `2`]
-foo[?c == `3` || a == `1` && b == `4`]
-foo[?@ < `5`]
-\"foo bar\"
-\"c:\\\\\\\\windows\\\\path\"
-\"\\\"\\\"\\\"\"
-*/
-
 // TODO browse the following
 /*
 functions
@@ -40,7 +23,19 @@ unicode
 wildcard
 */
 
-const expressions = [
+const testedExpressions = [
+    '"foo bar"',
+    '"c:\\\\\\\\windows\\\\path"',
+    '"\\"\\"\\""',
+    'foo[?c == `3` || a == `1` && b == `4`]',
+    'foo[?a == `1` && b == `2`]',
+    `foo[?name == 'a' || name == 'b']`,
+    'foo[?bar==`1`].bar[0]',
+    'reservations[].instances[?bar==`1`]',
+    'reservations[].instances[?bar==`1`]',
+    'reservations[].instances',
+    'foo[?key == `null`]',
+    'foo[?key == `{"bar": [0]}`]',
     'foo[?age > `25`]',
     'foo[?top.first == top.last]',
     'foo[?top == `{"first": "foo", "last": "bar"}`]',
@@ -57,6 +52,12 @@ const expressions = [
     'foo\n.\nbar\n.baz',
     'a.b.c.d',
     'a.b.c.d.e.f.g.h'
+]
+
+const expressions = [
+    // 'reservations[].instances[?bar==`1`][]',
+    'foo[?a==`1`].b.c',
+    // 'foo[?@ < `5`]',
 ]
 
 function App() {
