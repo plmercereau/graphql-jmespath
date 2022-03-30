@@ -115,16 +115,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
     IndexExpression: identityOperation
 }
 
-// graphqlVisit(node: ASTNode, path: string): OperationResult {
-//     const operation = OPERATIONS[node.type]
-//     if (!operation) throw new Error('Unknown node type: ' + node.type)
-//     return operation(this, node, path)
-
 /*
-      case 'IndexExpression':
-        left = this.visit(node.children[0], value)
-        right = this.visit(node.children[1], left)
-        return right
       case 'Index':
         if (!isArray(value)) {
           return null
@@ -158,20 +149,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
           }
         }
         return result
-      case 'Projection':
-        // Evaluate left child.
-        var base = this.visit(node.children[0], value)
-        if (!isArray(base)) {
-          return null
-        }
-        collected = []
-        for (i = 0; i < base.length; i++) {
-          current = this.visit(node.children[1], base[i])
-          if (current !== null) {
-            collected.push(current)
-          }
-        }
-        return collected
       case 'ValueProjection':
         // Evaluate left child.
         base = this.visit(node.children[0], value)
@@ -187,69 +164,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
           }
         }
         return collected
-      case 'FilterProjection':
-        base = this.visit(node.children[0], value)
-        if (!isArray(base)) {
-          return null
-        }
-        var filtered = []
-        var finalResults = []
-        for (i = 0; i < base.length; i++) {
-          matched = this.visit(node.children[2], base[i])
-          if (!isFalse(matched)) {
-            filtered.push(base[i])
-          }
-        }
-        for (var j = 0; j < filtered.length; j++) {
-          current = this.visit(node.children[1], filtered[j])
-          if (current !== null) {
-            finalResults.push(current)
-          }
-        }
-        return finalResults
-      case 'Comparator':
-        first = this.visit(node.children[0], value)
-        second = this.visit(node.children[1], value)
-        switch (node.name) {
-          case TOK_EQ:
-            result = strictDeepEqual(first, second)
-            break
-          case TOK_NE:
-            result = !strictDeepEqual(first, second)
-            break
-          case TOK_GT:
-            result = first > second
-            break
-          case TOK_GTE:
-            result = first >= second
-            break
-          case TOK_LT:
-            result = first < second
-            break
-          case TOK_LTE:
-            result = first <= second
-            break
-          default:
-            throw new Error('Unknown comparator: ' + node.name)
-        }
-        return result
-      case TOK_FLATTEN:
-        var original = this.visit(node.children[0], value)
-        if (!isArray(original)) {
-          return null
-        }
-        var merged = []
-        for (i = 0; i < original.length; i++) {
-          current = original[i]
-          if (isArray(current)) {
-            merged.push.apply(merged, current)
-          } else {
-            merged.push(current)
-          }
-        }
-        return merged
-      case 'Identity':
-        return value
       case 'MultiSelectList':
         if (value === null) {
           return null
@@ -270,19 +184,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
           collected[child.name] = this.visit(child.value, value)
         }
         return collected
-      case 'OrExpression':
-        matched = this.visit(node.children[0], value)
-        if (isFalse(matched)) {
-          matched = this.visit(node.children[1], value)
-        }
-        return matched
-      case 'AndExpression':
-        first = this.visit(node.children[0], value)
-
-        if (isFalse(first) === true) {
-          return first
-        }
-        return this.visit(node.children[1], value)
       case 'NotExpression':
         first = this.visit(node.children[0], value)
         return isFalse(first)
