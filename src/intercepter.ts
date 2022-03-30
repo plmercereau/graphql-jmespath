@@ -2,20 +2,25 @@ import { ASTNode, compile } from './jmespath'
 import merge from 'deepmerge'
 import { setProperty } from 'dot-prop'
 
-type OperationResult = { value: any; path: string }
+type OperationResult = { value: any; path: string | undefined }
 type OperationFunction = (node: ASTNode, path: string) => OperationResult
 
 const mergeOperation: OperationFunction = (node, path) => {
     const [left, right] = node.children
     const leftResult = recursiveJmespathToObject(left, path)
     const rightResult = recursiveJmespathToObject(right, path)
-    return { path, value: merge(leftResult.value, rightResult.value) }
+    return {
+        path: joinPaths(leftResult.path, rightResult.path),
+        value: merge(leftResult.value, rightResult.value)
+    }
 }
 
-const identityOperation: OperationFunction = (_, path) => ({
-    path,
-    value: true
-})
+const identityOperation: OperationFunction = (_, path) => {
+    return {
+        path,
+        value: true
+    }
+}
 
 const recursiveJmespathToObject = (node: ASTNode, path: string = '') => {
     const operation = OPERATIONS[node.type]
@@ -33,6 +38,16 @@ export const toGraphQL = (expression: string): any => {
     return jmespathToObject(node)
 }
 
+const joinPaths = (a: string | undefined, b: string | undefined) => {
+    if (a) {
+        if (b) return a + '.' + b
+        else return a
+    } else {
+        if (b) return b
+        else return undefined
+    }
+}
+
 const OPERATIONS: Record<string, OperationFunction> = {
     Field: (node) => {
         return { value: { [node.name]: true }, path: node.name }
@@ -43,23 +58,33 @@ const OPERATIONS: Record<string, OperationFunction> = {
         const leftResult = recursiveJmespathToObject(left, path)
         const result = {
             value: {},
-            path: (rightResult.path && rightResult.path + '.') + leftResult.path
+            path: joinPaths(rightResult.path, leftResult.path)
         }
-        setProperty(result.value, rightResult.path, leftResult.value)
+        if (rightResult.path)
+            setProperty(result.value, rightResult.path, leftResult.value)
+        else {
+            // TODO no test reaches this code, remove this 'if'
+            console.log('Subexpression: no right result path')
+        }
         return result
     },
     OrExpression: mergeOperation,
     Comparator: mergeOperation,
     AndExpression: mergeOperation,
     FilterProjection: (node, path) => {
-        // TODO test with nested filters (check if path is correctly passed)
         const [first, second, third] = node.children
         const firstResult = recursiveJmespathToObject(first, path)
         const secondResult = recursiveJmespathToObject(second, path)
         const thirdResult = recursiveJmespathToObject(third, path)
         const value = firstResult.value
-        setProperty(value, firstResult.path, merge(secondResult.value, thirdResult.value))
-        return { path, value }
+        if (firstResult.path) {
+            setProperty(
+                value,
+                firstResult.path,
+                merge(secondResult.value, thirdResult.value)
+            )
+        }
+        return { path: joinPaths(firstResult.path, thirdResult.path), value }
     },
     Identity: identityOperation,
     Literal: identityOperation,
@@ -68,19 +93,26 @@ const OPERATIONS: Record<string, OperationFunction> = {
         const leftResult = recursiveJmespathToObject(left, path)
         const rightResult = recursiveJmespathToObject(right, path)
         const result = {
-            value: {},
-            path: (rightResult.path && rightResult.path + '.') + leftResult.path
+            value: leftResult.value,
+            path: joinPaths(leftResult.path, rightResult.path)
         }
-        setProperty(result.value, leftResult.path, rightResult.value)
+        if (leftResult.path)
+            setProperty(result.value, leftResult.path, rightResult.value)
+        else {
+            // TODO no test reaches this code, remove this 'if'
+            console.log('Projection: no right result path')
+        }
         return result
     },
     Flatten: (node, path) => {
         const [first] = node.children
-        return recursiveJmespathToObject(
+        const result = recursiveJmespathToObject(
             first,
-            (path && path + '.') + first.name
+            joinPaths(path, first.name)
         )
-    }
+        return result
+    },
+    IndexExpression: identityOperation
 }
 
 // graphqlVisit(node: ASTNode, path: string): OperationResult {
