@@ -5,7 +5,7 @@ import { setProperty } from 'dot-prop'
 type OperationResult = { value: any; path: string | undefined }
 type OperationFunction = (node: ASTNode, path: string) => OperationResult
 
-const mergeOperation: OperationFunction = (node, path) => {
+const Merge: OperationFunction = (node, path) => {
     const [left, right] = node.children
     const leftResult = recursiveJmespathToObject(left, path)
     const rightResult = recursiveJmespathToObject(right, path)
@@ -15,10 +15,26 @@ const mergeOperation: OperationFunction = (node, path) => {
     }
 }
 
-const identityOperation: OperationFunction = (_, path) => {
+const Identity: OperationFunction = (_, path) => {
     return {
         path,
         value: true
+    }
+}
+
+const Subexpression: OperationFunction = (node, path) => {
+    const [right, left] = node.children
+    const rightResult = recursiveJmespathToObject(right, path)
+    const leftResult = recursiveJmespathToObject(left, path)
+    if (rightResult.path) {
+        const result = {
+            value: {},
+            path: joinPaths(rightResult.path, leftResult.path)
+        }
+        setProperty(result.value, rightResult.path, leftResult.value)
+        return result
+    } else {
+        return { value: rightResult.value, path }
     }
 }
 
@@ -52,25 +68,10 @@ const OPERATIONS: Record<string, OperationFunction> = {
     Field: (node) => {
         return { value: { [node.name]: true }, path: node.name }
     },
-    Subexpression: (node, path) => {
-        const [right, left] = node.children
-        const rightResult = recursiveJmespathToObject(right, path)
-        const leftResult = recursiveJmespathToObject(left, path)
-        const result = {
-            value: {},
-            path: joinPaths(rightResult.path, leftResult.path)
-        }
-        if (rightResult.path)
-            setProperty(result.value, rightResult.path, leftResult.value)
-        else {
-            // TODO no test reaches this code, remove this 'if'
-            console.log('Subexpression: no right result path')
-        }
-        return result
-    },
-    OrExpression: mergeOperation,
-    Comparator: mergeOperation,
-    AndExpression: mergeOperation,
+    Subexpression,
+    OrExpression: Merge,
+    Comparator: Merge,
+    AndExpression: Merge,
     FilterProjection: (node, path) => {
         const [first, second, third] = node.children
         const firstResult = recursiveJmespathToObject(first, path)
@@ -86,8 +87,8 @@ const OPERATIONS: Record<string, OperationFunction> = {
         }
         return { path: joinPaths(firstResult.path, thirdResult.path), value }
     },
-    Identity: identityOperation,
-    Literal: identityOperation,
+    Identity,
+    Literal: Identity,
     Projection: (node, path) => {
         const [left, right] = node.children
         const leftResult = recursiveJmespathToObject(left, path)
@@ -112,7 +113,16 @@ const OPERATIONS: Record<string, OperationFunction> = {
         )
         return result
     },
-    IndexExpression: identityOperation
+    IndexExpression: Identity,
+    Pipe: Subexpression,
+    MultiSelectList: (node, path) => {
+        let value = {}
+        for (const child of node.children) {
+            const res = recursiveJmespathToObject(child, path)
+            value = merge(value, res.value)
+        }
+        return { value, path }
+    }
 }
 
 /*

@@ -1,6 +1,56 @@
-import { Expression } from './Expression'
+import { Expression } from '../Expression'
 
-export const tests: Expression[] = [
+export const done: Expression[] = [
+    {
+        value: 'foo.baz | [0]',
+        expected: { foo: { baz: true } }
+    },
+    {
+        value: 'foo | bar',
+        expected: { foo: { bar: true } }
+    },
+    {
+        value: 'foo | bar | baz',
+        expected: { foo: { bar: { baz: true } } }
+    },
+    {
+        value: 'not_there | [0]',
+        expected: { not_there: true }
+    },
+    {
+        value: '[foo.bar, foo.other, third] | [0]',
+        expected: { foo: { bar: true, other: true }, third: true }
+    },
+    {
+        value: '__L',
+        expected: {
+            __L: true
+        }
+    },
+    {
+        value: '"!\\r"',
+        expected: {
+            '!\r': true
+        }
+    },
+    {
+        value: 'Y_1623',
+        expected: {
+            Y_1623: true
+        }
+    },
+    {
+        value: '"\\tF\\uCebb"',
+        expected: {
+            '\tF캻': true
+        }
+    },
+    {
+        value: '" \\t"',
+        expected: {
+            ' \t': true
+        }
+    },
     {
         value: 'foo[?bar==`1`].bar[0]',
         expected: {

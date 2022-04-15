@@ -2,26 +2,26 @@ export type ObjectType = any // TODO
 
 //   TODO check type - which properties are optional?
 export type ASTNode = {
-  value: any // TODO
-  type: string
-  name: string
-  children: Array<ASTNode>
-  jmespathType?: any // TODO
+    value: any // TODO
+    type: string
+    name: string
+    children: Array<ASTNode>
+    jmespathType?: any // TODO
 }
 
 export class Runtime {
-  _interpreter: TreeInterpreter
-  callFunction(name: string, resolvedArgs: Array<ObjectType>): any
+    _interpreter: TreeInterpreter
+    callFunction(name: string, resolvedArgs: Array<ObjectType>): any
 }
 export class TreeInterpreter {
-  constructor(runtinme: Runtime)
-  runtime: Runtime
-  computeSliceParams(
-    length: number,
-    sliceParams: Array<ASTNode>
-  ): [number, number, number]
-  visit(node: ASTNode, value: ObjectType): ASTNode
-  search(node: ASTNode, value: ObjectType): ASTNode
+    constructor(runtinme: Runtime)
+    runtime: Runtime
+    computeSliceParams(
+        length: number,
+        sliceParams: Array<ASTNode>
+    ): [number, number, number]
+    visit(node: ASTNode, value: ObjectType): ASTNode
+    search(node: ASTNode, value: ObjectType): ASTNode
 }
 export function compile(expression: string): ASTNode
 export function search(obj: ObjectType, expression: string): ObjectType
