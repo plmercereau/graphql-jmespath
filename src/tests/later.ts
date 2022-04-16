@@ -13,6 +13,39 @@ import { Expression } from '../Expression'
 
 export const later: Expression[] = [
     {
+        value: 'foo.nested.*.{a: a,b: b}',
+        expected: {}
+    },
+
+    {
+        value: 'foo.[includeme, bar.baz[*].common]',
+        expected: {}
+    },
+    {
+        value: 'foo.[includeme, bar.baz[*].none]',
+        expected: {}
+    },
+    {
+        value: 'reservations[*].instances[*].{id: id, name: name}',
+        expected: {}
+    },
+    {
+        value: 'foo.[baz[*].bar, qux[0]]',
+        expected: {}
+    },
+    {
+        value: 'foo.[baz[*].[bar, boo], qux[0]]',
+        expected: {}
+    },
+    {
+        value: 'foo.[baz[*].not_there || baz[*].bar, qux[0]]',
+        expected: {}
+    },
+    {
+        value: '[[*],*]',
+        expected: {}
+    },
+    {
         value: 'foo.*.baz | [0]',
         expected: {}
     },
