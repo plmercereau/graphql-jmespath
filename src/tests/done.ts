@@ -2,6 +2,420 @@ import { Expression } from '../Expression'
 
 export const done: Expression[] = [
     {
+        value: 'foo.{"foo.bar": bar}',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: 'foo.{bar: bar, baz: baz}',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.{"bar": bar, "baz": baz}',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: '{"baz": baz, "qux\\"": "qux\\""}',
+        expected: {
+            baz: true,
+            'qux"': true
+        }
+    },
+    {
+        value: 'foo.{bar: bar.baz[1],includeme: includeme}',
+        expected: {
+            foo: {
+                bar: {
+                    baz: true
+                },
+                includeme: true
+            }
+        }
+    },
+    {
+        value: 'foo.{"bar.baz.two": bar.baz[1].two, includeme: includeme}',
+        expected: {
+            foo: {
+                bar: {
+                    baz: {
+                        two: true
+                    }
+                },
+                includeme: true
+            }
+        }
+    },
+    {
+        value: 'foo.[includeme, bar.baz[].common]',
+        expected: {
+            foo: {
+                includeme: true,
+                bar: {
+                    baz: {
+                        common: true
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.{bar: bar, baz: baz}',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,baz]',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo[]',
+        expected: { foo: true }
+    },
+    {
+        value: 'foo.bar[].a',
+        expected: {
+            foo: {
+                bar: {
+                    a: true
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.[baz][]',
+        expected: {
+            foo: {
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo[].[baz, qux]',
+        expected: {
+            foo: {
+                baz: true,
+                qux: true
+            }
+        }
+    },
+    {
+        value: 'foo[].bar[].[baz, qux][]',
+        expected: {
+            foo: {
+                bar: {
+                    baz: true,
+                    qux: true
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.[bar[0],baz[3]]',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,baz[1]]',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,baz[2]]',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,baz[3]]',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo[].bar[].[baz, qux]',
+        expected: {
+            foo: {
+                bar: {
+                    baz: true,
+                    qux: true
+                }
+            }
+        }
+    },
+    {
+        value: 'foo[].bar[].[baz]',
+        expected: {
+            foo: {
+                bar: {
+                    baz: true
+                }
+            }
+        }
+    },
+    {
+        value: 'reservations[].instances[].{id: id, name: name}',
+        expected: {
+            reservations: {
+                instances: {
+                    id: true,
+                    name: true
+                }
+            }
+        }
+    },
+    {
+        value: 'reservations[].instances[].[id, name]',
+        expected: {
+            reservations: {
+                instances: {
+                    id: true,
+                    name: true
+                }
+            }
+        }
+    },
+    {
+        value: 'foo',
+        expected: {
+            foo: true
+        }
+    },
+    {
+        value: 'foo[]',
+        expected: {
+            foo: true
+        }
+    },
+    {
+        value: 'foo[].bar',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: 'foo[].bar[]',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,baz[0]]',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.{bar:bar,baz:baz}',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,qux]',
+        expected: {
+            foo: {
+                bar: true,
+                qux: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,noexist]',
+        expected: {
+            foo: {
+                bar: true,
+                noexist: true
+            }
+        }
+    },
+    {
+        value: 'foo.[noexist,alsonoexist]',
+        expected: {
+            foo: {
+                noexist: true,
+                alsonoexist: true
+            }
+        }
+    },
+    {
+        value: '{bar: bar}',
+        expected: {
+            bar: true
+        }
+    },
+    {
+        value: '{otherkey: bar}',
+        expected: {
+            bar: true
+        }
+    },
+    {
+        value: 'foo.[bar]',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: 'foo.[bar,baz]',
+        expected: {
+            foo: {
+                bar: true,
+                baz: true
+            }
+        }
+    },
+    {
+        value: 'foo.nested.three.{a: a, cinner: c.inner}',
+        expected: {
+            foo: {
+                nested: {
+                    three: {
+                        a: true,
+                        c: {
+                            inner: true
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.nested.three.{a: a, c: c.inner.bad.key}',
+        expected: {
+            foo: {
+                nested: {
+                    three: {
+                        a: true,
+                        c: {
+                            inner: {
+                                bad: {
+                                    key: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.{a: nested.one.a, b: nested.two.b}',
+        expected: {
+            foo: {
+                nested: {
+                    one: {
+                        a: true
+                    },
+                    two: {
+                        b: true
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.badkey.{nokey: nokey, alsonokey: alsonokey}',
+        expected: {
+            foo: {
+                badkey: {
+                    nokey: true,
+                    alsonokey: true
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.{bar: bar,qux: qux}',
+        expected: {
+            foo: {
+                bar: true,
+                qux: true
+            }
+        }
+    },
+    {
+        value: 'foo.{bar: bar, noexist: noexist}',
+        expected: {
+            foo: {
+                bar: true,
+                noexist: true
+            }
+        }
+    },
+    {
+        value: 'foo.{noexist: noexist, alsonoexist: alsonoexist}',
+        expected: {
+            foo: {
+                noexist: true,
+                alsonoexist: true
+            }
+        }
+    },
+    {
+        value: 'foo.{bar: bar}',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: 'foo.{"bar": bar}',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
         value: 'foo.baz | [0]',
         expected: { foo: { baz: true } }
     },

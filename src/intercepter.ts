@@ -38,6 +38,15 @@ const Subexpression: OperationFunction = (node, path) => {
     }
 }
 
+const MultiSelect: OperationFunction = (node, path) => {
+    let value = {}
+    for (const child of node.children) {
+        const res = recursiveJmespathToObject(child, path)
+        value = merge(value, res.value)
+    }
+    return { value, path }
+}
+
 const recursiveJmespathToObject = (node: ASTNode, path: string = '') => {
     const operation = OPERATIONS[node.type]
     if (!operation) throw new Error('Unknown node type: ' + node.type)
@@ -97,31 +106,34 @@ const OPERATIONS: Record<string, OperationFunction> = {
             value: leftResult.value,
             path: joinPaths(leftResult.path, rightResult.path)
         }
-        if (leftResult.path)
+        // ! right.type !== 'Identity' is hacky, but it works so far in all the tests
+        if (leftResult.path && right.type !== 'Identity') {
             setProperty(result.value, leftResult.path, rightResult.value)
-        else {
-            // TODO no test reaches this code, remove this 'if'
-            console.log('Projection: no right result path')
         }
         return result
     },
     Flatten: (node, path) => {
-        const [first] = node.children
-        const result = recursiveJmespathToObject(
-            first,
-            joinPaths(path, first.name)
-        )
-        return result
+        // const [first] = node.children
+        // const firstResult = recursiveJmespathToObject(first, path)
+        // const result = {
+        //     value: firstResult.value,
+        //     path: joinPaths(path, firstResult.path)
+        // }
+        //        // setProperty(result.value, result.path!, true)
+        // return result
+        return recursiveJmespathToObject(node.children[0], path)
     },
-    IndexExpression: Identity,
+    IndexExpression: (node, path) => {
+        return recursiveJmespathToObject(
+            node.children[0],
+            joinPaths(path, node.value)
+        )
+    },
     Pipe: Subexpression,
-    MultiSelectList: (node, path) => {
-        let value = {}
-        for (const child of node.children) {
-            const res = recursiveJmespathToObject(child, path)
-            value = merge(value, res.value)
-        }
-        return { value, path }
+    MultiSelectList: MultiSelect,
+    MultiSelectHash: MultiSelect,
+    KeyValuePair: (node, path) => {
+        return recursiveJmespathToObject(node.value, path)
     }
 }
 
@@ -174,34 +186,9 @@ const OPERATIONS: Record<string, OperationFunction> = {
           }
         }
         return collected
-      case 'MultiSelectList':
-        if (value === null) {
-          return null
-        }
-        collected = []
-        for (i = 0; i < node.children.length; i++) {
-          collected.push(this.visit(node.children[i], value))
-        }
-        return collected
-      case 'MultiSelectHash':
-        if (value === null) {
-          return null
-        }
-        collected = {}
-        var child
-        for (i = 0; i < node.children.length; i++) {
-          child = node.children[i]
-          collected[child.name] = this.visit(child.value, value)
-        }
-        return collected
       case 'NotExpression':
         first = this.visit(node.children[0], value)
         return isFalse(first)
-      case 'Literal':
-        return node.value
-      case TOK_PIPE:
-        left = this.visit(node.children[0], value)
-        return this.visit(node.children[1], left)
       case TOK_CURRENT:
         return value
       case 'Function':
