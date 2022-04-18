@@ -172,23 +172,17 @@ const OPERATIONS: Record<string, OperationFunction> = {
         )
     },
     Pipe: (node, path, wc) => {
-        console.log('Pipe')
         const [right, left] = node.children
         const leftResult = recursiveJmespathToObject(left, path, wc)
         const rightResult = recursiveJmespathToObject(right, path, wc)
         const wildcard = wc || leftResult.wildcard || rightResult.wildcard
-        console.log('Pipe::::', { leftResult, rightResult })
-        if (rightResult.path) {
-            console.log(
-                'rightResult.path!!!!',
-                joinPaths(rightResult.path, leftResult.path)
-            )
+        if (rightResult.path && leftResult.path) {
             const result = {
                 value: rightResult.value,
-                path: joinPaths(rightResult.path, leftResult.path),
+                path: `${rightResult.path}.${leftResult.path}`,
                 wildcard
             }
-            // setProperty(result.value, rightResult.path, rightResult.value)
+            setProperty(result.value, rightResult.path, leftResult.value)
             return result
         } else {
             return {
