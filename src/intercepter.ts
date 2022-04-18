@@ -33,28 +33,6 @@ const Identity: OperationFunction = (_, path, wildcard) => {
     }
 }
 
-const Subexpression: OperationFunction = (node, path, wc) => {
-    const [right, left] = node.children
-    const leftResult = recursiveJmespathToObject(left, path, wc)
-    const rightResult = recursiveJmespathToObject(right, path, wc)
-    const wildcard = wc || leftResult.wildcard || rightResult.wildcard
-    if (rightResult.path) {
-        const result = {
-            value: {},
-            path: joinPaths(rightResult.path, leftResult.path),
-            wildcard
-        }
-        setProperty(result.value, rightResult.path, leftResult.value)
-        return result
-    } else {
-        return {
-            value: rightResult.value,
-            path,
-            wildcard: wildcard
-        }
-    }
-}
-
 const MultiSelect: OperationFunction = (node, path, wc) => {
     let value = {}
     let wildcard = wc
@@ -102,7 +80,28 @@ const OPERATIONS: Record<string, OperationFunction> = {
     Field: (node, _, wildcard) => {
         return { value: { [node.name]: true }, path: node.name, wildcard }
     },
-    Subexpression,
+    Subexpression: (node, path, wc) => {
+        const [right, left] = node.children
+        const leftResult = recursiveJmespathToObject(left, path, wc)
+        const rightResult = recursiveJmespathToObject(right, path, wc)
+        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+        if (rightResult.path) {
+            const result = {
+                value: {},
+                path: joinPaths(rightResult.path, leftResult.path),
+                wildcard
+            }
+            setProperty(result.value, rightResult.path, leftResult.value)
+            return result
+        } else {
+            console.warn('todo')
+            return {
+                value: rightResult.value,
+                path,
+                wildcard: wildcard
+            }
+        }
+    },
     OrExpression: Merge,
     Comparator: Merge,
     AndExpression: Merge,
@@ -172,30 +171,48 @@ const OPERATIONS: Record<string, OperationFunction> = {
         )
     },
     Pipe: (node, path, wc) => {
-        const [right, left] = node.children
+        const [left, right] = node.children
         const leftResult = recursiveJmespathToObject(left, path, wc)
         const rightResult = recursiveJmespathToObject(right, path, wc)
         const wildcard = wc || leftResult.wildcard || rightResult.wildcard
         if (rightResult.path && leftResult.path) {
             const result = {
-                value: rightResult.value,
-                path: `${rightResult.path}.${leftResult.path}`,
+                value: leftResult.value,
+                path: `${leftResult.path}.${rightResult.path}`,
                 wildcard
             }
-            setProperty(result.value, rightResult.path, leftResult.value)
+            setProperty(result.value, leftResult.path, rightResult.value)
             return result
         } else {
-            return {
-                value: rightResult.value,
-                path,
-                wildcard: wildcard
+            // * '{"x": foo, "y": bar} | [y.baz]'
+            if (left.type === 'MultiSelectHash') {
+                const value = {}
+                for (const leftChild of left.children) {
+                    const rightChild = rightResult.value[leftChild.name]
+                    if (rightChild) {
+                        const realPath = recursiveJmespathToObject(
+                            leftChild,
+                            path,
+                            wc
+                        ).path
+                        setProperty(value, realPath as string, rightChild)
+                    }
+                }
+                return { value, path: '', wildcard }
+            } else {
+                return {
+                    value: leftResult.value,
+                    path,
+                    wildcard: wildcard
+                }
             }
         }
     },
     MultiSelectList: MultiSelect,
     MultiSelectHash: MultiSelect,
     KeyValuePair: (node, path, wildcard) => {
-        return recursiveJmespathToObject(node.value, path, wildcard)
+        const result = recursiveJmespathToObject(node.value, path, wildcard)
+        return result
     },
     ValueProjection: (node, path, wc) => {
         const [left, right] = node.children

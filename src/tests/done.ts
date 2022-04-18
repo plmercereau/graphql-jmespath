@@ -2,6 +2,43 @@ import { Expression } from '../Expression'
 
 export const done: Expression[] = [
     {
+        value: '{"x": foo, "y": bof} | [y.bar]',
+        expected: {
+            bof: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: '{"a": foo.bar, "b": foo.baz} | [a.other, b.sub]',
+        expected: {
+            foo: {
+                bar: {
+                    other: true
+                },
+                baz: {
+                    sub: true
+                }
+            }
+        }
+    },
+    {
+        value: '{"a": foo.bar, "b": foo.other} | a',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: '{"a": foo.bar, "b": foo.other} | b',
+        expected: {
+            foo: {
+                other: true
+            }
+        }
+    },
+    {
         value: "instances[].[tags[?Key=='Name'].Values[] | [0]]",
         expected: {
             instances: {
