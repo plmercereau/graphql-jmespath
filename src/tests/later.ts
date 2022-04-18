@@ -13,11 +13,6 @@ import { Expression } from '../Expression'
 
 export const later: Expression[] = [
     {
-        value: 'foo.nested.*.{a: a,b: b}',
-        expected: {}
-    },
-
-    {
         value: 'foo.[includeme, bar.baz[*].common]',
         expected: {}
     },
@@ -47,19 +42,45 @@ export const later: Expression[] = [
     },
     {
         value: 'foo.*.baz | [0]',
-        expected: {}
+        expected: {
+            foo: {
+                '*': {
+                    baz: true
+                }
+            }
+        }
     },
     {
         value: 'foo.*.baz | [1]',
-        expected: {}
+        expected: {
+            foo: {
+                '*': {
+                    baz: true
+                }
+            }
+        }
     },
     {
         value: 'foo.*.baz | [2]',
-        expected: {}
+        expected: {
+            foo: {
+                '*': {
+                    baz: true
+                }
+            }
+        }
     },
     {
         value: 'foo.bar.* | [0]',
-        expected: {}
+        expected: {
+            foo: {
+                bar: {
+                    '*': {
+                        '': true
+                    }
+                }
+            }
+        }
     },
     {
         value: 'foo.*.notbaz | [*]',

@@ -2,59 +2,84 @@ import { ASTNode, compile } from './jmespath'
 import merge from 'deepmerge'
 import { setProperty } from 'dot-prop'
 
-type OperationResult = { value: any; path: string | undefined }
-type OperationFunction = (node: ASTNode, path: string) => OperationResult
+type OperationResult = {
+    value: any
+    path: string | undefined
+    wildcard: boolean
+}
+type OperationFunction = (
+    node: ASTNode,
+    path: string,
+    wildcard: boolean
+) => OperationResult
 
-const Merge: OperationFunction = (node, path) => {
+const Merge: OperationFunction = (node, path, wc) => {
     const [left, right] = node.children
-    const leftResult = recursiveJmespathToObject(left, path)
-    const rightResult = recursiveJmespathToObject(right, path)
+    const leftResult = recursiveJmespathToObject(left, path, wc)
+    const rightResult = recursiveJmespathToObject(right, path, wc)
+    const wildcard = wc || leftResult.wildcard || rightResult.wildcard
     return {
         path: joinPaths(leftResult.path, rightResult.path),
-        value: merge(leftResult.value, rightResult.value)
+        value: merge(leftResult.value, rightResult.value),
+        wildcard
     }
 }
 
-const Identity: OperationFunction = (_, path) => {
+const Identity: OperationFunction = (_, path, wildcard) => {
     return {
         path,
-        value: true
+        value: true,
+        wildcard
     }
 }
 
-const Subexpression: OperationFunction = (node, path) => {
+const Subexpression: OperationFunction = (node, path, wc) => {
     const [right, left] = node.children
-    const rightResult = recursiveJmespathToObject(right, path)
-    const leftResult = recursiveJmespathToObject(left, path)
+    const leftResult = recursiveJmespathToObject(left, path, wc)
+    const rightResult = recursiveJmespathToObject(right, path, wc)
+    const wildcard = wc || leftResult.wildcard || rightResult.wildcard
     if (rightResult.path) {
         const result = {
             value: {},
-            path: joinPaths(rightResult.path, leftResult.path)
+            path: joinPaths(rightResult.path, leftResult.path),
+            wildcard
         }
         setProperty(result.value, rightResult.path, leftResult.value)
         return result
     } else {
-        return { value: rightResult.value, path }
+        return {
+            value: rightResult.value,
+            path,
+            wildcard: wildcard
+        }
     }
 }
 
-const MultiSelect: OperationFunction = (node, path) => {
+const MultiSelect: OperationFunction = (node, path, wc) => {
     let value = {}
+    let wildcard = wc
     for (const child of node.children) {
-        const res = recursiveJmespathToObject(child, path)
+        const res = recursiveJmespathToObject(child, path, wc)
         value = merge(value, res.value)
+        wildcard = wildcard || res.wildcard
     }
-    return { value, path }
+    return { value, path, wildcard }
 }
 
-const recursiveJmespathToObject = (node: ASTNode, path: string = '') => {
+const recursiveJmespathToObject = (
+    node: ASTNode,
+    path: string = '',
+    wildcard = false
+) => {
     const operation = OPERATIONS[node.type]
     if (!operation) throw new Error('Unknown node type: ' + node.type)
-    return operation(node, path)
+    return operation(node, path, wildcard)
 }
 
-export const jmespathToObject = (node: ASTNode) =>
-    recursiveJmespathToObject(node).value
+export const jmespathToObject = (node: ASTNode) => {
+    const result = recursiveJmespathToObject(node)
+    return result.value
+}
 
 export const toGraphQL = (expression: string): any => {
     const node = compile(expression)
@@ -74,18 +99,23 @@ const joinPaths = (a: string | undefined, b: string | undefined) => {
 }
 
 const OPERATIONS: Record<string, OperationFunction> = {
-    Field: (node) => {
-        return { value: { [node.name]: true }, path: node.name }
+    Field: (node, _, wildcard) => {
+        return { value: { [node.name]: true }, path: node.name, wildcard }
     },
     Subexpression,
     OrExpression: Merge,
     Comparator: Merge,
     AndExpression: Merge,
-    FilterProjection: (node, path) => {
+    FilterProjection: (node, path, wc) => {
         const [first, second, third] = node.children
-        const firstResult = recursiveJmespathToObject(first, path)
-        const secondResult = recursiveJmespathToObject(second, path)
-        const thirdResult = recursiveJmespathToObject(third, path)
+        const firstResult = recursiveJmespathToObject(first, path, wc)
+        const secondResult = recursiveJmespathToObject(second, path, wc)
+        const thirdResult = recursiveJmespathToObject(third, path, wc)
+        const wildcard =
+            wc ||
+            firstResult.wildcard ||
+            secondResult.wildcard ||
+            thirdResult.wildcard
         const value = firstResult.value
         if (firstResult.path) {
             setProperty(
@@ -94,25 +124,33 @@ const OPERATIONS: Record<string, OperationFunction> = {
                 merge(secondResult.value, thirdResult.value)
             )
         }
-        return { path: joinPaths(firstResult.path, thirdResult.path), value }
+        return {
+            path: joinPaths(firstResult.path, thirdResult.path),
+            value,
+            wildcard
+        }
     },
     Identity,
     Literal: Identity,
-    Projection: (node, path) => {
+    Projection: (node, path, wc) => {
         const [left, right] = node.children
-        const leftResult = recursiveJmespathToObject(left, path)
-        const rightResult = recursiveJmespathToObject(right, path)
+        const leftResult = recursiveJmespathToObject(left, path, wc)
+        const rightResult = recursiveJmespathToObject(right, path, wc)
+        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
         const result = {
             value: leftResult.value,
-            path: joinPaths(leftResult.path, rightResult.path)
+            path: joinPaths(leftResult.path, rightResult.path),
+            wildcard
         }
         // ! right.type !== 'Identity' is hacky, but it works so far in all the tests
         if (leftResult.path && right.type !== 'Identity') {
             setProperty(result.value, leftResult.path, rightResult.value)
+        } else {
+            console.log('YOUHOU')
         }
         return result
     },
-    Flatten: (node, path) => {
+    Flatten: (node, path, wildcard) => {
         // const [first] = node.children
         // const firstResult = recursiveJmespathToObject(first, path)
         // const result = {
@@ -121,19 +159,33 @@ const OPERATIONS: Record<string, OperationFunction> = {
         // }
         //        // setProperty(result.value, result.path!, true)
         // return result
-        return recursiveJmespathToObject(node.children[0], path)
+        return recursiveJmespathToObject(node.children[0], path, wildcard)
     },
-    IndexExpression: (node, path) => {
+    IndexExpression: (node, path, wildcard) => {
         return recursiveJmespathToObject(
             node.children[0],
-            joinPaths(path, node.value)
+            joinPaths(path, node.value),
+            wildcard
         )
     },
     Pipe: Subexpression,
     MultiSelectList: MultiSelect,
     MultiSelectHash: MultiSelect,
-    KeyValuePair: (node, path) => {
-        return recursiveJmespathToObject(node.value, path)
+    KeyValuePair: (node, path, wildcard) => {
+        return recursiveJmespathToObject(node.value, path, wildcard)
+    },
+    ValueProjection: (node, path, wc) => {
+        const [left, right] = node.children
+        const leftResult = recursiveJmespathToObject(left, path, wc)
+        const rightResult = recursiveJmespathToObject(right, path, wc)
+        const value = leftResult.value
+        setProperty(value, `${leftResult.path}.*`, rightResult.value)
+        const result = {
+            value,
+            path: `${leftResult.path}.*.${rightResult.path}`,
+            wildcard: true
+        }
+        return result
     }
 }
 
@@ -171,21 +223,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
           }
         }
         return result
-      case 'ValueProjection':
-        // Evaluate left child.
-        base = this.visit(node.children[0], value)
-        if (!isObject(base)) {
-          return null
-        }
-        collected = []
-        var values = objValues(base)
-        for (i = 0; i < values.length; i++) {
-          current = this.visit(node.children[1], values[i])
-          if (current !== null) {
-            collected.push(current)
-          }
-        }
-        return collected
       case 'NotExpression':
         first = this.visit(node.children[0], value)
         return isFalse(first)

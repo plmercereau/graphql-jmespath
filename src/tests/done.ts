@@ -2,6 +2,51 @@ import { Expression } from '../Expression'
 
 export const done: Expression[] = [
     {
+        value: 'foo.bar[-2]',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: 'foo[:20]',
+        expected: {
+            foo: true
+        }
+    },
+    {
+        value: 'foo[0:20]',
+        expected: {
+            foo: true
+        }
+    },
+    {
+        value: 'foo.nested.*.{a: a,b: b}',
+        expected: {
+            foo: {
+                nested: {
+                    '*': {
+                        a: true,
+                        b: true
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.*.bar.baz',
+        expected: {
+            foo: {
+                '*': {
+                    bar: {
+                        baz: true
+                    }
+                }
+            }
+        }
+    },
+    {
         value: 'foo.{"foo.bar": bar}',
         expected: {
             foo: {
