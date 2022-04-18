@@ -102,7 +102,17 @@ const OPERATIONS: Record<string, OperationFunction> = {
             }
         }
     },
-    OrExpression: Merge,
+    OrExpression: (node, path, wc) => {
+        const [left, right] = node.children
+        const leftResult = recursiveJmespathToObject(left, path, wc)
+        const rightResult = recursiveJmespathToObject(right, path, wc)
+        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+        return {
+            path,
+            value: merge(leftResult.value, rightResult.value),
+            wildcard
+        }
+    },
     Comparator: Merge,
     AndExpression: Merge,
     FilterProjection: (node, path, wc) => {
@@ -153,14 +163,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
         return result
     },
     Flatten: (node, path, wildcard) => {
-        // const [first] = node.children
-        // const firstResult = recursiveJmespathToObject(first, path)
-        // const result = {
-        //     value: firstResult.value,
-        //     path: joinPaths(path, firstResult.path)
-        // }
-        //        // setProperty(result.value, result.path!, true)
-        // return result
         return recursiveJmespathToObject(node.children[0], path, wildcard)
     },
     IndexExpression: (node, path, wildcard) => {
@@ -184,8 +186,8 @@ const OPERATIONS: Record<string, OperationFunction> = {
             setProperty(result.value, leftResult.path, rightResult.value)
             return result
         } else {
-            // * '{"x": foo, "y": bar} | [y.baz]'
             if (left.type === 'MultiSelectHash') {
+                // * '{"x": foo, "y": bar} | [y.baz]'
                 const value = {}
                 for (const leftChild of left.children) {
                     const rightChild = rightResult.value[leftChild.name]
@@ -199,6 +201,14 @@ const OPERATIONS: Record<string, OperationFunction> = {
                     }
                 }
                 return { value, path: '', wildcard }
+            } else if (left.type === 'OrExpression') {
+                // TODO 'foo.bam || foo.bar | baz'
+                console.log('here', { leftResult, rightResult })
+                return {
+                    value: leftResult.value,
+                    path,
+                    wildcard: wildcard
+                }
             } else {
                 return {
                     value: leftResult.value,

@@ -48,13 +48,5 @@ export const later: Expression[] = [
         value: '{"a": foo.bar, "b": foo.other} | *.baz',
         // expected: { foo: { bar: true, other: true } }
         expected: {}
-    },
-    {
-        value: 'foo.bam || foo.bar | baz',
-        expected: {}
-    },
-    {
-        value: 'foo | not_there || bar',
-        expected: {}
     }
 ]
