@@ -49,4 +49,29 @@ export const later: Expression[] = [
         // expected: { foo: { bar: true, other: true } }
         expected: {}
     }
+    /*
+    {
+  "given": {
+    "foo": [{
+      "bar": [{
+        "baz": "one"
+      }, {
+        "baz": "two"
+      }]
+    }, {
+      "bar": [{
+        "baz": "three"
+      }, {
+        "baz": "four"
+      }]
+    }]
+  },
+  "cases": [
+    {
+      "expression": "foo[*].bar[*] | [0][0]",
+      "result": {"baz": "one"}
+    }
+  ]
+}
+    */
 ]
