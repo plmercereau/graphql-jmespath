@@ -2,6 +2,23 @@ import { Expression } from '../Expression'
 
 export const done: Expression[] = [
     {
+        value: "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]",
+        expected: {
+            reservations: {
+                instances: {
+                    tags: {
+                        Values: true,
+                        Key: true
+                    },
+                    type: true,
+                    state: {
+                        name: true
+                    }
+                }
+            }
+        }
+    },
+    {
         value: 'foo.* | [0]',
         expected: {
             foo: {
@@ -502,14 +519,6 @@ export const done: Expression[] = [
     {
         value: 'foo.baz | [0]',
         expected: { foo: { baz: true } }
-    },
-    {
-        value: 'foo | bar',
-        expected: { foo: { bar: true } }
-    },
-    {
-        value: 'foo | bar | baz',
-        expected: { foo: { bar: { baz: true } } }
     },
     {
         value: 'not_there | [0]',

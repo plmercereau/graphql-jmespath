@@ -123,9 +123,12 @@ const OPERATIONS: Record<string, OperationFunction> = {
                 firstResult.path,
                 merge(secondResult.value, thirdResult.value)
             )
+        } else {
+            console.warn('something unhandled')
         }
         return {
-            path: joinPaths(firstResult.path, thirdResult.path),
+            // ? path: joinPaths(firstResult.path, thirdResult.path),
+            path: firstResult.path,
             value,
             wildcard
         }
@@ -146,7 +149,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
         if (leftResult.path && right.type !== 'Identity') {
             setProperty(result.value, leftResult.path, rightResult.value)
         } else {
-            console.log('YOUHOU')
+            console.log('handle this case?')
         }
         return result
     },
@@ -168,7 +171,33 @@ const OPERATIONS: Record<string, OperationFunction> = {
             wildcard
         )
     },
-    Pipe: Subexpression,
+    Pipe: (node, path, wc) => {
+        console.log('Pipe')
+        const [right, left] = node.children
+        const leftResult = recursiveJmespathToObject(left, path, wc)
+        const rightResult = recursiveJmespathToObject(right, path, wc)
+        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+        console.log('Pipe::::', { leftResult, rightResult })
+        if (rightResult.path) {
+            console.log(
+                'rightResult.path!!!!',
+                joinPaths(rightResult.path, leftResult.path)
+            )
+            const result = {
+                value: rightResult.value,
+                path: joinPaths(rightResult.path, leftResult.path),
+                wildcard
+            }
+            // setProperty(result.value, rightResult.path, rightResult.value)
+            return result
+        } else {
+            return {
+                value: rightResult.value,
+                path,
+                wildcard: wildcard
+            }
+        }
+    },
     MultiSelectList: MultiSelect,
     MultiSelectHash: MultiSelect,
     KeyValuePair: (node, path, wildcard) => {

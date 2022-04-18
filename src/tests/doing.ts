@@ -2,20 +2,22 @@ import { Expression } from '../Expression'
 
 export const doing: Expression[] = [
     {
-        value: "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]",
+        value: "instances[].[tags[?Key=='Name'].Values[] | [0]]",
         expected: {
-            reservations: {
-                instances: {
-                    tags: {
-                        Key: true,
-                        Values: true // TODO missing
-                    },
-                    type: true,
-                    state: {
-                        name: true
-                    }
+            instances: {
+                tags: {
+                    Values: true,
+                    Key: true
                 }
             }
         }
+    },
+    {
+        value: 'foo | bar',
+        expected: { foo: { bar: true } }
+    },
+    {
+        value: 'foo | bar | baz',
+        expected: { foo: { bar: { baz: true } } }
     }
 ]
