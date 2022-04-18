@@ -81,22 +81,22 @@ const OPERATIONS: Record<string, OperationFunction> = {
         return { value: { [node.name]: true }, path: node.name, wildcard }
     },
     Subexpression: (node, path, wc) => {
-        const [right, left] = node.children
+        const [left, right] = node.children
         const leftResult = recursiveJmespathToObject(left, path, wc)
         const rightResult = recursiveJmespathToObject(right, path, wc)
         const wildcard = wc || leftResult.wildcard || rightResult.wildcard
-        if (rightResult.path) {
+        if (leftResult.path) {
             const result = {
                 value: {},
-                path: joinPaths(rightResult.path, leftResult.path),
+                path: joinPaths(leftResult.path, rightResult.path),
                 wildcard
             }
-            setProperty(result.value, rightResult.path, leftResult.value)
+            setProperty(result.value, leftResult.path, rightResult.value)
             return result
         } else {
             console.warn('todo')
             return {
-                value: rightResult.value,
+                value: leftResult.value,
                 path,
                 wildcard: wildcard
             }
