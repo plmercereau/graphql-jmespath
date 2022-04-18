@@ -5,6 +5,7 @@ import { Expression } from '../Expression'
 functions
 pipe
 wildcard
+current @
 */
 
 export const todo: Expression[] = []

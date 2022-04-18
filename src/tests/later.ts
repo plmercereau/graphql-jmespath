@@ -41,48 +41,6 @@ export const later: Expression[] = [
         expected: {}
     },
     {
-        value: 'foo.*.baz | [0]',
-        expected: {
-            foo: {
-                '*': {
-                    baz: true
-                }
-            }
-        }
-    },
-    {
-        value: 'foo.*.baz | [1]',
-        expected: {
-            foo: {
-                '*': {
-                    baz: true
-                }
-            }
-        }
-    },
-    {
-        value: 'foo.*.baz | [2]',
-        expected: {
-            foo: {
-                '*': {
-                    baz: true
-                }
-            }
-        }
-    },
-    {
-        value: 'foo.bar.* | [0]',
-        expected: {
-            foo: {
-                bar: {
-                    '*': {
-                        '': true
-                    }
-                }
-            }
-        }
-    },
-    {
         value: 'foo.*.notbaz | [*]',
         expected: {}
     },

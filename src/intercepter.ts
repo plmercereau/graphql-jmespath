@@ -180,17 +180,15 @@ const OPERATIONS: Record<string, OperationFunction> = {
         const rightResult = recursiveJmespathToObject(right, path, wc)
         const value = leftResult.value
         setProperty(value, `${leftResult.path}.*`, rightResult.value)
-        const result = {
+        return {
             value,
-            path: `${leftResult.path}.*.${rightResult.path}`,
+            path: joinPaths(`${leftResult.path}.*`, rightResult.path),
             wildcard: true
         }
-        return result
     }
 }
 
-/*
-      case 'Index':
+/*    case 'Index':
         if (!isArray(value)) {
           return null
         }
@@ -226,7 +224,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
       case 'NotExpression':
         first = this.visit(node.children[0], value)
         return isFalse(first)
-      case TOK_CURRENT:
+      case Current:
         return value
       case 'Function':
         var resolvedArgs = []
@@ -241,5 +239,3 @@ const OPERATIONS: Record<string, OperationFunction> = {
         refNode.jmespathType = TOK_EXPREF
         return refNode
         */
-// }
-// }
