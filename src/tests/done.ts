@@ -2,6 +2,197 @@ import { Expression } from '../Expression'
 
 export const done: Expression[] = [
     {
+        value: 'foo[?!(key||bar)]',
+        expected: {
+            foo: {
+                key: true,
+                bar: true
+            }
+        }
+    },
+    {
+        value: '*[?[0] == `0`]',
+        expected: {
+            '*': true
+        }
+    },
+    {
+        value: 'sort_by(people, &age)',
+        expected: {
+            people: {
+                age: true
+            }
+        }
+    },
+    {
+        value: 'foo[].not_null(f, e, d, c, b, a)',
+        expected: {
+            foo: {
+                f: true,
+                e: true,
+                d: true,
+                c: true,
+                b: true,
+                a: true
+            }
+        }
+    },
+    {
+        value: 'sort_by(people, &to_number(age_str))',
+        expected: {
+            people: {
+                age_str: true
+            }
+        }
+    },
+    {
+        value: 'max_by(people, &to_number(age_str))',
+        expected: {
+            people: {
+                age_str: true
+            }
+        }
+    },
+    {
+        value: 'map(&a, people)',
+        expected: {
+            people: {
+                a: true
+            }
+        }
+    },
+    {
+        value: 'map(&foo.bar, array)',
+        expected: {
+            array: {
+                foo: {
+                    bar: true
+                }
+            }
+        }
+    },
+    {
+        value: 'map(&foo.bar.baz, array)',
+        expected: {
+            array: {
+                foo: {
+                    bar: {
+                        baz: true
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'map(&[], array)',
+        expected: {
+            array: true
+        }
+    },
+    {
+        value: 'sort_by(people, &age)[].extra',
+        expected: {
+            people: {
+                age: true,
+                extra: true
+            }
+        }
+    },
+    {
+        value: 'sort_by(`[]`, &age)',
+        expected: {}
+    },
+    {
+        value: 'not_null(unknown_key, str)',
+        expected: {
+            unknown_key: true,
+            str: true
+        }
+    },
+    {
+        value: 'not_null(unknown_key, foo.bar, empty_list, str)',
+        expected: {
+            unknown_key: true,
+            foo: {
+                bar: true
+            },
+            empty_list: true,
+            str: true
+        }
+    },
+    {
+        value: 'sort_by(people, &age)[].name',
+        expected: {
+            people: {
+                age: true,
+                name: true
+            }
+        }
+    },
+    {
+        value: 'sort(keys(objects))',
+        expected: {
+            objects: true
+        }
+    },
+    {
+        value: "contains('abc', 'd')",
+        expected: {}
+    },
+    {
+        value: "contains(strings, 'a')",
+        expected: {
+            strings: true
+        }
+    },
+    {
+        value: 'length(strings[0])',
+        expected: {
+            strings: true
+        }
+    },
+    {
+        value: 'merge(`{"a": 1}`, `{"b": 2}`)',
+        expected: {}
+    },
+    {
+        value: 'merge(`{"a": 1, "b": 2}`, `{"a": 2, "c": 3}`, `{"d": 4}`)',
+        expected: {}
+    },
+    {
+        value: 'avg(numbers)',
+        expected: { numbers: true }
+    },
+    {
+        value: 'ceil(`1.2`)',
+        expected: {}
+    },
+    {
+        value: 'ceil(decimals[2])',
+        expected: { decimals: true }
+    },
+    {
+        value: 'abs(`-24`)',
+        expected: {}
+    },
+    {
+        value: 'abs(array[1])',
+        expected: {
+            array: true
+        }
+    },
+
+    {
+        value: 'abs(foo)',
+        expected: {
+            foo: true
+        }
+    },
+    {
+        value: 'sort_by(Contents, &Date)[*].{Key: Key, Size: Size}',
+        expected: { Contents: { Date: true, Key: true, Size: true } }
+    },
+    {
         value: 'foo[*].bar[*] | [0][0]',
         expected: {
             foo: {
@@ -11,7 +202,13 @@ export const done: Expression[] = [
     },
     {
         value: 'foo.*.notbaz | [*]',
-        expected: {}
+        expected: {
+            foo: {
+                '*': {
+                    notbaz: true
+                }
+            }
+        }
     },
     {
         value: '[[*],*]',

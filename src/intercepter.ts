@@ -1,10 +1,10 @@
 import { ASTNode, compile } from './jmespath'
 import merge from 'deepmerge'
-import { setProperty } from 'dot-prop'
+import { setProperty, getProperty } from 'dot-prop'
 
 type OperationResult = {
     value: any
-    path: string | undefined
+    path: string
     wildcard: boolean
 }
 type OperationFunction = (
@@ -12,6 +12,16 @@ type OperationFunction = (
     path: string,
     wildcard: boolean
 ) => OperationResult
+
+function mergeProperty<ObjectType extends Record<string, any>>(
+    object: ObjectType,
+    path: string,
+    value: unknown
+): ObjectType {
+    const oldValue: any = getProperty(object, path)
+    const newValue = merge(oldValue, value as any)
+    return setProperty(object, path, newValue)
+}
 
 const Merge: OperationFunction = (node, path, wc) => {
     const [left, right] = node.children
@@ -32,6 +42,9 @@ const Identity: OperationFunction = (_, path, wildcard) => {
         wildcard
     }
 }
+
+const FirstChild: OperationFunction = (node, path, wildcard) =>
+    recursiveJmespathToObject(node.children[0], path, wildcard)
 
 const MultiSelect: OperationFunction = (node, path, wc) => {
     let value = {}
@@ -72,7 +85,7 @@ const joinPaths = (a: string | undefined, b: string | undefined) => {
         else return a
     } else {
         if (b) return b
-        else return undefined
+        else return ''
     }
 }
 
@@ -132,10 +145,9 @@ const OPERATIONS: Record<string, OperationFunction> = {
                 merge(secondResult.value, thirdResult.value)
             )
         } else {
-            console.warn('something unhandled')
+            // console.warn('something unhandled')
         }
         return {
-            // ? path: joinPaths(firstResult.path, thirdResult.path),
             path: firstResult.path,
             value,
             wildcard
@@ -155,22 +167,14 @@ const OPERATIONS: Record<string, OperationFunction> = {
         }
         // ! right.type !== 'Identity' is hacky, but it works so far in all the tests
         if (leftResult.path && right.type !== 'Identity') {
-            setProperty(result.value, leftResult.path, rightResult.value)
+            mergeProperty(result.value, leftResult.path, rightResult.value)
         } else {
-            console.log('handle this case?', left.type, right.type)
+            // console.log('handle this case?', left.type, right.type)
         }
         return result
     },
-    Flatten: (node, path, wildcard) => {
-        return recursiveJmespathToObject(node.children[0], path, wildcard)
-    },
-    IndexExpression: (node, path, wildcard) => {
-        return recursiveJmespathToObject(
-            node.children[0],
-            joinPaths(path, node.value),
-            wildcard
-        )
-    },
+    Flatten: FirstChild,
+    IndexExpression: FirstChild,
     Pipe: (node, path, wc) => {
         const [left, right] = node.children
         const leftResult = recursiveJmespathToObject(left, path, wc)
@@ -196,7 +200,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
                         path,
                         wc
                     ).path
-                    setProperty(value, realPath as string, rightValue)
+                    setProperty(value, realPath, rightValue)
                 }
             }
             return { value, path: '', wildcard }
@@ -209,7 +213,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
                     path,
                     wc
                 ).path
-                setProperty(value, realPath as string, rightResult.value)
+                setProperty(value, realPath, rightResult.value)
             }
             return {
                 value,
@@ -221,7 +225,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
             if (right.type === 'OrExpression') {
                 setProperty(
                     leftResult.value,
-                    leftResult.path as string,
+                    leftResult.path,
                     rightResult.value
                 )
             }
@@ -235,14 +239,13 @@ const OPERATIONS: Record<string, OperationFunction> = {
     MultiSelectList: MultiSelect,
     MultiSelectHash: MultiSelect,
     KeyValuePair: (node, path, wildcard) => {
-        const result = recursiveJmespathToObject(node.value, path, wildcard)
-        return result
+        return recursiveJmespathToObject(node.value, path, wildcard)
     },
     ValueProjection: (node, path, wc) => {
         const [left, right] = node.children
         const leftResult = recursiveJmespathToObject(left, path, wc)
         const rightResult = recursiveJmespathToObject(right, path, wc)
-        const newPath = joinPaths(leftResult.path, '*') as string
+        const newPath = joinPaths(leftResult.path, '*')
         const value = {}
         setProperty(value, newPath, rightResult.value)
         return {
@@ -250,7 +253,29 @@ const OPERATIONS: Record<string, OperationFunction> = {
             path: joinPaths(newPath, rightResult.path),
             wildcard: true
         }
-    }
+    },
+    Function: (node, path, wc) => {
+        // TODO check wildcard in children
+        let root = {}
+        let rootPath = ''
+        let children = {}
+        for (const child of node.children) {
+            const result = recursiveJmespathToObject(child, path, wc)
+            if (child.type === 'ExpressionReference') {
+                children = merge(children, result.value)
+            } else if (child.type !== 'Literal') {
+                // * Skip literals
+                root = merge(root, result.value)
+                rootPath = result.path || ''
+            }
+        }
+        if (rootPath && Object.keys(children).length) {
+            setProperty(root, rootPath, children)
+        }
+        return { value: root, path: rootPath, wildcard: wc }
+    },
+    ExpressionReference: FirstChild,
+    NotExpression: FirstChild
 }
 
 /*    case 'Index':
@@ -286,21 +311,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
           }
         }
         return result
-      case 'NotExpression':
-        first = this.visit(node.children[0], value)
-        return isFalse(first)
       case Current:
         return value
-      case 'Function':
-        var resolvedArgs = []
-        for (i = 0; i < node.children.length; i++) {
-          resolvedArgs.push(this.visit(node.children[i], value))
-        }
-        return this.runtime.callFunction(node.name, resolvedArgs)
-      case 'ExpressionReference':
-        var refNode = node.children[0]
-        // Tag the node with a specific attribute so the type
-        // checker verify the type.
-        refNode.jmespathType = TOK_EXPREF
-        return refNode
         */
