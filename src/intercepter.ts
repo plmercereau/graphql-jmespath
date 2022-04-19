@@ -94,7 +94,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
             setProperty(result.value, leftResult.path, rightResult.value)
             return result
         } else {
-            console.warn('todo')
             return {
                 value: leftResult.value,
                 path,
@@ -158,7 +157,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
         if (leftResult.path && right.type !== 'Identity') {
             setProperty(result.value, leftResult.path, rightResult.value)
         } else {
-            console.log('handle this case?')
+            console.log('handle this case?', left.type, right.type)
         }
         return result
     },
@@ -185,36 +184,51 @@ const OPERATIONS: Record<string, OperationFunction> = {
             }
             setProperty(result.value, leftResult.path, rightResult.value)
             return result
+        } else if (left.type === 'MultiSelectHash') {
+            // * '{"x": foo, "y": bar} | [y.baz]'
+            const value = {}
+            for (const leftChild of left.children) {
+                const rightValue =
+                    rightResult.value['*'] || rightResult.value[leftChild.name]
+                if (rightValue) {
+                    const realPath = recursiveJmespathToObject(
+                        leftChild,
+                        path,
+                        wc
+                    ).path
+                    setProperty(value, realPath as string, rightValue)
+                }
+            }
+            return { value, path: '', wildcard }
+        } else if (left.type === 'OrExpression') {
+            // * 'foo.bam || bar | baz'
+            const value = {}
+            for (const leftChild of left.children) {
+                const realPath = recursiveJmespathToObject(
+                    leftChild,
+                    path,
+                    wc
+                ).path
+                setProperty(value, realPath as string, rightResult.value)
+            }
+            return {
+                value,
+                path,
+                wildcard: wildcard
+            }
         } else {
-            if (left.type === 'MultiSelectHash') {
-                // * '{"x": foo, "y": bar} | [y.baz]'
-                const value = {}
-                for (const leftChild of left.children) {
-                    const rightChild = rightResult.value[leftChild.name]
-                    if (rightChild) {
-                        const realPath = recursiveJmespathToObject(
-                            leftChild,
-                            path,
-                            wc
-                        ).path
-                        setProperty(value, realPath as string, rightChild)
-                    }
-                }
-                return { value, path: '', wildcard }
-            } else if (left.type === 'OrExpression') {
-                // TODO 'foo.bam || foo.bar | baz'
-                console.log('here', { leftResult, rightResult })
-                return {
-                    value: leftResult.value,
-                    path,
-                    wildcard: wildcard
-                }
-            } else {
-                return {
-                    value: leftResult.value,
-                    path,
-                    wildcard: wildcard
-                }
+            // * 'foo | other || bar'
+            if (right.type === 'OrExpression') {
+                setProperty(
+                    leftResult.value,
+                    leftResult.path as string,
+                    rightResult.value
+                )
+            }
+            return {
+                value: leftResult.value,
+                path,
+                wildcard: wildcard
             }
         }
     },
@@ -228,11 +242,12 @@ const OPERATIONS: Record<string, OperationFunction> = {
         const [left, right] = node.children
         const leftResult = recursiveJmespathToObject(left, path, wc)
         const rightResult = recursiveJmespathToObject(right, path, wc)
-        const value = leftResult.value
-        setProperty(value, `${leftResult.path}.*`, rightResult.value)
+        const newPath = joinPaths(leftResult.path, '*') as string
+        const value = {}
+        setProperty(value, newPath, rightResult.value)
         return {
             value,
-            path: joinPaths(`${leftResult.path}.*`, rightResult.path),
+            path: joinPaths(newPath, rightResult.path),
             wildcard: true
         }
     }

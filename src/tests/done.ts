@@ -2,6 +2,190 @@ import { Expression } from '../Expression'
 
 export const done: Expression[] = [
     {
+        value: 'foo[*].bar[*] | [0][0]',
+        expected: {
+            foo: {
+                bar: true
+            }
+        }
+    },
+    {
+        value: 'foo.*.notbaz | [*]',
+        expected: {}
+    },
+    {
+        value: '[[*],*]',
+        expected: {
+            '*': true
+        }
+    },
+    {
+        value: 'foo.[baz[*].not_there || baz[*].bar, qux[0]]',
+        expected: {
+            foo: {
+                baz: {
+                    not_there: true,
+                    bar: true
+                },
+                qux: true
+            }
+        }
+    },
+    {
+        value: 'foo.[baz[*].bar, qux[0]]',
+        expected: {
+            foo: {
+                baz: {
+                    bar: true
+                },
+                qux: true
+            }
+        }
+    },
+    {
+        value: 'foo.[baz[*].[bar, boo], qux[0]]',
+        expected: {
+            foo: {
+                baz: {
+                    bar: true,
+                    boo: true
+                },
+                qux: true
+            }
+        }
+    },
+    {
+        value: 'foo.[includeme, bar.baz[*].common]',
+        expected: {
+            foo: {
+                includeme: true,
+                bar: {
+                    baz: {
+                        common: true
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'foo.[includeme, bar.baz[*].none]',
+        expected: {
+            foo: {
+                includeme: true,
+                bar: {
+                    baz: {
+                        none: true
+                    }
+                }
+            }
+        }
+    },
+    {
+        value: 'reservations[*].instances[*].{id: id, name: name}',
+        expected: {
+            reservations: {
+                instances: {
+                    id: true,
+                    name: true
+                }
+            }
+        }
+    },
+    {
+        value: 'people[?general.id==`100`] | [0].general',
+        expected: {
+            people: {
+                general: {
+                    id: true
+                }
+            }
+        }
+    },
+    {
+        value: 'people[?general.id==`100`].general | [0]',
+        expected: {
+            people: {
+                general: {
+                    id: true
+                }
+            }
+        }
+    },
+    {
+        value: 'people[?age > `20`].{the_name: name, the_age: age}',
+        expected: {
+            people: {
+                name: true,
+                age: true
+            }
+        }
+    },
+    {
+        value: 'people[*].{name: name, tags: tags[0]}',
+        expected: {
+            people: {
+                name: true,
+                tags: true
+            }
+        }
+    },
+    {
+        value: 'people[?age > `20`].[name, age]',
+        expected: {
+            people: {
+                name: true,
+                age: true
+            }
+        }
+    },
+    {
+        value: 'people[?age > `20`].[name]',
+        expected: {
+            people: {
+                name: true,
+                age: true
+            }
+        }
+    },
+    {
+        value: 'books.[author.[name,dob,themes], title]',
+        expected: {
+            books: {
+                author: {
+                    name: true,
+                    dob: true,
+                    themes: true
+                },
+                title: true
+            }
+        }
+    },
+    { value: 'people[*].first', expected: { people: { first: true } } },
+    { value: 'people.*.first', expected: { people: { '*': { first: true } } } },
+    {
+        value: '{"x": foo, "y": bar} | [y.baz, x.boo]',
+        expected: { foo: { boo: true }, bar: { baz: true } }
+    },
+    {
+        value: '{"x": foo, "y": bar} | {"z": y.baz.boo}',
+        expected: { bar: { baz: { boo: true } } }
+    },
+
+    {
+        value: '{"a": foo.bar, "b": foo.other} | *.baz',
+        expected: {
+            foo: { bar: { baz: true }, other: { baz: true } }
+        }
+    },
+    {
+        value: 'foo | other || bar',
+        expected: { foo: { other: true, bar: true } }
+    },
+    {
+        value: 'foo.bam || bar | baz',
+        expected: { foo: { bam: { baz: true } }, bar: { baz: true } }
+    },
+    {
         value: '{"x": foo, "y": bof} | [y.bar]',
         expected: {
             bof: {
