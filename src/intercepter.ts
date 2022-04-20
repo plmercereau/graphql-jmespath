@@ -1,4 +1,5 @@
-import { ASTNode, compile } from './jmespath'
+import { jsonToGraphQLQuery } from 'json-to-graphql-query'
+import { ASTNode, compile } from 'jmespath'
 import merge from 'deepmerge'
 import { setProperty, getProperty } from 'dot-prop'
 
@@ -67,16 +68,31 @@ const recursiveJmespathToObject = (
     return operation(node, path, wildcard)
 }
 
-export const jmespathToObject = (node: ASTNode) => {
+export const astToObject = (node: ASTNode) => {
     const result = recursiveJmespathToObject(node)
-    return result.value
+    return { value: result.value, wildcard: result.wildcard }
 }
 
-export const toGraphQL = (expression: string): any => {
-    const node = compile(expression)
-    console.log('Compiled', JSON.stringify(node, null, 2))
-    // TODO convert object to graphql query
-    return jmespathToObject(node)
+export const objectToGraphQL = (
+    obj: any,
+    { pretty = true }: { pretty?: boolean } = { pretty: true }
+): string => {
+    const query = {
+        query: obj
+    }
+    // TODO throw error when obj cannot be used to build a GraphQL request:
+    // TODO - empty object {}
+    // TODO - not empty object but empty query after wildcard fields have been ignored
+    return jsonToGraphQLQuery(query, { pretty, ignoreFields: ['*'] })
+}
+
+export const jmespathToGraphQL = (expression: string) => {
+    const ast = compile(expression)
+    const { value, wildcard } = astToObject(ast)
+    if (wildcard) {
+        console.log(`Expression "${expression}" contains wildcard(s) field(s)`)
+    }
+    return objectToGraphQL(value)
 }
 
 const joinPaths = (a: string | undefined, b: string | undefined) => {
@@ -90,6 +106,7 @@ const joinPaths = (a: string | undefined, b: string | undefined) => {
 }
 
 const OPERATIONS: Record<string, OperationFunction> = {
+    // * Operations defined in JMESPath's abstract syntax, but not yet encountered in the tests: Index, Slice
     Field: (node, _, wildcard) => {
         return { value: { [node.name]: true }, path: node.name, wildcard }
     },
@@ -290,40 +307,3 @@ const OPERATIONS: Record<string, OperationFunction> = {
         return { value: {}, path, wildcard }
     }
 }
-
-/*    case 'Index':
-        if (!isArray(value)) {
-          return null
-        }
-        var index = node.value
-        if (index < 0) {
-          index = value.length + index
-        }
-        result = value[index]
-        if (result === undefined) {
-          result = null
-        }
-        return result
-      case 'Slice':
-        if (!isArray(value)) {
-          return null
-        }
-        var sliceParams = node.children.slice(0)
-        var computed = this.computeSliceParams(value.length, sliceParams)
-        var start = computed[0]
-        var stop = computed[1]
-        var step = computed[2]
-        result = []
-        if (step > 0) {
-          for (i = start; i < stop; i += step) {
-            result.push(value[i])
-          }
-        } else {
-          for (i = start; i > stop; i += step) {
-            result.push(value[i])
-          }
-        }
-        return result
-      case Current:
-        return value
-        */

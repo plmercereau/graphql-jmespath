@@ -1,6 +1,6 @@
-import { Expression } from '../Expression'
+import { Expression } from './Expression'
 
-export const done: Expression[] = [
+export const expressions: Expression[] = [
     {
         expression: 'foo | bar',
         expected: { foo: { bar: true } }

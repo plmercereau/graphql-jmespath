@@ -1,10 +1,10 @@
 import { ExpressionComponent } from './Expression'
-import { tests } from './tests'
+import { expressions } from './expressions'
 
 function App() {
     return (
         <div>
-            {tests.map(({ expression, expected }, index) => (
+            {expressions.map(({ expression, expected }, index) => (
                 <ExpressionComponent
                     key={index}
                     expression={expression}
