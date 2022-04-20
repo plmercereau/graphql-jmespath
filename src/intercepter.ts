@@ -86,13 +86,16 @@ export const objectToGraphQL = (
     return jsonToGraphQLQuery(query, { pretty, ignoreFields: ['*'] })
 }
 
-export const jmespathToGraphQL = (expression: string) => {
+export const jmespathToGraphQL = (
+    expression: string,
+    { pretty = true }: { pretty?: boolean } = { pretty: true }
+) => {
     const ast = compile(expression)
     const { value, wildcard } = astToObject(ast)
     if (wildcard) {
         console.log(`Expression "${expression}" contains wildcard(s) field(s)`)
     }
-    return objectToGraphQL(value)
+    return objectToGraphQL(value, { pretty })
 }
 
 const joinPaths = (a: string | undefined, b: string | undefined) => {
