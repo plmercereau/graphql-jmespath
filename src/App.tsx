@@ -1,5 +1,5 @@
 import { ExpressionComponent } from './Expression'
-import { expressions } from './expressions'
+import { expressions } from '../tests/expressions'
 
 function App() {
     return (

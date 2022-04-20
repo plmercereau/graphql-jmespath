@@ -1,6 +1,6 @@
 import { compile } from 'jmespath'
 import { astToObject } from '../src/intercepter'
-import { expressions } from '../src/expressions'
+import { expressions } from './expressions'
 describe('jmespath to object', () => {
     expressions.forEach(({ expression, expected }) => {
         it(JSON.stringify(expression), () => {
