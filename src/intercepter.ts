@@ -107,10 +107,15 @@ const OPERATIONS: Record<string, OperationFunction> = {
             setProperty(result.value, leftResult.path, rightResult.value)
             return result
         } else {
-            return {
-                value: leftResult.value,
-                path,
-                wildcard: wildcard
+            if (Object.keys(leftResult.value).length === 0) {
+                // * left type is 'Current' ('@')
+                return rightResult
+            } else {
+                return {
+                    value: leftResult.value,
+                    path,
+                    wildcard
+                }
             }
         }
     },
@@ -181,12 +186,17 @@ const OPERATIONS: Record<string, OperationFunction> = {
         const rightResult = recursiveJmespathToObject(right, path, wc)
         const wildcard = wc || leftResult.wildcard || rightResult.wildcard
         if (rightResult.path && leftResult.path) {
+            const newPath = `${leftResult.path}.${rightResult.path}`
             const result = {
                 value: leftResult.value,
-                path: `${leftResult.path}.${rightResult.path}`,
+                path: newPath,
                 wildcard
             }
-            setProperty(result.value, leftResult.path, rightResult.value)
+            if (!getProperty(leftResult.value, newPath)) {
+                // * Only expressions like 'foo | bar' but not like 'people[?general.id==`100`] | [0].general'
+                setProperty(result.value, leftResult.path, rightResult.value)
+            }
+
             return result
         } else if (left.type === 'MultiSelectHash') {
             // * '{"x": foo, "y": bar} | [y.baz]'
@@ -275,7 +285,10 @@ const OPERATIONS: Record<string, OperationFunction> = {
         return { value: root, path: rootPath, wildcard: wc }
     },
     ExpressionReference: FirstChild,
-    NotExpression: FirstChild
+    NotExpression: FirstChild,
+    Current: (_, path, wildcard) => {
+        return { value: {}, path, wildcard }
+    }
 }
 
 /*    case 'Index':

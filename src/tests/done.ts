@@ -2,7 +2,93 @@ import { Expression } from '../Expression'
 
 export const done: Expression[] = [
     {
-        value: 'foo[?!(key||bar)]',
+        expression: 'foo | bar',
+        expected: { foo: { bar: true } }
+    },
+    {
+        expression: 'people[?general.id==`100`] | [0].general',
+        expected: {
+            people: {
+                general: {
+                    id: true
+                }
+            }
+        }
+    },
+    {
+        expression: 'foo[*].bar[*].kind',
+        expected: {
+            foo: {
+                bar: {
+                    kind: true
+                }
+            }
+        }
+    },
+    {
+        expression: 'foo[*].bar[0].kind',
+        expected: {
+            foo: {
+                bar: {
+                    kind: true
+                }
+            }
+        }
+    },
+    {
+        expression: '*[0]',
+        expected: {
+            '*': true
+        }
+    },
+    {
+        expression: 'foo[?`5` > @]',
+        expected: {
+            foo: {}
+        }
+    },
+    {
+        expression: 'foo[?@ == @]',
+        expected: {
+            foo: {}
+        }
+    },
+    { expression: '@.bar', expected: { bar: true } },
+    { expression: '@', expected: {} },
+    {
+        expression: '@.foo[0]',
+        expected: {
+            foo: true
+        }
+    },
+    {
+        expression: 'length(@)',
+        expected: {}
+    },
+    {
+        expression: "join('|', decimals[].to_string(@))",
+        expected: {
+            decimals: {}
+        }
+    },
+    {
+        expression: 'sum(array[].to_number(@))',
+        expected: {
+            array: {}
+        }
+    },
+    {
+        expression:
+            "locations[?state == 'WA'].name | sort(@)[-2:] | {WashingtonCities: join(', ', @)}",
+        expected: {
+            locations: {
+                name: true,
+                state: true
+            }
+        }
+    },
+    {
+        expression: 'foo[?!(key||bar)]',
         expected: {
             foo: {
                 key: true,
@@ -11,13 +97,13 @@ export const done: Expression[] = [
         }
     },
     {
-        value: '*[?[0] == `0`]',
+        expression: '*[?[0] == `0`]',
         expected: {
             '*': true
         }
     },
     {
-        value: 'sort_by(people, &age)',
+        expression: 'sort_by(people, &age)',
         expected: {
             people: {
                 age: true
@@ -25,7 +111,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[].not_null(f, e, d, c, b, a)',
+        expression: 'foo[].not_null(f, e, d, c, b, a)',
         expected: {
             foo: {
                 f: true,
@@ -38,7 +124,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'sort_by(people, &to_number(age_str))',
+        expression: 'sort_by(people, &to_number(age_str))',
         expected: {
             people: {
                 age_str: true
@@ -46,7 +132,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'max_by(people, &to_number(age_str))',
+        expression: 'max_by(people, &to_number(age_str))',
         expected: {
             people: {
                 age_str: true
@@ -54,7 +140,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'map(&a, people)',
+        expression: 'map(&a, people)',
         expected: {
             people: {
                 a: true
@@ -62,7 +148,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'map(&foo.bar, array)',
+        expression: 'map(&foo.bar, array)',
         expected: {
             array: {
                 foo: {
@@ -72,7 +158,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'map(&foo.bar.baz, array)',
+        expression: 'map(&foo.bar.baz, array)',
         expected: {
             array: {
                 foo: {
@@ -84,13 +170,13 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'map(&[], array)',
+        expression: 'map(&[], array)',
         expected: {
             array: true
         }
     },
     {
-        value: 'sort_by(people, &age)[].extra',
+        expression: 'sort_by(people, &age)[].extra',
         expected: {
             people: {
                 age: true,
@@ -99,18 +185,18 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'sort_by(`[]`, &age)',
+        expression: 'sort_by(`[]`, &age)',
         expected: {}
     },
     {
-        value: 'not_null(unknown_key, str)',
+        expression: 'not_null(unknown_key, str)',
         expected: {
             unknown_key: true,
             str: true
         }
     },
     {
-        value: 'not_null(unknown_key, foo.bar, empty_list, str)',
+        expression: 'not_null(unknown_key, foo.bar, empty_list, str)',
         expected: {
             unknown_key: true,
             foo: {
@@ -121,7 +207,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'sort_by(people, &age)[].name',
+        expression: 'sort_by(people, &age)[].name',
         expected: {
             people: {
                 age: true,
@@ -130,70 +216,70 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'sort(keys(objects))',
+        expression: 'sort(keys(objects))',
         expected: {
             objects: true
         }
     },
     {
-        value: "contains('abc', 'd')",
+        expression: "contains('abc', 'd')",
         expected: {}
     },
     {
-        value: "contains(strings, 'a')",
+        expression: "contains(strings, 'a')",
         expected: {
             strings: true
         }
     },
     {
-        value: 'length(strings[0])',
+        expression: 'length(strings[0])',
         expected: {
             strings: true
         }
     },
     {
-        value: 'merge(`{"a": 1}`, `{"b": 2}`)',
+        expression: 'merge(`{"a": 1}`, `{"b": 2}`)',
         expected: {}
     },
     {
-        value: 'merge(`{"a": 1, "b": 2}`, `{"a": 2, "c": 3}`, `{"d": 4}`)',
+        expression: 'merge(`{"a": 1, "b": 2}`, `{"a": 2, "c": 3}`, `{"d": 4}`)',
         expected: {}
     },
     {
-        value: 'avg(numbers)',
+        expression: 'avg(numbers)',
         expected: { numbers: true }
     },
     {
-        value: 'ceil(`1.2`)',
+        expression: 'ceil(`1.2`)',
         expected: {}
     },
     {
-        value: 'ceil(decimals[2])',
+        expression: 'ceil(decimals[2])',
         expected: { decimals: true }
     },
     {
-        value: 'abs(`-24`)',
+        expression: 'abs(`-24`)',
         expected: {}
     },
     {
-        value: 'abs(array[1])',
+        expression: 'abs(array[1])',
         expected: {
             array: true
         }
     },
 
     {
-        value: 'abs(foo)',
+        expression: 'abs(foo)',
         expected: {
             foo: true
         }
     },
     {
-        value: 'sort_by(Contents, &Date)[*].{Key: Key, Size: Size}',
+        expression: 'sort_by(Contents, &Date)[*].{Key: Key, Size: Size}',
         expected: { Contents: { Date: true, Key: true, Size: true } }
     },
     {
-        value: 'foo[*].bar[*] | [0][0]',
+        expression: 'foo[*].bar[*] | [0][0]',
         expected: {
             foo: {
                 bar: true
@@ -201,7 +287,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.*.notbaz | [*]',
+        expression: 'foo.*.notbaz | [*]',
         expected: {
             foo: {
                 '*': {
@@ -211,13 +297,13 @@ export const done: Expression[] = [
         }
     },
     {
-        value: '[[*],*]',
+        expression: '[[*],*]',
         expected: {
             '*': true
         }
     },
     {
-        value: 'foo.[baz[*].not_there || baz[*].bar, qux[0]]',
+        expression: 'foo.[baz[*].not_there || baz[*].bar, qux[0]]',
         expected: {
             foo: {
                 baz: {
@@ -229,7 +315,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[baz[*].bar, qux[0]]',
+        expression: 'foo.[baz[*].bar, qux[0]]',
         expected: {
             foo: {
                 baz: {
@@ -240,7 +326,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[baz[*].[bar, boo], qux[0]]',
+        expression: 'foo.[baz[*].[bar, boo], qux[0]]',
         expected: {
             foo: {
                 baz: {
@@ -252,7 +338,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[includeme, bar.baz[*].common]',
+        expression: 'foo.[includeme, bar.baz[*].common]',
         expected: {
             foo: {
                 includeme: true,
@@ -265,7 +351,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[includeme, bar.baz[*].none]',
+        expression: 'foo.[includeme, bar.baz[*].none]',
         expected: {
             foo: {
                 includeme: true,
@@ -278,7 +364,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'reservations[*].instances[*].{id: id, name: name}',
+        expression: 'reservations[*].instances[*].{id: id, name: name}',
         expected: {
             reservations: {
                 instances: {
@@ -288,8 +374,9 @@ export const done: Expression[] = [
             }
         }
     },
+
     {
-        value: 'people[?general.id==`100`] | [0].general',
+        expression: 'people[?general.id==`100`].general | [0]',
         expected: {
             people: {
                 general: {
@@ -299,17 +386,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'people[?general.id==`100`].general | [0]',
-        expected: {
-            people: {
-                general: {
-                    id: true
-                }
-            }
-        }
-    },
-    {
-        value: 'people[?age > `20`].{the_name: name, the_age: age}',
+        expression: 'people[?age > `20`].{the_name: name, the_age: age}',
         expected: {
             people: {
                 name: true,
@@ -318,7 +395,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'people[*].{name: name, tags: tags[0]}',
+        expression: 'people[*].{name: name, tags: tags[0]}',
         expected: {
             people: {
                 name: true,
@@ -327,7 +404,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'people[?age > `20`].[name, age]',
+        expression: 'people[?age > `20`].[name, age]',
         expected: {
             people: {
                 name: true,
@@ -336,7 +413,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'people[?age > `20`].[name]',
+        expression: 'people[?age > `20`].[name]',
         expected: {
             people: {
                 name: true,
@@ -345,7 +422,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'books.[author.[name,dob,themes], title]',
+        expression: 'books.[author.[name,dob,themes], title]',
         expected: {
             books: {
                 author: {
@@ -357,33 +434,36 @@ export const done: Expression[] = [
             }
         }
     },
-    { value: 'people[*].first', expected: { people: { first: true } } },
-    { value: 'people.*.first', expected: { people: { '*': { first: true } } } },
+    { expression: 'people[*].first', expected: { people: { first: true } } },
     {
-        value: '{"x": foo, "y": bar} | [y.baz, x.boo]',
+        expression: 'people.*.first',
+        expected: { people: { '*': { first: true } } }
+    },
+    {
+        expression: '{"x": foo, "y": bar} | [y.baz, x.boo]',
         expected: { foo: { boo: true }, bar: { baz: true } }
     },
     {
-        value: '{"x": foo, "y": bar} | {"z": y.baz.boo}',
+        expression: '{"x": foo, "y": bar} | {"z": y.baz.boo}',
         expected: { bar: { baz: { boo: true } } }
     },
 
     {
-        value: '{"a": foo.bar, "b": foo.other} | *.baz',
+        expression: '{"a": foo.bar, "b": foo.other} | *.baz',
         expected: {
             foo: { bar: { baz: true }, other: { baz: true } }
         }
     },
     {
-        value: 'foo | other || bar',
+        expression: 'foo | other || bar',
         expected: { foo: { other: true, bar: true } }
     },
     {
-        value: 'foo.bam || bar | baz',
+        expression: 'foo.bam || bar | baz',
         expected: { foo: { bam: { baz: true } }, bar: { baz: true } }
     },
     {
-        value: '{"x": foo, "y": bof} | [y.bar]',
+        expression: '{"x": foo, "y": bof} | [y.bar]',
         expected: {
             bof: {
                 bar: true
@@ -391,7 +471,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: '{"a": foo.bar, "b": foo.baz} | [a.other, b.sub]',
+        expression: '{"a": foo.bar, "b": foo.baz} | [a.other, b.sub]',
         expected: {
             foo: {
                 bar: {
@@ -404,7 +484,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: '{"a": foo.bar, "b": foo.other} | a',
+        expression: '{"a": foo.bar, "b": foo.other} | a',
         expected: {
             foo: {
                 bar: true
@@ -412,7 +492,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: '{"a": foo.bar, "b": foo.other} | b',
+        expression: '{"a": foo.bar, "b": foo.other} | b',
         expected: {
             foo: {
                 other: true
@@ -420,7 +500,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: "instances[].[tags[?Key=='Name'].Values[] | [0]]",
+        expression: "instances[].[tags[?Key=='Name'].Values[] | [0]]",
         expected: {
             instances: {
                 tags: {
@@ -430,16 +510,14 @@ export const done: Expression[] = [
             }
         }
     },
+
     {
-        value: 'foo | bar',
-        expected: { foo: { bar: true } }
-    },
-    {
-        value: 'foo | bar | baz',
+        expression: 'foo | bar | baz',
         expected: { foo: { bar: { baz: true } } }
     },
     {
-        value: "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]",
+        expression:
+            "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]",
         expected: {
             reservations: {
                 instances: {
@@ -456,7 +534,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.* | [0]',
+        expression: 'foo.* | [0]',
         expected: {
             foo: {
                 '*': true
@@ -464,7 +542,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.bar.* | [0]',
+        expression: 'foo.bar.* | [0]',
         expected: {
             foo: {
                 bar: {
@@ -474,7 +552,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.*.baz | [1]',
+        expression: 'foo.*.baz | [1]',
         expected: {
             foo: {
                 '*': {
@@ -485,7 +563,7 @@ export const done: Expression[] = [
     },
 
     {
-        value: 'foo.*.baz | [0]',
+        expression: 'foo.*.baz | [0]',
         expected: {
             foo: {
                 '*': {
@@ -495,7 +573,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.bar[-2]',
+        expression: 'foo.bar[-2]',
         expected: {
             foo: {
                 bar: true
@@ -503,19 +581,19 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[:20]',
+        expression: 'foo[:20]',
         expected: {
             foo: true
         }
     },
     {
-        value: 'foo[0:20]',
+        expression: 'foo[0:20]',
         expected: {
             foo: true
         }
     },
     {
-        value: 'foo.nested.*.{a: a,b: b}',
+        expression: 'foo.nested.*.{a: a,b: b}',
         expected: {
             foo: {
                 nested: {
@@ -528,7 +606,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.*.bar.baz',
+        expression: 'foo.*.bar.baz',
         expected: {
             foo: {
                 '*': {
@@ -540,7 +618,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{"foo.bar": bar}',
+        expression: 'foo.{"foo.bar": bar}',
         expected: {
             foo: {
                 bar: true
@@ -548,7 +626,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{bar: bar, baz: baz}',
+        expression: 'foo.{bar: bar, baz: baz}',
         expected: {
             foo: {
                 bar: true,
@@ -557,7 +635,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{"bar": bar, "baz": baz}',
+        expression: 'foo.{"bar": bar, "baz": baz}',
         expected: {
             foo: {
                 bar: true,
@@ -566,14 +644,14 @@ export const done: Expression[] = [
         }
     },
     {
-        value: '{"baz": baz, "qux\\"": "qux\\""}',
+        expression: '{"baz": baz, "qux\\"": "qux\\""}',
         expected: {
             baz: true,
             'qux"': true
         }
     },
     {
-        value: 'foo.{bar: bar.baz[1],includeme: includeme}',
+        expression: 'foo.{bar: bar.baz[1],includeme: includeme}',
         expected: {
             foo: {
                 bar: {
@@ -584,7 +662,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{"bar.baz.two": bar.baz[1].two, includeme: includeme}',
+        expression: 'foo.{"bar.baz.two": bar.baz[1].two, includeme: includeme}',
         expected: {
             foo: {
                 bar: {
@@ -597,7 +675,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[includeme, bar.baz[].common]',
+        expression: 'foo.[includeme, bar.baz[].common]',
         expected: {
             foo: {
                 includeme: true,
@@ -610,7 +688,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{bar: bar, baz: baz}',
+        expression: 'foo.{bar: bar, baz: baz}',
         expected: {
             foo: {
                 bar: true,
@@ -619,7 +697,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,baz]',
+        expression: 'foo.[bar,baz]',
         expected: {
             foo: {
                 bar: true,
@@ -628,11 +706,11 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[]',
+        expression: 'foo[]',
         expected: { foo: true }
     },
     {
-        value: 'foo.bar[].a',
+        expression: 'foo.bar[].a',
         expected: {
             foo: {
                 bar: {
@@ -642,7 +720,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[baz][]',
+        expression: 'foo.[baz][]',
         expected: {
             foo: {
                 baz: true
@@ -650,7 +728,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[].[baz, qux]',
+        expression: 'foo[].[baz, qux]',
         expected: {
             foo: {
                 baz: true,
@@ -659,7 +737,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[].bar[].[baz, qux][]',
+        expression: 'foo[].bar[].[baz, qux][]',
         expected: {
             foo: {
                 bar: {
@@ -670,7 +748,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar[0],baz[3]]',
+        expression: 'foo.[bar[0],baz[3]]',
         expected: {
             foo: {
                 bar: true,
@@ -679,7 +757,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,baz[1]]',
+        expression: 'foo.[bar,baz[1]]',
         expected: {
             foo: {
                 bar: true,
@@ -688,7 +766,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,baz[2]]',
+        expression: 'foo.[bar,baz[2]]',
         expected: {
             foo: {
                 bar: true,
@@ -697,7 +775,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,baz[3]]',
+        expression: 'foo.[bar,baz[3]]',
         expected: {
             foo: {
                 bar: true,
@@ -706,7 +784,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[].bar[].[baz, qux]',
+        expression: 'foo[].bar[].[baz, qux]',
         expected: {
             foo: {
                 bar: {
@@ -717,7 +795,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[].bar[].[baz]',
+        expression: 'foo[].bar[].[baz]',
         expected: {
             foo: {
                 bar: {
@@ -727,7 +805,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'reservations[].instances[].{id: id, name: name}',
+        expression: 'reservations[].instances[].{id: id, name: name}',
         expected: {
             reservations: {
                 instances: {
@@ -738,7 +816,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'reservations[].instances[].[id, name]',
+        expression: 'reservations[].instances[].[id, name]',
         expected: {
             reservations: {
                 instances: {
@@ -749,19 +827,19 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo',
+        expression: 'foo',
         expected: {
             foo: true
         }
     },
     {
-        value: 'foo[]',
+        expression: 'foo[]',
         expected: {
             foo: true
         }
     },
     {
-        value: 'foo[].bar',
+        expression: 'foo[].bar',
         expected: {
             foo: {
                 bar: true
@@ -769,7 +847,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[].bar[]',
+        expression: 'foo[].bar[]',
         expected: {
             foo: {
                 bar: true
@@ -777,7 +855,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,baz[0]]',
+        expression: 'foo.[bar,baz[0]]',
         expected: {
             foo: {
                 bar: true,
@@ -786,7 +864,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{bar:bar,baz:baz}',
+        expression: 'foo.{bar:bar,baz:baz}',
         expected: {
             foo: {
                 bar: true,
@@ -795,7 +873,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,qux]',
+        expression: 'foo.[bar,qux]',
         expected: {
             foo: {
                 bar: true,
@@ -804,7 +882,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,noexist]',
+        expression: 'foo.[bar,noexist]',
         expected: {
             foo: {
                 bar: true,
@@ -813,7 +891,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[noexist,alsonoexist]',
+        expression: 'foo.[noexist,alsonoexist]',
         expected: {
             foo: {
                 noexist: true,
@@ -822,19 +900,19 @@ export const done: Expression[] = [
         }
     },
     {
-        value: '{bar: bar}',
+        expression: '{bar: bar}',
         expected: {
             bar: true
         }
     },
     {
-        value: '{otherkey: bar}',
+        expression: '{otherkey: bar}',
         expected: {
             bar: true
         }
     },
     {
-        value: 'foo.[bar]',
+        expression: 'foo.[bar]',
         expected: {
             foo: {
                 bar: true
@@ -842,7 +920,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.[bar,baz]',
+        expression: 'foo.[bar,baz]',
         expected: {
             foo: {
                 bar: true,
@@ -851,7 +929,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.nested.three.{a: a, cinner: c.inner}',
+        expression: 'foo.nested.three.{a: a, cinner: c.inner}',
         expected: {
             foo: {
                 nested: {
@@ -866,7 +944,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.nested.three.{a: a, c: c.inner.bad.key}',
+        expression: 'foo.nested.three.{a: a, c: c.inner.bad.key}',
         expected: {
             foo: {
                 nested: {
@@ -885,7 +963,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{a: nested.one.a, b: nested.two.b}',
+        expression: 'foo.{a: nested.one.a, b: nested.two.b}',
         expected: {
             foo: {
                 nested: {
@@ -900,7 +978,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.badkey.{nokey: nokey, alsonokey: alsonokey}',
+        expression: 'foo.badkey.{nokey: nokey, alsonokey: alsonokey}',
         expected: {
             foo: {
                 badkey: {
@@ -911,7 +989,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{bar: bar,qux: qux}',
+        expression: 'foo.{bar: bar,qux: qux}',
         expected: {
             foo: {
                 bar: true,
@@ -920,7 +998,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{bar: bar, noexist: noexist}',
+        expression: 'foo.{bar: bar, noexist: noexist}',
         expected: {
             foo: {
                 bar: true,
@@ -929,7 +1007,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{noexist: noexist, alsonoexist: alsonoexist}',
+        expression: 'foo.{noexist: noexist, alsonoexist: alsonoexist}',
         expected: {
             foo: {
                 noexist: true,
@@ -938,7 +1016,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{bar: bar}',
+        expression: 'foo.{bar: bar}',
         expected: {
             foo: {
                 bar: true
@@ -946,7 +1024,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.{"bar": bar}',
+        expression: 'foo.{"bar": bar}',
         expected: {
             foo: {
                 bar: true
@@ -954,65 +1032,65 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo.baz | [0]',
+        expression: 'foo.baz | [0]',
         expected: { foo: { baz: true } }
     },
     {
-        value: 'not_there | [0]',
+        expression: 'not_there | [0]',
         expected: { not_there: true }
     },
     {
-        value: '[foo.bar, foo.other, third] | [0]',
+        expression: '[foo.bar, foo.other, third] | [0]',
         expected: { foo: { bar: true, other: true }, third: true }
     },
     {
-        value: '__L',
+        expression: '__L',
         expected: {
             __L: true
         }
     },
     {
-        value: '"!\\r"',
+        expression: '"!\\r"',
         expected: {
             '!\r': true
         }
     },
     {
-        value: 'Y_1623',
+        expression: 'Y_1623',
         expected: {
             Y_1623: true
         }
     },
     {
-        value: '"\\tF\\uCebb"',
+        expression: '"\\tF\\uCebb"',
         expected: {
             '\tF캻': true
         }
     },
     {
-        value: '" \\t"',
+        expression: '" \\t"',
         expected: {
             ' \t': true
         }
     },
     {
-        value: 'foo[?bar==`1`].bar[0]',
+        expression: 'foo[?bar==`1`].bar[0]',
         expected: {
             foo: {
                 bar: true
             }
         }
     },
-    { value: '"foo bar"', expected: { 'foo bar': true } },
+    { expression: '"foo bar"', expected: { 'foo bar': true } },
     {
-        value: '"c:\\\\\\\\windows\\\\path"',
+        expression: '"c:\\\\\\\\windows\\\\path"',
         expected: {
             'c:\\\\windows\\path': true
         }
     },
-    { value: '"\\"\\"\\""', expected: { '"""': true } },
+    { expression: '"\\"\\"\\""', expected: { '"""': true } },
     {
-        value: 'foo[?c == `3` || a == `1` && b == `4`]',
+        expression: 'foo[?c == `3` || a == `1` && b == `4`]',
         expected: {
             foo: {
                 c: true,
@@ -1022,7 +1100,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'foo[?a == `1` && b == `2`]',
+        expression: 'foo[?a == `1` && b == `2`]',
         expected: {
             foo: {
                 a: true,
@@ -1031,7 +1109,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: `foo[?name == 'a' || name == 'b']`,
+        expression: `foo[?name == 'a' || name == 'b']`,
         expected: {
             foo: {
                 name: true
@@ -1039,7 +1117,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'reservations[].instances[?bar==`1`]',
+        expression: 'reservations[].instances[?bar==`1`]',
         expected: {
             reservations: {
                 instances: {
@@ -1049,7 +1127,7 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'reservations[].instances[?bar==`1`]',
+        expression: 'reservations[].instances[?bar==`1`]',
         expected: {
             reservations: {
                 instances: {
@@ -1059,51 +1137,54 @@ export const done: Expression[] = [
         }
     },
     {
-        value: 'reservations[].instances',
+        expression: 'reservations[].instances',
         expected: {
             reservations: {
                 instances: true
             }
         }
     },
-    { value: 'foo[?key == `null`]', expected: { foo: { key: true } } },
-    { value: 'foo[?key == `{"bar": [0]}`]', expected: { foo: { key: true } } },
-    { value: 'foo[?age > `25`]', expected: { foo: { age: true } } },
+    { expression: 'foo[?key == `null`]', expected: { foo: { key: true } } },
     {
-        value: 'foo[?top.first == top.last]',
+        expression: 'foo[?key == `{"bar": [0]}`]',
+        expected: { foo: { key: true } }
+    },
+    { expression: 'foo[?age > `25`]', expected: { foo: { age: true } } },
+    {
+        expression: 'foo[?top.first == top.last]',
         expected: { foo: { top: { first: true, last: true } } }
     },
     {
-        value: 'foo[?top == `{"first": "foo", "last": "bar"}`]',
+        expression: 'foo[?top == `{"first": "foo", "last": "bar"}`]',
         expected: { foo: { top: true } }
     },
-    { value: 'foo[?key == `true`]', expected: { foo: { key: true } } },
-    { value: "foo[?name == 'a']", expected: { foo: { name: true } } },
+    { expression: 'foo[?key == `true`]', expected: { foo: { key: true } } },
+    { expression: "foo[?name == 'a']", expected: { foo: { name: true } } },
     {
-        value: "foo[?top.name == 'a']",
+        expression: "foo[?top.name == 'a']",
         expected: { foo: { top: { name: true } } }
     },
     {
-        value: 'foo[?first == last].first',
+        expression: 'foo[?first == last].first',
         expected: { foo: { first: true, last: true } }
     },
     {
-        value: 'foo[?first == last]',
+        expression: 'foo[?first == last]',
         expected: { foo: { first: true, last: true } }
     },
-    { value: "foo[?name == 'a']", expected: { foo: { name: true } } },
-    { value: 'True && False', expected: { True: true, False: true } },
+    { expression: "foo[?name == 'a']", expected: { foo: { name: true } } },
+    { expression: 'True && False', expected: { True: true, False: true } },
     {
-        value: 'two < one || three < one',
+        expression: 'two < one || three < one',
         expected: { two: true, one: true, three: true }
     },
-    { value: 'one < two', expected: { one: true, two: true } },
+    { expression: 'one < two', expected: { one: true, two: true } },
     {
-        value: 'outer.foo || outer.bar',
+        expression: 'outer.foo || outer.bar',
         expected: { outer: { foo: true, bar: true } }
     },
     {
-        value: 'foo\n.\nbar\n.baz',
+        expression: 'foo\n.\nbar\n.baz',
         expected: {
             foo: {
                 bar: {
@@ -1112,21 +1193,21 @@ export const done: Expression[] = [
             }
         }
     },
-    { value: 'a.b.c.d', expected: { a: { b: { c: { d: true } } } } },
+    { expression: 'a.b.c.d', expected: { a: { b: { c: { d: true } } } } },
     {
-        value: 'a.b.c.d.e.f.g.h',
+        expression: 'a.b.c.d.e.f.g.h',
         expected: { a: { b: { c: { d: { e: { f: { g: { h: true } } } } } } } }
     },
     {
-        value: 'foo[?a==`1`].b.c',
+        expression: 'foo[?a==`1`].b.c',
         expected: { foo: { b: { c: true }, a: true } }
     },
     {
-        value: 'reservations[].instances[?bar==`1`][]',
+        expression: 'reservations[].instances[?bar==`1`][]',
         expected: { reservations: { instances: { bar: true } } }
     },
     {
-        value: 'reservations[].instances[?bar==`1`]',
+        expression: 'reservations[].instances[?bar==`1`]',
         expected: { reservations: { instances: { bar: true } } }
     }
 ]

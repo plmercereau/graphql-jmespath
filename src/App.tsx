@@ -1,15 +1,13 @@
-import { Expression, ExpressionComponent } from './Expression'
+import { ExpressionComponent } from './Expression'
 import { tests } from './tests'
-
-const todo: Expression[] = []
 
 function App() {
     return (
         <div>
-            {tests.map(({ value, expected }, index) => (
+            {tests.map(({ expression, expected }, index) => (
                 <ExpressionComponent
                     key={index}
-                    value={value}
+                    expression={expression}
                     expected={expected}
                 />
             ))}
