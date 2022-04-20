@@ -1,6 +1,6 @@
 import { jmespathToGraphQL } from './intercepter'
 const expression =
-    "countries[].{name:name, statesCount: states[].name | length(@), languages:join(', ', languages[].code)} | sort_by(@, &statesCount) | reverse(@)"
+    "countries[].{name:name, statesCount: states[].name | length(@), languages:join(', ', languages[].code)} | sort_by(@, &statesCount) | reverse(@) | [:10]"
 
 import { request } from 'graphql-request'
 import { useState } from 'react'
