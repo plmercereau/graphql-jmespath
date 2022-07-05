@@ -1,4 +1,4 @@
-import { Expression } from '../src/Expression'
+import { Expression } from '../src/types'
 
 export const expressions: Expression[] = [
     {

@@ -1,7 +1,26 @@
-import { jsonToGraphQLQuery } from 'json-to-graphql-query'
-import { ASTNode, compile } from 'jmespath'
+import { ASTNode } from 'jmespath'
 import merge from 'deepmerge'
 import { setProperty, getProperty } from 'dot-prop'
+
+export const recursiveJmespathToObject = (
+    node: ASTNode,
+    path: string = '',
+    wildcard = false
+) => {
+    const operation = OPERATIONS[node.type]
+    if (!operation) throw new Error('Unknown node type: ' + node.type)
+    return operation(node, path, wildcard)
+}
+
+const joinPaths = (a: string | undefined, b: string | undefined) => {
+    if (a) {
+        if (b) return a + '.' + b
+        else return a
+    } else {
+        if (b) return b
+        else return ''
+    }
+}
 
 type OperationResult = {
     value: any
@@ -56,56 +75,6 @@ const MultiSelect: OperationFunction = (node, path, wc) => {
         wildcard = wildcard || res.wildcard
     }
     return { value, path, wildcard }
-}
-
-const recursiveJmespathToObject = (
-    node: ASTNode,
-    path: string = '',
-    wildcard = false
-) => {
-    const operation = OPERATIONS[node.type]
-    if (!operation) throw new Error('Unknown node type: ' + node.type)
-    return operation(node, path, wildcard)
-}
-
-export const astToObject = (node: ASTNode) => {
-    const result = recursiveJmespathToObject(node)
-    return { value: result.value, wildcard: result.wildcard }
-}
-
-export const objectToGraphQL = (
-    obj: any,
-    { pretty = true }: { pretty?: boolean } = { pretty: true }
-): string => {
-    const query = {
-        query: obj
-    }
-    // TODO throw error when obj cannot be used to build a GraphQL request:
-    // TODO - empty object {}
-    // TODO - not empty object but empty query after wildcard fields have been ignored
-    return jsonToGraphQLQuery(query, { pretty, ignoreFields: ['*'] })
-}
-
-export const jmespathToGraphQL = (
-    expression: string,
-    { pretty = true }: { pretty?: boolean } = { pretty: true }
-) => {
-    const ast = compile(expression)
-    const { value, wildcard } = astToObject(ast)
-    if (wildcard) {
-        console.log(`Expression "${expression}" contains wildcard(s) field(s)`)
-    }
-    return objectToGraphQL(value, { pretty })
-}
-
-const joinPaths = (a: string | undefined, b: string | undefined) => {
-    if (a) {
-        if (b) return a + '.' + b
-        else return a
-    } else {
-        if (b) return b
-        else return ''
-    }
 }
 
 const OPERATIONS: Record<string, OperationFunction> = {

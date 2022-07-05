@@ -1,9 +1,7 @@
-import { astToObject, objectToGraphQL } from './intercepter'
+import { astToObject, objectToGraphQL } from './lib'
 import { compile } from 'jmespath'
-export type Expression = {
-    expression: string
-    expected: any
-}
+import { Expression } from './types'
+
 export const ExpressionComponent: React.FC<Expression> = ({
     expression,
     expected

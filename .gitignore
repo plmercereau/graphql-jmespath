@@ -2,3 +2,9 @@
 .DS_Store
 node_modules
 dist
+.nhost
+web/node_modules
+node_modules
+functions/node_modules
+coverage
+reference

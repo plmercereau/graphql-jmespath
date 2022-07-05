@@ -1,4 +1,4 @@
-import { jmespathToGraphQL } from './intercepter'
+import { jmespathToGraphQL } from './lib'
 const expression =
     "countries[].{name:name, statesCount: states[].name | length(@), languages:join(', ', languages[].code)} | sort_by(@, &statesCount) | reverse(@) | [:10]"
 

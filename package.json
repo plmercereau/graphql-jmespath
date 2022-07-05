@@ -11,20 +11,20 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
-        "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
-    "peerDependencies": {},
     "name": "graphql-jmespath",
     "author": "Pierre-Louis Mercereau",
     "devDependencies": {
-        "@types/jest": "^27.4.1",
         "@types/react": "^17.0.33",
         "@types/react-dom": "^17.0.10",
         "@vitejs/plugin-react": "^1.0.7",
-        "jest": "^27.5.1",
-        "ts-jest": "^27.1.4",
+        "c8": "^7.11.3",
+        "jsdom": "^20.0.0",
         "typescript": "^4.5.4",
-        "vite": "^2.8.0"
+        "vite": "^2.8.0",
+        "vitest": "^0.17.0"
     },
     "dependencies": {
         "deepmerge": "^4.2.2",
