@@ -12,6 +12,7 @@ type Options = {
     stopAtPath?: StopAtPathOption
 }
 
+// TODO (big): compile jmespath syntax such as filter, sort, etc into Hasura "_where", "_orderby", "_limit", "_offset"...
 const filterObjectPaths = (
     obj: JsonObject | boolean,
     stopAtPath: StopAtPathOption,
@@ -53,6 +54,7 @@ const filterObjectPaths = (
 
 export const objectToGraphQL = (
     obj: JsonObject,
+    // TODO add information about the root query (a starting point for the path). For instance, query { user(id) { profile { name } } }
     { pretty = true, stopAtPath = [] }: Options = {}
 ): string => {
     const query = filterObjectPaths(obj, stopAtPath)
@@ -62,7 +64,7 @@ export const objectToGraphQL = (
     return jsonToGraphQLQuery({ query }, { pretty })
 }
 
-export const jmespathToObject = (expression: string, options: Options = {}) => {
+export const jmespathToObject = (expression: string) => {
     const ast = compile(expression)
     return astToObject(ast)
 }
@@ -71,7 +73,7 @@ export const jmespathToGraphQL = (
     expression: string,
     options: Options = {}
 ) => {
-    const obj = jmespathToObject(expression, options)
+    const obj = jmespathToObject(expression)
     return objectToGraphQL(obj, options)
 }
 

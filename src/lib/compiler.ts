@@ -5,19 +5,12 @@ import { setProperty, getProperty } from 'dot-prop'
 export const recursiveJmespathToObject = (
     node: ASTNode,
     path: string = '',
-    // ? do we really need to keep track of wildcards in the compiler, now that it is tracked in the post ast->object compilation phase?
+    // TODO do we really need to keep track of wildcards in the compiler, now that it is tracked in the post ast->object compilation phase?
     wildcard = false
 ) => OPERATIONS[node.type](node, path, wildcard)
 
-const joinPaths = (a: string | undefined, b: string | undefined) => {
-    if (a) {
-        if (b) return a + '.' + b
-        else return a
-    } else {
-        if (b) return b
-        else return ''
-    }
-}
+const joinPaths = (left?: string, right?: string) =>
+    left && right ? `${left}.${right}` : left || right || ''
 
 type OperationResult = {
     value: any
@@ -33,10 +26,10 @@ type OperationFunction = (
 function mergeProperty<ObjectType extends Record<string, any>>(
     object: ObjectType,
     path: string,
-    value: unknown
+    value: any
 ): ObjectType {
     const oldValue: any = getProperty(object, path)
-    const newValue = merge(oldValue, value as any)
+    const newValue = merge(oldValue, value)
     return setProperty(object, path, newValue)
 }
 
@@ -94,17 +87,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
             return result
         } else {
             return rightResult
-            // * Object.keys(leftResult.value).length is always 0
-            /* if (Object.keys(leftResult.value).length === 0) {
-                // * left type is 'Current' ('@')
-                return rightResult
-            } else {
-                return {
-                    value: leftResult.value,
-                    path,
-                    wildcard
-                }
-            } */
         }
     },
     OrExpression: (node, path, wc) => {
@@ -137,8 +119,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
                 firstResult.path,
                 merge(secondResult.value, thirdResult.value)
             )
-        } else {
-            // console.warn('something unhandled')
         }
         return {
             path: firstResult.path,
@@ -161,8 +141,6 @@ const OPERATIONS: Record<string, OperationFunction> = {
         // ! right.type !== 'Identity' is hacky, but it works so far in all the tests
         if (leftResult.path && right.type !== 'Identity') {
             mergeProperty(result.value, leftResult.path, rightResult.value)
-        } else {
-            // console.log('handle this case?', left.type, right.type)
         }
         return result
     },
@@ -253,7 +231,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
         }
     },
     Function: (node, path, wc) => {
-        // TODO check wildcard in children
+        // ? check wildcard in children
         let root = {}
         let rootPath = ''
         let children = {}
