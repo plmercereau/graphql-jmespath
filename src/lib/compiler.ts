@@ -6,11 +6,7 @@ export const recursiveJmespathToObject = (
     node: ASTNode,
     path: string = '',
     wildcard = false
-) => {
-    const operation = OPERATIONS[node.type]
-    if (!operation) throw new Error('Unknown node type: ' + node.type)
-    return operation(node, path, wildcard)
-}
+) => OPERATIONS[node.type](node, path, wildcard)
 
 const joinPaths = (a: string | undefined, b: string | undefined) => {
     if (a) {
@@ -96,7 +92,9 @@ const OPERATIONS: Record<string, OperationFunction> = {
             setProperty(result.value, leftResult.path, rightResult.value)
             return result
         } else {
-            if (Object.keys(leftResult.value).length === 0) {
+            return rightResult
+            // * Object.keys(leftResult.value).length is always 0
+            /* if (Object.keys(leftResult.value).length === 0) {
                 // * left type is 'Current' ('@')
                 return rightResult
             } else {
@@ -105,7 +103,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
                     path,
                     wildcard
                 }
-            }
+            } */
         }
     },
     OrExpression: (node, path, wc) => {

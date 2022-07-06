@@ -1,0 +1,1325 @@
+// Vitest Snapshot v1
+
+exports[`jmespath to GraphQL > should transform "@.bar" into a GraphQL query 1`] = `
+"query {
+    bar
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "@.foo[0]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "[foo.bar, foo.other, third] | [0]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        other
+    }
+    third
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "__L" into a GraphQL query 1`] = `
+"query {
+    __L
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{\\"a\\": foo.bar, \\"b\\": foo.baz} | [a.other, b.sub]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            other
+        }
+        baz {
+            sub
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | *.baz" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz
+        }
+        other {
+            baz
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | a" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | b" into a GraphQL query 1`] = `
+"query {
+    foo {
+        other
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{\\"x\\": foo, \\"y\\": bar} | [y.baz, x.boo]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        boo
+    }
+    bar {
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{\\"x\\": foo, \\"y\\": bar} | {\\"z\\": y.baz.boo}" into a GraphQL query 1`] = `
+"query {
+    bar {
+        baz {
+            boo
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{\\"x\\": foo, \\"y\\": bof} | [y.bar]" into a GraphQL query 1`] = `
+"query {
+    bof {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{bar: bar}" into a GraphQL query 1`] = `
+"query {
+    bar
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "{otherkey: bar}" into a GraphQL query 1`] = `
+"query {
+    bar
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "True && False" into a GraphQL query 1`] = `
+"query {
+    True
+    False
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "Y_1623" into a GraphQL query 1`] = `
+"query {
+    Y_1623
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "a.b.c.d" into a GraphQL query 1`] = `
+"query {
+    a {
+        b {
+            c {
+                d
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "a.b.c.d.e.f.g.h" into a GraphQL query 1`] = `
+"query {
+    a {
+        b {
+            c {
+                d {
+                    e {
+                        f {
+                            g {
+                                h
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "abs(\`-24\`)" into a GraphQL query 1`] = `"query"`;
+
+exports[`jmespath to GraphQL > should transform "abs(array[1])" into a GraphQL query 1`] = `
+"query {
+    array
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "abs(foo)" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "avg(numbers)" into a GraphQL query 1`] = `
+"query {
+    numbers
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "books.[author.[name,dob,themes], title]" into a GraphQL query 1`] = `
+"query {
+    books {
+        author {
+            name
+            dob
+            themes
+        }
+        title
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "ceil(\`1.2\`)" into a GraphQL query 1`] = `"query"`;
+
+exports[`jmespath to GraphQL > should transform "ceil(decimals[2])" into a GraphQL query 1`] = `
+"query {
+    decimals
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "contains('abc', 'd')" into a GraphQL query 1`] = `"query"`;
+
+exports[`jmespath to GraphQL > should transform "contains(strings, 'a')" into a GraphQL query 1`] = `
+"query {
+    strings
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo | bar | baz" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo | bar" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo | other || bar" into a GraphQL query 1`] = `
+"query {
+    foo {
+        other
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.* | [0]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.*.bar.baz" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.*.baz | [0]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.*.baz | [1]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.*.notbaz | [*]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,baz[0]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,baz[1]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,baz[2]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,baz[3]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,baz]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,baz]" into a GraphQL query 2`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,noexist]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        noexist
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar,qux]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        qux
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar[0],baz[3]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[bar]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[baz[*].[bar, boo], qux[0]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        baz {
+            bar
+            boo
+        }
+        qux
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[baz[*].bar, qux[0]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        baz {
+            bar
+        }
+        qux
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[baz[*].not_there || baz[*].bar, qux[0]]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        baz {
+            not_there
+            bar
+        }
+        qux
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[baz][]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[includeme, bar.baz[*].common]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        includeme
+        bar {
+            baz {
+                common
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[includeme, bar.baz[*].none]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        includeme
+        bar {
+            baz {
+                none
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[includeme, bar.baz[].common]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        includeme
+        bar {
+            baz {
+                common
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.[noexist,alsonoexist]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        noexist
+        alsonoexist
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{\\"bar.baz.two\\": bar.baz[1].two, includeme: includeme}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz {
+                two
+            }
+        }
+        includeme
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{\\"bar\\": bar, \\"baz\\": baz}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{\\"bar\\": bar}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{\\"foo.bar\\": bar}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{a: nested.one.a, b: nested.two.b}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        nested {
+            one {
+                a
+            }
+            two {
+                b
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{bar: bar, baz: baz}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{bar: bar, baz: baz}" into a GraphQL query 2`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{bar: bar, noexist: noexist}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        noexist
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{bar: bar,qux: qux}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        qux
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{bar: bar.baz[1],includeme: includeme}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz
+        }
+        includeme
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{bar: bar}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{bar:bar,baz:baz}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.{noexist: noexist, alsonoexist: alsonoexist}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        noexist
+        alsonoexist
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.badkey.{nokey: nokey, alsonokey: alsonokey}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        badkey {
+            nokey
+            alsonokey
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.bam || bar | baz" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bam {
+            baz
+        }
+    }
+    bar {
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.bar.* | [0]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.bar[].a" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            a
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.bar[-2]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.baz | [0]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        baz
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.nested.*.{a: a,b: b}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        nested
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.nested.three.{a: a, c: c.inner.bad.key}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        nested {
+            three {
+                a
+                c {
+                    inner {
+                        bad {
+                            key
+                        }
+                    }
+                }
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo.nested.three.{a: a, cinner: c.inner}" into a GraphQL query 1`] = `
+"query {
+    foo {
+        nested {
+            three {
+                a
+                c {
+                    inner
+                }
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[*].bar[*] | [0][0]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[*].bar[*].kind" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            kind
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[*].bar[0].kind" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            kind
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[:20]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?!(key||bar)]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        key
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?@ == @]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?\`5\` > @]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?a == \`1\` && b == \`2\`]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        a
+        b
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?a==\`1\`].b.c" into a GraphQL query 1`] = `
+"query {
+    foo {
+        b {
+            c
+        }
+        a
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?age > \`25\`]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        age
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?bar==\`1\`].bar[0]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?c == \`3\` || a == \`1\` && b == \`4\`]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        c
+        a
+        b
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?first == last]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        first
+        last
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?first == last].first" into a GraphQL query 1`] = `
+"query {
+    foo {
+        first
+        last
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?key == \`{\\"bar\\": [0]}\`]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        key
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?key == \`null\`]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        key
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?key == \`true\`]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        key
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?name == 'a' || name == 'b']" into a GraphQL query 1`] = `
+"query {
+    foo {
+        name
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?name == 'a']" into a GraphQL query 1`] = `
+"query {
+    foo {
+        name
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?name == 'a']" into a GraphQL query 2`] = `
+"query {
+    foo {
+        name
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?top == \`{\\"first\\": \\"foo\\", \\"last\\": \\"bar\\"}\`]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        top
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?top.first == top.last]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        top {
+            first
+            last
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[?top.name == 'a']" into a GraphQL query 1`] = `
+"query {
+    foo {
+        top {
+            name
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[]" into a GraphQL query 2`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[].[baz, qux]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        baz
+        qux
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[].bar" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[].bar[]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[].bar[].[baz, qux]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz
+            qux
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[].bar[].[baz, qux][]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz
+            qux
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[].bar[].[baz]" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[].not_null(f, e, d, c, b, a)" into a GraphQL query 1`] = `
+"query {
+    foo {
+        f
+        e
+        d
+        c
+        b
+        a
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo[0:20]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "foo\\n.\\nbar\\n.baz" into a GraphQL query 1`] = `
+"query {
+    foo {
+        bar {
+            baz
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "instances[].[tags[?Key=='Name'].Values[] | [0]]" into a GraphQL query 1`] = `
+"query {
+    instances {
+        tags {
+            Values
+            Key
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "join('|', decimals[].to_string(@))" into a GraphQL query 1`] = `
+"query {
+    decimals
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "length(@)" into a GraphQL query 1`] = `"query"`;
+
+exports[`jmespath to GraphQL > should transform "length(strings[0])" into a GraphQL query 1`] = `
+"query {
+    strings
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "locations[?state == 'WA'].name | sort(@)[-2:] | {WashingtonCities: join(', ', @)}" into a GraphQL query 1`] = `
+"query {
+    locations {
+        name
+        state
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "map(&[], array)" into a GraphQL query 1`] = `
+"query {
+    array
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "map(&a, people)" into a GraphQL query 1`] = `
+"query {
+    people {
+        a
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "map(&foo.bar, array)" into a GraphQL query 1`] = `
+"query {
+    array {
+        foo {
+            bar
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "map(&foo.bar.baz, array)" into a GraphQL query 1`] = `
+"query {
+    array {
+        foo {
+            bar {
+                baz
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "max_by(people, &to_number(age_str))" into a GraphQL query 1`] = `
+"query {
+    people {
+        age_str
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "merge(\`{\\"a\\": 1, \\"b\\": 2}\`, \`{\\"a\\": 2, \\"c\\": 3}\`, \`{\\"d\\": 4}\`)" into a GraphQL query 1`] = `"query"`;
+
+exports[`jmespath to GraphQL > should transform "merge(\`{\\"a\\": 1}\`, \`{\\"b\\": 2}\`)" into a GraphQL query 1`] = `"query"`;
+
+exports[`jmespath to GraphQL > should transform "not_null(unknown_key, foo.bar, empty_list, str)" into a GraphQL query 1`] = `
+"query {
+    unknown_key
+    foo {
+        bar
+    }
+    empty_list
+    str
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "not_null(unknown_key, str)" into a GraphQL query 1`] = `
+"query {
+    unknown_key
+    str
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "not_there | [0]" into a GraphQL query 1`] = `
+"query {
+    not_there
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "one < two" into a GraphQL query 1`] = `
+"query {
+    one
+    two
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "outer.foo || outer.bar" into a GraphQL query 1`] = `
+"query {
+    outer {
+        foo
+        bar
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people.*.first" into a GraphQL query 1`] = `
+"query {
+    people
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people[*].{name: name, tags: tags[0]}" into a GraphQL query 1`] = `
+"query {
+    people {
+        name
+        tags
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people[*].first" into a GraphQL query 1`] = `
+"query {
+    people {
+        first
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people[?age > \`20\`].[name, age]" into a GraphQL query 1`] = `
+"query {
+    people {
+        name
+        age
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people[?age > \`20\`].[name]" into a GraphQL query 1`] = `
+"query {
+    people {
+        name
+        age
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people[?age > \`20\`].{the_name: name, the_age: age}" into a GraphQL query 1`] = `
+"query {
+    people {
+        name
+        age
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people[?general.id==\`100\`] | [0].general" into a GraphQL query 1`] = `
+"query {
+    people {
+        general {
+            id
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "people[?general.id==\`100\`].general | [0]" into a GraphQL query 1`] = `
+"query {
+    people {
+        general {
+            id
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[*].instances[*].{id: id, name: name}" into a GraphQL query 1`] = `
+"query {
+    reservations {
+        instances {
+            id
+            name
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances" into a GraphQL query 1`] = `
+"query {
+    reservations {
+        instances
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances[?bar==\`1\`]" into a GraphQL query 1`] = `
+"query {
+    reservations {
+        instances {
+            bar
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances[?bar==\`1\`]" into a GraphQL query 2`] = `
+"query {
+    reservations {
+        instances {
+            bar
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances[?bar==\`1\`]" into a GraphQL query 3`] = `
+"query {
+    reservations {
+        instances {
+            bar
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances[?bar==\`1\`][]" into a GraphQL query 1`] = `
+"query {
+    reservations {
+        instances {
+            bar
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances[].[id, name]" into a GraphQL query 1`] = `
+"query {
+    reservations {
+        instances {
+            id
+            name
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]" into a GraphQL query 1`] = `
+"query {
+    reservations {
+        instances {
+            tags {
+                Values
+                Key
+            }
+            type
+            state {
+                name
+            }
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "reservations[].instances[].{id: id, name: name}" into a GraphQL query 1`] = `
+"query {
+    reservations {
+        instances {
+            id
+            name
+        }
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "sort(keys(objects))" into a GraphQL query 1`] = `
+"query {
+    objects
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "sort_by(\`[]\`, &age)" into a GraphQL query 1`] = `"query"`;
+
+exports[`jmespath to GraphQL > should transform "sort_by(Contents, &Date)[*].{Key: Key, Size: Size}" into a GraphQL query 1`] = `
+"query {
+    Contents {
+        Date
+        Key
+        Size
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "sort_by(people, &age)" into a GraphQL query 1`] = `
+"query {
+    people {
+        age
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "sort_by(people, &age)[].extra" into a GraphQL query 1`] = `
+"query {
+    people {
+        age
+        extra
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "sort_by(people, &age)[].name" into a GraphQL query 1`] = `
+"query {
+    people {
+        age
+        name
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "sort_by(people, &to_number(age_str))" into a GraphQL query 1`] = `
+"query {
+    people {
+        age_str
+    }
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "sum(array[].to_number(@))" into a GraphQL query 1`] = `
+"query {
+    array
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "two < one || three < one" into a GraphQL query 1`] = `
+"query {
+    two
+    one
+    three
+}"
+`;

@@ -1,0 +1,1426 @@
+// Vitest Snapshot v1
+
+exports[`jmespath to object > Should transform "*[?[0] == \`0\`]" into a JSON object 1`] = `
+{
+  "*": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "*[0]" into a JSON object 1`] = `
+{
+  "*": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "@" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "@.bar" into a JSON object 1`] = `
+{
+  "bar": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "@.foo[0]" into a JSON object 1`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "@.foo[0]" into a JSON object 2`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "[[*],*]" into a JSON object 1`] = `
+{
+  "*": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "[foo.bar, foo.other, third] | [0]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "other": true,
+  },
+  "third": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "\\" \\\\t\\"" into a JSON object 1`] = `
+{
+  " 	": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "\\"!\\\\r\\"" into a JSON object 1`] = `
+{
+  "!
+": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "\\"\\\\\\"\\\\\\"\\\\\\"\\"" into a JSON object 1`] = `
+{
+  "\\"\\"\\"": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "\\"\\\\tF\\\\uCebb\\"" into a JSON object 1`] = `
+{
+  "	F캻": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "\\"c:\\\\\\\\\\\\\\\\windows\\\\\\\\path\\"" into a JSON object 1`] = `
+{
+  "c:\\\\\\\\windows\\\\path": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "\\"foo bar\\"" into a JSON object 1`] = `
+{
+  "foo bar": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "__L" into a JSON object 1`] = `
+{
+  "__L": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"a\\": foo.bar, \\"b\\": foo.baz} | [a.other, b.sub]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "other": true,
+    },
+    "baz": {
+      "sub": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | *.baz" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": true,
+    },
+    "other": {
+      "baz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | a" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | b" into a JSON object 1`] = `
+{
+  "foo": {
+    "other": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"baz\\": baz, \\"qux\\\\\\"\\": \\"qux\\\\\\"\\"}" into a JSON object 1`] = `
+{
+  "baz": true,
+  "qux\\"": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"x\\": foo, \\"y\\": bar} | [y.baz, x.boo]" into a JSON object 1`] = `
+{
+  "bar": {
+    "baz": true,
+  },
+  "foo": {
+    "boo": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"x\\": foo, \\"y\\": bar} | {\\"z\\": y.baz.boo}" into a JSON object 1`] = `
+{
+  "bar": {
+    "baz": {
+      "boo": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "{\\"x\\": foo, \\"y\\": bof} | [y.bar]" into a JSON object 1`] = `
+{
+  "bof": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "{bar: bar}" into a JSON object 1`] = `
+{
+  "bar": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "{otherkey: bar}" into a JSON object 1`] = `
+{
+  "bar": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "True && False" into a JSON object 1`] = `
+{
+  "False": true,
+  "True": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "Y_1623" into a JSON object 1`] = `
+{
+  "Y_1623": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "a.b.c.d" into a JSON object 1`] = `
+{
+  "a": {
+    "b": {
+      "c": {
+        "d": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "a.b.c.d.e.f.g.h" into a JSON object 1`] = `
+{
+  "a": {
+    "b": {
+      "c": {
+        "d": {
+          "e": {
+            "f": {
+              "g": {
+                "h": true,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "abs(\`-24\`)" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "abs(array[1])" into a JSON object 1`] = `
+{
+  "array": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "abs(foo)" into a JSON object 1`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "avg(numbers)" into a JSON object 1`] = `
+{
+  "numbers": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "books.[author.[name,dob,themes], title]" into a JSON object 1`] = `
+{
+  "books": {
+    "author": {
+      "dob": true,
+      "name": true,
+      "themes": true,
+    },
+    "title": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "ceil(\`1.2\`)" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "ceil(decimals[2])" into a JSON object 1`] = `
+{
+  "decimals": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "contains('abc', 'd')" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "contains(strings, 'a')" into a JSON object 1`] = `
+{
+  "strings": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "foo | bar | baz" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo | bar" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo | other || bar" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "other": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo" into a JSON object 1`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.* | [0]" into a JSON object 1`] = `
+{
+  "foo": {
+    "*": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.*.bar.baz" into a JSON object 1`] = `
+{
+  "foo": {
+    "*": {
+      "bar": {
+        "baz": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.*.baz | [0]" into a JSON object 1`] = `
+{
+  "foo": {
+    "*": {
+      "baz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.*.baz | [1]" into a JSON object 1`] = `
+{
+  "foo": {
+    "*": {
+      "baz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.*.notbaz | [*]" into a JSON object 1`] = `
+{
+  "foo": {
+    "*": {
+      "notbaz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,baz[0]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,baz[1]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,baz[2]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,baz[3]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,baz]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,baz]" into a JSON object 2`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,noexist]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "noexist": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar,qux]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "qux": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar[0],baz[3]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[bar]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[baz[*].[bar, boo], qux[0]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "baz": {
+      "bar": true,
+      "boo": true,
+    },
+    "qux": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[baz[*].bar, qux[0]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "baz": {
+      "bar": true,
+    },
+    "qux": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[baz[*].not_there || baz[*].bar, qux[0]]" into a JSON object 1`] = `
+{
+  "foo": {
+    "baz": {
+      "bar": true,
+      "not_there": true,
+    },
+    "qux": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[baz][]" into a JSON object 1`] = `
+{
+  "foo": {
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[includeme, bar.baz[*].common]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": {
+        "common": true,
+      },
+    },
+    "includeme": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[includeme, bar.baz[*].none]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": {
+        "none": true,
+      },
+    },
+    "includeme": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[includeme, bar.baz[].common]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": {
+        "common": true,
+      },
+    },
+    "includeme": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.[noexist,alsonoexist]" into a JSON object 1`] = `
+{
+  "foo": {
+    "alsonoexist": true,
+    "noexist": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{\\"bar.baz.two\\": bar.baz[1].two, includeme: includeme}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": {
+        "two": true,
+      },
+    },
+    "includeme": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{\\"bar\\": bar, \\"baz\\": baz}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{\\"bar\\": bar}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{\\"foo.bar\\": bar}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{a: nested.one.a, b: nested.two.b}" into a JSON object 1`] = `
+{
+  "foo": {
+    "nested": {
+      "one": {
+        "a": true,
+      },
+      "two": {
+        "b": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{bar: bar, baz: baz}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{bar: bar, baz: baz}" into a JSON object 2`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{bar: bar, noexist: noexist}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "noexist": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{bar: bar,qux: qux}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "qux": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{bar: bar.baz[1],includeme: includeme}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": true,
+    },
+    "includeme": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{bar: bar}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{bar:bar,baz:baz}" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.{noexist: noexist, alsonoexist: alsonoexist}" into a JSON object 1`] = `
+{
+  "foo": {
+    "alsonoexist": true,
+    "noexist": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.badkey.{nokey: nokey, alsonokey: alsonokey}" into a JSON object 1`] = `
+{
+  "foo": {
+    "badkey": {
+      "alsonokey": true,
+      "nokey": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.bam || bar | baz" into a JSON object 1`] = `
+{
+  "bar": {
+    "baz": true,
+  },
+  "foo": {
+    "bam": {
+      "baz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.bar.* | [0]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "*": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.bar[].a" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "a": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.bar[-2]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.baz | [0]" into a JSON object 1`] = `
+{
+  "foo": {
+    "baz": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.nested.*.{a: a,b: b}" into a JSON object 1`] = `
+{
+  "foo": {
+    "nested": {
+      "*": {
+        "a": true,
+        "b": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.nested.three.{a: a, c: c.inner.bad.key}" into a JSON object 1`] = `
+{
+  "foo": {
+    "nested": {
+      "three": {
+        "a": true,
+        "c": {
+          "inner": {
+            "bad": {
+              "key": true,
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo.nested.three.{a: a, cinner: c.inner}" into a JSON object 1`] = `
+{
+  "foo": {
+    "nested": {
+      "three": {
+        "a": true,
+        "c": {
+          "inner": true,
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[*].bar[*] | [0][0]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[*].bar[*].kind" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "kind": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[*].bar[0].kind" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "kind": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[:20]" into a JSON object 1`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?!(key||bar)]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+    "key": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?@ == @]" into a JSON object 1`] = `
+{
+  "foo": {},
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?\`5\` > @]" into a JSON object 1`] = `
+{
+  "foo": {},
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?a == \`1\` && b == \`2\`]" into a JSON object 1`] = `
+{
+  "foo": {
+    "a": true,
+    "b": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?a==\`1\`].b.c" into a JSON object 1`] = `
+{
+  "foo": {
+    "a": true,
+    "b": {
+      "c": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?age > \`25\`]" into a JSON object 1`] = `
+{
+  "foo": {
+    "age": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?bar==\`1\`].bar[0]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?c == \`3\` || a == \`1\` && b == \`4\`]" into a JSON object 1`] = `
+{
+  "foo": {
+    "a": true,
+    "b": true,
+    "c": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?first == last]" into a JSON object 1`] = `
+{
+  "foo": {
+    "first": true,
+    "last": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?first == last].first" into a JSON object 1`] = `
+{
+  "foo": {
+    "first": true,
+    "last": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?key == \`{\\"bar\\": [0]}\`]" into a JSON object 1`] = `
+{
+  "foo": {
+    "key": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?key == \`null\`]" into a JSON object 1`] = `
+{
+  "foo": {
+    "key": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?key == \`true\`]" into a JSON object 1`] = `
+{
+  "foo": {
+    "key": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?name == 'a' || name == 'b']" into a JSON object 1`] = `
+{
+  "foo": {
+    "name": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?name == 'a']" into a JSON object 1`] = `
+{
+  "foo": {
+    "name": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?name == 'a']" into a JSON object 2`] = `
+{
+  "foo": {
+    "name": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?top == \`{\\"first\\": \\"foo\\", \\"last\\": \\"bar\\"}\`]" into a JSON object 1`] = `
+{
+  "foo": {
+    "top": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?top.first == top.last]" into a JSON object 1`] = `
+{
+  "foo": {
+    "top": {
+      "first": true,
+      "last": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[?top.name == 'a']" into a JSON object 1`] = `
+{
+  "foo": {
+    "top": {
+      "name": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[]" into a JSON object 1`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[]" into a JSON object 2`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[].[baz, qux]" into a JSON object 1`] = `
+{
+  "foo": {
+    "baz": true,
+    "qux": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[].bar" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[].bar[]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[].bar[].[baz, qux]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": true,
+      "qux": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[].bar[].[baz, qux][]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": true,
+      "qux": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[].bar[].[baz]" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[].not_null(f, e, d, c, b, a)" into a JSON object 1`] = `
+{
+  "foo": {
+    "a": true,
+    "b": true,
+    "c": true,
+    "d": true,
+    "e": true,
+    "f": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "foo[0:20]" into a JSON object 1`] = `
+{
+  "foo": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "foo\\n.\\nbar\\n.baz" into a JSON object 1`] = `
+{
+  "foo": {
+    "bar": {
+      "baz": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "instances[].[tags[?Key=='Name'].Values[] | [0]]" into a JSON object 1`] = `
+{
+  "instances": {
+    "tags": {
+      "Key": true,
+      "Values": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "join('|', decimals[].to_string(@))" into a JSON object 1`] = `
+{
+  "decimals": {},
+}
+`;
+
+exports[`jmespath to object > Should transform "length(@)" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "length(strings[0])" into a JSON object 1`] = `
+{
+  "strings": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "locations[?state == 'WA'].name | sort(@)[-2:] | {WashingtonCities: join(', ', @)}" into a JSON object 1`] = `
+{
+  "locations": {
+    "name": true,
+    "state": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "map(&[], array)" into a JSON object 1`] = `
+{
+  "array": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "map(&a, people)" into a JSON object 1`] = `
+{
+  "people": {
+    "a": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "map(&foo.bar, array)" into a JSON object 1`] = `
+{
+  "array": {
+    "foo": {
+      "bar": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "map(&foo.bar.baz, array)" into a JSON object 1`] = `
+{
+  "array": {
+    "foo": {
+      "bar": {
+        "baz": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "max_by(people, &to_number(age_str))" into a JSON object 1`] = `
+{
+  "people": {
+    "age_str": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "merge(\`{\\"a\\": 1, \\"b\\": 2}\`, \`{\\"a\\": 2, \\"c\\": 3}\`, \`{\\"d\\": 4}\`)" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "merge(\`{\\"a\\": 1}\`, \`{\\"b\\": 2}\`)" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "not_null(unknown_key, foo.bar, empty_list, str)" into a JSON object 1`] = `
+{
+  "empty_list": true,
+  "foo": {
+    "bar": true,
+  },
+  "str": true,
+  "unknown_key": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "not_null(unknown_key, str)" into a JSON object 1`] = `
+{
+  "str": true,
+  "unknown_key": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "not_there | [0]" into a JSON object 1`] = `
+{
+  "not_there": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "one < two" into a JSON object 1`] = `
+{
+  "one": true,
+  "two": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "outer.foo || outer.bar" into a JSON object 1`] = `
+{
+  "outer": {
+    "bar": true,
+    "foo": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people.*.first" into a JSON object 1`] = `
+{
+  "people": {
+    "*": {
+      "first": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people[*].{name: name, tags: tags[0]}" into a JSON object 1`] = `
+{
+  "people": {
+    "name": true,
+    "tags": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people[*].first" into a JSON object 1`] = `
+{
+  "people": {
+    "first": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people[?age > \`20\`].[name, age]" into a JSON object 1`] = `
+{
+  "people": {
+    "age": true,
+    "name": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people[?age > \`20\`].[name]" into a JSON object 1`] = `
+{
+  "people": {
+    "age": true,
+    "name": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people[?age > \`20\`].{the_name: name, the_age: age}" into a JSON object 1`] = `
+{
+  "people": {
+    "age": true,
+    "name": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people[?general.id==\`100\`] | [0].general" into a JSON object 1`] = `
+{
+  "people": {
+    "general": {
+      "id": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "people[?general.id==\`100\`].general | [0]" into a JSON object 1`] = `
+{
+  "people": {
+    "general": {
+      "id": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[*].instances[*].{id: id, name: name}" into a JSON object 1`] = `
+{
+  "reservations": {
+    "instances": {
+      "id": true,
+      "name": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances" into a JSON object 1`] = `
+{
+  "reservations": {
+    "instances": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances[?bar==\`1\`]" into a JSON object 1`] = `
+{
+  "reservations": {
+    "instances": {
+      "bar": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances[?bar==\`1\`]" into a JSON object 2`] = `
+{
+  "reservations": {
+    "instances": {
+      "bar": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances[?bar==\`1\`]" into a JSON object 3`] = `
+{
+  "reservations": {
+    "instances": {
+      "bar": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances[?bar==\`1\`][]" into a JSON object 1`] = `
+{
+  "reservations": {
+    "instances": {
+      "bar": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances[].[id, name]" into a JSON object 1`] = `
+{
+  "reservations": {
+    "instances": {
+      "id": true,
+      "name": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]" into a JSON object 1`] = `
+{
+  "reservations": {
+    "instances": {
+      "state": {
+        "name": true,
+      },
+      "tags": {
+        "Key": true,
+        "Values": true,
+      },
+      "type": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "reservations[].instances[].{id: id, name: name}" into a JSON object 1`] = `
+{
+  "reservations": {
+    "instances": {
+      "id": true,
+      "name": true,
+    },
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "sort(keys(objects))" into a JSON object 1`] = `
+{
+  "objects": true,
+}
+`;
+
+exports[`jmespath to object > Should transform "sort_by(\`[]\`, &age)" into a JSON object 1`] = `{}`;
+
+exports[`jmespath to object > Should transform "sort_by(Contents, &Date)[*].{Key: Key, Size: Size}" into a JSON object 1`] = `
+{
+  "Contents": {
+    "Date": true,
+    "Key": true,
+    "Size": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "sort_by(people, &age)" into a JSON object 1`] = `
+{
+  "people": {
+    "age": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "sort_by(people, &age)[].extra" into a JSON object 1`] = `
+{
+  "people": {
+    "age": true,
+    "extra": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "sort_by(people, &age)[].name" into a JSON object 1`] = `
+{
+  "people": {
+    "age": true,
+    "name": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "sort_by(people, &to_number(age_str))" into a JSON object 1`] = `
+{
+  "people": {
+    "age_str": true,
+  },
+}
+`;
+
+exports[`jmespath to object > Should transform "sum(array[].to_number(@))" into a JSON object 1`] = `
+{
+  "array": {},
+}
+`;
+
+exports[`jmespath to object > Should transform "two < one || three < one" into a JSON object 1`] = `
+{
+  "one": true,
+  "three": true,
+  "two": true,
+}
+`;

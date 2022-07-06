@@ -1,0 +1,63 @@
+// Vitest Snapshot v1
+
+exports[`stop recursing at given paths > should return the full query when no stopAtPath option is given 1`] = `
+"query {
+    countries {
+        name
+        states {
+            name
+        }
+        languages {
+            code
+        }
+    }
+}"
+`;
+
+exports[`stop recursing at given paths > should return the full query when the path to stop at does not exists 1`] = `
+"query {
+    countries {
+        name
+        states {
+            name
+        }
+        languages {
+            code
+        }
+    }
+}"
+`;
+
+exports[`stop recursing at given paths > should stop recursing a single nested path 1`] = `
+"query {
+    countries {
+        name
+        states
+        languages {
+            code
+        }
+    }
+}"
+`;
+
+exports[`stop recursing at given paths > should stop recursing an array of paths 1`] = `
+"query {
+    countries {
+        name
+        states
+        languages
+    }
+}"
+`;
+
+exports[`stop recursing at given paths > should stop recursing given a stop function 1`] = `
+"query {
+    countries {
+        name
+        states
+        languages {
+            code
+        }
+    }
+}"
+`;

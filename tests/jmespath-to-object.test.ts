@@ -4,11 +4,13 @@ import { astToObject } from '../src/lib'
 import { expressions } from './expressions'
 
 describe('jmespath to object', () => {
-    expressions.forEach(({ expression, expected }) => {
-        it(JSON.stringify(expression), () => {
+    expressions.forEach((expression) => {
+        it(`Should transform ${JSON.stringify(
+            expression
+        )} into a JSON object`, () => {
             const ast = compile(expression)
             const { value } = astToObject(ast)
-            expect(value).toEqual(expected)
+            expect(value).toMatchSnapshot()
         })
     })
 })
