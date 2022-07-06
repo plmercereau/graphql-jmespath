@@ -1,8 +1,9 @@
 import { ASTNode, compile } from 'jmespath'
 import { jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { recursiveJmespathToObject } from './compiler'
-import { JsonObject } from './types'
 import { assertName } from 'graphql/type'
+
+type JsonObject = { [key: string]: JsonObject | boolean }
 
 type StopAtPathOption = ((path: string) => boolean) | string | string[]
 
