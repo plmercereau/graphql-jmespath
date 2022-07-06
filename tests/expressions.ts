@@ -7,7 +7,6 @@ export const validExpressions = [
     'foo[?@ == @]',
     '@.bar',
     '@.foo[0]',
-    'length(@)',
     "join('|', decimals[].to_string(@))",
     'sum(array[].to_number(@))',
     "locations[?state == 'WA'].name | sort(@)[-2:] | {WashingtonCities: join(', ', @)}",
@@ -21,20 +20,14 @@ export const validExpressions = [
     'map(&foo.bar.baz, array)',
     'map(&[], array)',
     'sort_by(people, &age)[].extra',
-    'sort_by(`[]`, &age)',
     'not_null(unknown_key, str)',
     'not_null(unknown_key, foo.bar, empty_list, str)',
     'sort_by(people, &age)[].name',
     'sort(keys(objects))',
-    "contains('abc', 'd')",
     "contains(strings, 'a')",
     'length(strings[0])',
-    'merge(`{"a": 1}`, `{"b": 2}`)',
-    'merge(`{"a": 1, "b": 2}`, `{"a": 2, "c": 3}`, `{"d": 4}`)',
     'avg(numbers)',
-    'ceil(`1.2`)',
     'ceil(decimals[2])',
-    'abs(`-24`)',
     'abs(array[1])',
     'abs(foo)',
     'sort_by(Contents, &Date)[*].{Key: Key, Size: Size}',
@@ -150,13 +143,25 @@ export const validExpressions = [
     'a.b.c.d.e.f.g.h',
     'foo[?a==`1`].b.c',
     'reservations[].instances[?bar==`1`][]',
-    'reservations[].instances[?bar==`1`]'
+    'reservations[].instances[?bar==`1`]',
+    '@.foo[0]'
 ]
 
+/**
+ * JMESPath expressions that are invalid to generate a GraphQL query:
+ * - Expressions that results in an empty JSON object
+ * - Expressions with invalid GraphQL field names
+ */
 export const invalidExpressions = [
+    'merge(`{"a": 1}`, `{"b": 2}`)',
+    'merge(`{"a": 1, "b": 2}`, `{"a": 2, "c": 3}`, `{"d": 4}`)',
+    "contains('abc', 'd')",
+    'sort_by(`[]`, &age)',
+    'length(@)',
+    'ceil(`1.2`)',
+    'abs(`-24`)',
     '*[0]',
     '@',
-    '@.foo[0]',
     '*[?[0] == `0`]',
     '[[*],*]',
     '{"baz": baz, "qux\\"": "qux\\""}',

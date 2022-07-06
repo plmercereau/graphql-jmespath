@@ -9,8 +9,8 @@ describe('jmespath to object', () => {
             expression
         )} into a JSON object`, () => {
             const ast = compile(expression)
-            const { value } = astToObject(ast)
-            expect(value).toMatchSnapshot()
+            const obj = astToObject(ast)
+            expect(obj).toMatchSnapshot()
         })
     })
 })

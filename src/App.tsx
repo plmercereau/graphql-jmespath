@@ -6,9 +6,7 @@ import { request } from 'graphql-request'
 import { useState } from 'react'
 import { search } from 'jmespath'
 
-const query = jmespathToGraphQL(expression, {
-    stopAtPath: ['countries.states']
-})
+const query = jmespathToGraphQL(expression)
 const API = 'https://countries.trevorblades.com/'
 function App() {
     const [result, setResult] = useState()

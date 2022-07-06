@@ -5,6 +5,7 @@ import { setProperty, getProperty } from 'dot-prop'
 export const recursiveJmespathToObject = (
     node: ASTNode,
     path: string = '',
+    // ? do we really need to keep track of wildcards in the compiler, now that it is tracked in the post ast->object compilation phase?
     wildcard = false
 ) => OPERATIONS[node.type](node, path, wildcard)
 

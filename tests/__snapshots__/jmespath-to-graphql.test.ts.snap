@@ -1,5 +1,44 @@
 // Vitest Snapshot v1
 
+exports[`jmespath to GraphQL > should fail transforming "*[?[0] == \`0\`]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "*[0]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "@" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "[[*],*]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "\\" \\\\t\\"" into a GraphQL query 1`] = `"Names must only contain [_a-zA-Z0-9] but \\" 	\\" does not."`;
+
+exports[`jmespath to GraphQL > should fail transforming "\\"!\\\\r\\"" into a GraphQL query 1`] = `
+"Names must only contain [_a-zA-Z0-9] but \\"!
+\\" does not."
+`;
+
+exports[`jmespath to GraphQL > should fail transforming "\\"\\\\\\"\\\\\\"\\\\\\"\\"" into a GraphQL query 1`] = `"Names must only contain [_a-zA-Z0-9] but \\"\\"\\"\\"\\" does not."`;
+
+exports[`jmespath to GraphQL > should fail transforming "\\"\\\\tF\\\\uCebb\\"" into a GraphQL query 1`] = `"Names must only contain [_a-zA-Z0-9] but \\"	F캻\\" does not."`;
+
+exports[`jmespath to GraphQL > should fail transforming "\\"c:\\\\\\\\\\\\\\\\windows\\\\\\\\path\\"" into a GraphQL query 1`] = `"Names must only contain [_a-zA-Z0-9] but \\"c:\\\\\\\\windows\\\\path\\" does not."`;
+
+exports[`jmespath to GraphQL > should fail transforming "\\"foo bar\\"" into a GraphQL query 1`] = `"Names must only contain [_a-zA-Z0-9] but \\"foo bar\\" does not."`;
+
+exports[`jmespath to GraphQL > should fail transforming "{\\"baz\\": baz, \\"qux\\\\\\"\\": \\"qux\\\\\\"\\"}" into a GraphQL query 1`] = `"Names must only contain [_a-zA-Z0-9] but \\"qux\\"\\" does not."`;
+
+exports[`jmespath to GraphQL > should fail transforming "abs(\`-24\`)" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "ceil(\`1.2\`)" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "contains('abc', 'd')" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "length(@)" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "merge(\`{\\"a\\": 1, \\"b\\": 2}\`, \`{\\"a\\": 2, \\"c\\": 3}\`, \`{\\"d\\": 4}\`)" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "merge(\`{\\"a\\": 1}\`, \`{\\"b\\": 2}\`)" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "sort_by(\`[]\`, &age)" into a GraphQL query 1`] = `"Empty query"`;
+
 exports[`jmespath to GraphQL > should transform "@.bar" into a GraphQL query 1`] = `
 "query {
     bar
@@ -7,6 +46,12 @@ exports[`jmespath to GraphQL > should transform "@.bar" into a GraphQL query 1`]
 `;
 
 exports[`jmespath to GraphQL > should transform "@.foo[0]" into a GraphQL query 1`] = `
+"query {
+    foo
+}"
+`;
+
+exports[`jmespath to GraphQL > should transform "@.foo[0]" into a GraphQL query 2`] = `
 "query {
     foo
 }"
@@ -156,8 +201,6 @@ exports[`jmespath to GraphQL > should transform "a.b.c.d.e.f.g.h" into a GraphQL
 }"
 `;
 
-exports[`jmespath to GraphQL > should transform "abs(\`-24\`)" into a GraphQL query 1`] = `"query"`;
-
 exports[`jmespath to GraphQL > should transform "abs(array[1])" into a GraphQL query 1`] = `
 "query {
     array
@@ -189,15 +232,11 @@ exports[`jmespath to GraphQL > should transform "books.[author.[name,dob,themes]
 }"
 `;
 
-exports[`jmespath to GraphQL > should transform "ceil(\`1.2\`)" into a GraphQL query 1`] = `"query"`;
-
 exports[`jmespath to GraphQL > should transform "ceil(decimals[2])" into a GraphQL query 1`] = `
 "query {
     decimals
 }"
 `;
-
-exports[`jmespath to GraphQL > should transform "contains('abc', 'd')" into a GraphQL query 1`] = `"query"`;
 
 exports[`jmespath to GraphQL > should transform "contains(strings, 'a')" into a GraphQL query 1`] = `
 "query {
@@ -985,8 +1024,6 @@ exports[`jmespath to GraphQL > should transform "join('|', decimals[].to_string(
 }"
 `;
 
-exports[`jmespath to GraphQL > should transform "length(@)" into a GraphQL query 1`] = `"query"`;
-
 exports[`jmespath to GraphQL > should transform "length(strings[0])" into a GraphQL query 1`] = `
 "query {
     strings
@@ -1045,10 +1082,6 @@ exports[`jmespath to GraphQL > should transform "max_by(people, &to_number(age_s
     }
 }"
 `;
-
-exports[`jmespath to GraphQL > should transform "merge(\`{\\"a\\": 1, \\"b\\": 2}\`, \`{\\"a\\": 2, \\"c\\": 3}\`, \`{\\"d\\": 4}\`)" into a GraphQL query 1`] = `"query"`;
-
-exports[`jmespath to GraphQL > should transform "merge(\`{\\"a\\": 1}\`, \`{\\"b\\": 2}\`)" into a GraphQL query 1`] = `"query"`;
 
 exports[`jmespath to GraphQL > should transform "not_null(unknown_key, foo.bar, empty_list, str)" into a GraphQL query 1`] = `
 "query {
@@ -1263,8 +1296,6 @@ exports[`jmespath to GraphQL > should transform "sort(keys(objects))" into a Gra
     objects
 }"
 `;
-
-exports[`jmespath to GraphQL > should transform "sort_by(\`[]\`, &age)" into a GraphQL query 1`] = `"query"`;
 
 exports[`jmespath to GraphQL > should transform "sort_by(Contents, &Date)[*].{Key: Key, Size: Size}" into a GraphQL query 1`] = `
 "query {
