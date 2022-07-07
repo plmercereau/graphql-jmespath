@@ -66,7 +66,6 @@ const filterObjectPaths = (
 
 export const objectToGraphQL = (
     obj: JsonObject,
-    // TODO add information about the root query (a starting point for the path). For instance, query { user(id) { profile { name } } }
     { pretty = false, stopAtPath = [], rootQuery, rootArgs }: Options = {}
 ): string => {
     const filteredObject = filterObjectPaths(obj, stopAtPath)
