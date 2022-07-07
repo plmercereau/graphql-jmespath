@@ -5,6 +5,7 @@ const expression =
 import { request } from 'graphql-request'
 import { useState } from 'react'
 import { search } from 'jmespath'
+import { getIntrospectionSchema } from './lib/graphql'
 
 const query = jmespathToGraphQL(expression)
 const API = 'https://countries.trevorblades.com/'
@@ -22,6 +23,13 @@ function App() {
                 }}
             >
                 Fetch
+            </button>
+            <button
+                onClick={() => {
+                    getIntrospectionSchema(API)
+                }}
+            >
+                Get schema
             </button>
             {result && <pre>{JSON.stringify(result, null, 2)}</pre>}
         </div>

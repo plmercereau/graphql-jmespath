@@ -1,15 +1,27 @@
 import { ASTNode, compile } from 'jmespath'
 import { jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { recursiveJmespathToObject } from './compiler'
-import { assertName } from 'graphql/type'
+import { assertName, GraphQLSchema } from 'graphql/type'
 
 type JsonObject = { [key: string]: JsonObject | boolean }
 
 type StopAtPathOption = ((path: string) => boolean) | string | string[]
 
+type ArgumentValue = boolean | string | number | null | undefined
+
+type GraphQLArguments = {
+    [key: string]: GraphQLArguments | ArgumentValue | ArgumentValue[]
+}
+
+// TODO implement
+type SchemaOption = GraphQLSchema | { url: string } | { path: string }
+
 type Options = {
     pretty?: boolean
     stopAtPath?: StopAtPathOption
+    schema?: SchemaOption
+    rootQuery?: string
+    rootArgs?: GraphQLArguments
 }
 
 // TODO (big): compile jmespath syntax such as filter, sort, etc into Hasura "_where", "_orderby", "_limit", "_offset"...
@@ -55,12 +67,21 @@ const filterObjectPaths = (
 export const objectToGraphQL = (
     obj: JsonObject,
     // TODO add information about the root query (a starting point for the path). For instance, query { user(id) { profile { name } } }
-    { pretty = true, stopAtPath = [] }: Options = {}
+    { pretty = false, stopAtPath = [], rootQuery, rootArgs }: Options = {}
 ): string => {
-    const query = filterObjectPaths(obj, stopAtPath)
-    if (Object.keys(query).length === 0) {
+    const filteredObject = filterObjectPaths(obj, stopAtPath)
+    if (
+        typeof filteredObject === 'boolean' ||
+        !Object.keys(filteredObject).length
+    ) {
         throw Error('Empty query')
     }
+
+    const query = rootQuery
+        ? {
+              [rootQuery]: { __args: rootArgs, ...filteredObject }
+          }
+        : filteredObject
     return jsonToGraphQLQuery({ query }, { pretty })
 }
 

@@ -21,4 +21,21 @@ describe('jmespath to GraphQL', () => {
             expect(query).toMatchSnapshot()
         })
     })
+
+    describe('jmespath to GraphQL using custom root query', () => {
+        it('should work from a custom root query', () => {
+            const query = jmespathToGraphQL('[roles.[id, name], displayName]', {
+                rootQuery: 'users'
+            })
+            expect(query).toMatchSnapshot()
+        })
+
+        it('should work from a custom root query with arguments', () => {
+            const query = jmespathToGraphQL('[roles.[id, name], displayName]', {
+                rootQuery: 'users',
+                rootArgs: { where: { id: { _eq: '123' } } }
+            })
+            expect(query).toMatchSnapshot()
+        })
+    })
 })
