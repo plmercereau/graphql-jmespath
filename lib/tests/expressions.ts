@@ -3,12 +3,8 @@ export const validExpressions = [
     'people[?general.id==`100`] | [0].general',
     'foo[*].bar[*].kind',
     'foo[*].bar[0].kind',
-    'foo[?`5` > @]',
-    'foo[?@ == @]',
     '@.bar',
     '@.foo[0]',
-    "join('|', decimals[].to_string(@))",
-    'sum(array[].to_number(@))',
     "locations[?state == 'WA'].name | sort(@)[-2:] | {WashingtonCities: join(', ', @)}",
     'foo[?!(key||bar)]',
     'sort_by(people, &age)',
@@ -32,7 +28,6 @@ export const validExpressions = [
     'abs(foo)',
     'sort_by(Contents, &Date)[*].{Key: Key, Size: Size}',
     'foo[*].bar[*] | [0][0]',
-    'foo.*.notbaz | [*]',
     'foo.[baz[*].not_there || baz[*].bar, qux[0]]',
     'foo.[baz[*].bar, qux[0]]',
     'foo.[baz[*].[bar, boo], qux[0]]',
@@ -46,7 +41,6 @@ export const validExpressions = [
     'people[?age > `20`].[name]',
     'books.[author.[name,dob,themes], title]',
     'people[*].first',
-    'people.*.first',
     '{"x": foo, "y": bar} | [y.baz, x.boo]',
     '{"x": foo, "y": bar} | {"z": y.baz.boo}',
     '{"a": foo.bar, "b": foo.other} | *.baz',
@@ -59,15 +53,9 @@ export const validExpressions = [
     "instances[].[tags[?Key=='Name'].Values[] | [0]]",
     'foo | bar | baz',
     "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]",
-    'foo.* | [0]',
-    'foo.bar.* | [0]',
-    'foo.*.baz | [1]',
-    'foo.*.baz | [0]',
     'foo.bar[-2]',
     'foo[:20]',
     'foo[0:20]',
-    'foo.nested.*.{a: a,b: b}',
-    'foo.*.bar.baz',
     'foo.{"foo.bar": bar}',
     'foo.{bar: bar, baz: baz}',
     'foo.{"bar": bar, "baz": baz}',
@@ -147,12 +135,29 @@ export const validExpressions = [
     '@.foo[0]'
 ]
 
+// TODO empty objects, but should they be allowed and replaced by `true` instead?
+const notSureIfInvalid = [
+    "join('|', decimals[].to_string(@))",
+    'foo[?@ == @]',
+    'foo[?`5` > @]',
+    'sum(array[].to_number(@))'
+]
 /**
  * JMESPath expressions that are invalid to generate a GraphQL query:
  * - Expressions that results in an empty JSON object
  * - Expressions with invalid GraphQL field names
+ * - Or both
  */
 export const invalidExpressions = [
+    ...notSureIfInvalid,
+    'foo.*.bar.baz',
+    'foo.nested.*.{a: a,b: b}',
+    'foo.*.baz | [1]',
+    'foo.*.baz | [0]',
+    'foo.bar.* | [0]',
+    'foo.* | [0]',
+    'people.*.first',
+    'foo.*.notbaz | [*]',
     'merge(`{"a": 1}`, `{"b": 2}`)',
     'merge(`{"a": 1, "b": 2}`, `{"a": 2, "c": 3}`, `{"d": 4}`)',
     "contains('abc', 'd')",

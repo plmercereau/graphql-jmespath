@@ -35,13 +35,37 @@ exports[`jmespath to GraphQL > should fail transforming "ceil(\`1.2\`)" into a G
 
 exports[`jmespath to GraphQL > should fail transforming "contains('abc', 'd')" into a GraphQL query 1`] = `"Empty query"`;
 
+exports[`jmespath to GraphQL > should fail transforming "foo.* | [0]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo.*.bar.baz" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo.*.baz | [0]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo.*.baz | [1]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo.*.notbaz | [*]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo.bar.* | [0]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo.nested.*.{a: a,b: b}" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo[?@ == @]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "foo[?\`5\` > @]" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "join('|', decimals[].to_string(@))" into a GraphQL query 1`] = `"Empty query"`;
+
 exports[`jmespath to GraphQL > should fail transforming "length(@)" into a GraphQL query 1`] = `"Empty query"`;
 
 exports[`jmespath to GraphQL > should fail transforming "merge(\`{\\"a\\": 1, \\"b\\": 2}\`, \`{\\"a\\": 2, \\"c\\": 3}\`, \`{\\"d\\": 4}\`)" into a GraphQL query 1`] = `"Empty query"`;
 
 exports[`jmespath to GraphQL > should fail transforming "merge(\`{\\"a\\": 1}\`, \`{\\"b\\": 2}\`)" into a GraphQL query 1`] = `"Empty query"`;
 
+exports[`jmespath to GraphQL > should fail transforming "people.*.first" into a GraphQL query 1`] = `"Empty query"`;
+
 exports[`jmespath to GraphQL > should fail transforming "sort_by(\`[]\`, &age)" into a GraphQL query 1`] = `"Empty query"`;
+
+exports[`jmespath to GraphQL > should fail transforming "sum(array[].to_number(@))" into a GraphQL query 1`] = `"Empty query"`;
 
 exports[`jmespath to GraphQL > should transform "@.bar" into a GraphQL query 1`] = `"query { bar }"`;
 
@@ -98,16 +122,6 @@ exports[`jmespath to GraphQL > should transform "foo | bar" into a GraphQL query
 exports[`jmespath to GraphQL > should transform "foo | other || bar" into a GraphQL query 1`] = `"query { foo { other bar } }"`;
 
 exports[`jmespath to GraphQL > should transform "foo" into a GraphQL query 1`] = `"query { foo }"`;
-
-exports[`jmespath to GraphQL > should transform "foo.* | [0]" into a GraphQL query 1`] = `"query { foo }"`;
-
-exports[`jmespath to GraphQL > should transform "foo.*.bar.baz" into a GraphQL query 1`] = `"query { foo }"`;
-
-exports[`jmespath to GraphQL > should transform "foo.*.baz | [0]" into a GraphQL query 1`] = `"query { foo }"`;
-
-exports[`jmespath to GraphQL > should transform "foo.*.baz | [1]" into a GraphQL query 1`] = `"query { foo }"`;
-
-exports[`jmespath to GraphQL > should transform "foo.*.notbaz | [*]" into a GraphQL query 1`] = `"query { foo }"`;
 
 exports[`jmespath to GraphQL > should transform "foo.[bar,baz[0]]" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
 
@@ -175,15 +189,11 @@ exports[`jmespath to GraphQL > should transform "foo.badkey.{nokey: nokey, alson
 
 exports[`jmespath to GraphQL > should transform "foo.bam || bar | baz" into a GraphQL query 1`] = `"query { foo { bam { baz } } bar { baz } }"`;
 
-exports[`jmespath to GraphQL > should transform "foo.bar.* | [0]" into a GraphQL query 1`] = `"query { foo { bar } }"`;
-
 exports[`jmespath to GraphQL > should transform "foo.bar[].a" into a GraphQL query 1`] = `"query { foo { bar { a } } }"`;
 
 exports[`jmespath to GraphQL > should transform "foo.bar[-2]" into a GraphQL query 1`] = `"query { foo { bar } }"`;
 
 exports[`jmespath to GraphQL > should transform "foo.baz | [0]" into a GraphQL query 1`] = `"query { foo { baz } }"`;
-
-exports[`jmespath to GraphQL > should transform "foo.nested.*.{a: a,b: b}" into a GraphQL query 1`] = `"query { foo { nested } }"`;
 
 exports[`jmespath to GraphQL > should transform "foo.nested.three.{a: a, c: c.inner.bad.key}" into a GraphQL query 1`] = `"query { foo { nested { three { a c { inner { bad { key } } } } } } }"`;
 
@@ -198,10 +208,6 @@ exports[`jmespath to GraphQL > should transform "foo[*].bar[0].kind" into a Grap
 exports[`jmespath to GraphQL > should transform "foo[:20]" into a GraphQL query 1`] = `"query { foo }"`;
 
 exports[`jmespath to GraphQL > should transform "foo[?!(key||bar)]" into a GraphQL query 1`] = `"query { foo { key bar } }"`;
-
-exports[`jmespath to GraphQL > should transform "foo[?@ == @]" into a GraphQL query 1`] = `"query { foo }"`;
-
-exports[`jmespath to GraphQL > should transform "foo[?\`5\` > @]" into a GraphQL query 1`] = `"query { foo }"`;
 
 exports[`jmespath to GraphQL > should transform "foo[?a == \`1\` && b == \`2\`]" into a GraphQL query 1`] = `"query { foo { a b } }"`;
 
@@ -259,8 +265,6 @@ exports[`jmespath to GraphQL > should transform "foo\\n.\\nbar\\n.baz" into a Gr
 
 exports[`jmespath to GraphQL > should transform "instances[].[tags[?Key=='Name'].Values[] | [0]]" into a GraphQL query 1`] = `"query { instances { tags { Values Key } } }"`;
 
-exports[`jmespath to GraphQL > should transform "join('|', decimals[].to_string(@))" into a GraphQL query 1`] = `"query { decimals }"`;
-
 exports[`jmespath to GraphQL > should transform "length(strings[0])" into a GraphQL query 1`] = `"query { strings }"`;
 
 exports[`jmespath to GraphQL > should transform "locations[?state == 'WA'].name | sort(@)[-2:] | {WashingtonCities: join(', ', @)}" into a GraphQL query 1`] = `"query { locations { name state } }"`;
@@ -284,8 +288,6 @@ exports[`jmespath to GraphQL > should transform "not_there | [0]" into a GraphQL
 exports[`jmespath to GraphQL > should transform "one < two" into a GraphQL query 1`] = `"query { one two }"`;
 
 exports[`jmespath to GraphQL > should transform "outer.foo || outer.bar" into a GraphQL query 1`] = `"query { outer { foo bar } }"`;
-
-exports[`jmespath to GraphQL > should transform "people.*.first" into a GraphQL query 1`] = `"query { people }"`;
 
 exports[`jmespath to GraphQL > should transform "people[*].{name: name, tags: tags[0]}" into a GraphQL query 1`] = `"query { people { name tags } }"`;
 
@@ -330,7 +332,5 @@ exports[`jmespath to GraphQL > should transform "sort_by(people, &age)[].extra" 
 exports[`jmespath to GraphQL > should transform "sort_by(people, &age)[].name" into a GraphQL query 1`] = `"query { people { age name } }"`;
 
 exports[`jmespath to GraphQL > should transform "sort_by(people, &to_number(age_str))" into a GraphQL query 1`] = `"query { people { age_str } }"`;
-
-exports[`jmespath to GraphQL > should transform "sum(array[].to_number(@))" into a GraphQL query 1`] = `"query { array }"`;
 
 exports[`jmespath to GraphQL > should transform "two < one || three < one" into a GraphQL query 1`] = `"query { two one three }"`;
