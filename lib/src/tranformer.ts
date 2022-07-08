@@ -79,13 +79,13 @@ export class JMESPathGraphQL {
         return { query }
     }
 
-    toGraphQL(options: Options = {}) {
+    toGraphQLDocument(options: Options = {}) {
         // TODO option: validate against schema
-        return parse(this.toString(options))
+        return parse(this.toGraphQL(options))
     }
 
-    toString({
-        pretty = false,
+    toGraphQL({
+        pretty = true,
         ...options
     }: { pretty?: boolean } & Options = {}): string {
         const json = this.toJSON(options)

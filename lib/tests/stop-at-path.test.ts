@@ -8,33 +8,33 @@ describe('stop recursing at given paths', () => {
     it('should stop recursing a single nested path', () => {
         const result = new JMESPathGraphQL(expression, {
             stopAtPath: 'countries.states'
-        }).toString()
+        }).toGraphQL()
         expect(result).matchSnapshot()
     })
 
     it('should stop recursing an array of paths', () => {
         const result = new JMESPathGraphQL(expression, {
             stopAtPath: ['countries.states', 'countries.languages']
-        }).toString()
+        }).toGraphQL()
         expect(result).matchSnapshot()
     })
 
     it('should stop recursing given a stop function', () => {
         const result = new JMESPathGraphQL(expression, {
             stopAtPath: (path) => path === 'countries.states'
-        }).toString()
+        }).toGraphQL()
         expect(result).matchSnapshot()
     })
 
     it('should return the full query when no stopAtPath option is given', () => {
-        const result = new JMESPathGraphQL(expression).toString()
+        const result = new JMESPathGraphQL(expression).toGraphQL()
         expect(result).matchSnapshot()
     })
 
     it('should return the full query when the path to stop at does not exists', () => {
         const result = new JMESPathGraphQL(expression, {
             stopAtPath: 'inexistent'
-        }).toString()
+        }).toGraphQL()
         expect(result).matchSnapshot()
     })
 })

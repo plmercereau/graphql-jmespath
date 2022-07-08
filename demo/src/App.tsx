@@ -10,9 +10,10 @@ const API = 'https://countries.trevorblades.com/'
 
 getIntrospectionSchema(API).then((schema) => {
     const e = new JMESPathGraphQL('*[].{name:name}', { schema })
-    const q = e.toString({ pretty: true })
-    console.log(q)
-    console.log(schema, schema.getQueryType())
+    const q = e.toGraphQL({ pretty: true })
+    console.log('schema', schema, schema.getQueryType())
+    console.log()
+    console.log('query', q)
     request(API, q).then((res) => {
         console.log(res)
         console.log(e.search(res))
@@ -24,11 +25,11 @@ function App() {
     return (
         <div>
             <h2>{expression}</h2>
-            {/* <pre>{exp.toString({ pretty: true })}</pre> */}
+            {/* <pre>{exp.toGraphQL({ pretty: true })}</pre> */}
             <button
                 onClick={async () => {
                     setResult(undefined)
-                    const data = await request(API, exp.toString())
+                    const data = await request(API, exp.toGraphQL())
                     setResult(exp.search(data))
                 }}
             >

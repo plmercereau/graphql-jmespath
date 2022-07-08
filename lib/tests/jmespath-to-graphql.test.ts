@@ -8,7 +8,7 @@ describe('jmespath to GraphQL', () => {
             expression
         )} into a GraphQL query`, () => {
             expect(() =>
-                new JMESPathGraphQL(expression).toString()
+                new JMESPathGraphQL(expression).toGraphQL()
             ).toThrowErrorMatchingSnapshot()
         })
     })
@@ -17,7 +17,7 @@ describe('jmespath to GraphQL', () => {
         it(`should transform ${JSON.stringify(
             expression
         )} into a GraphQL query`, () => {
-            const query = new JMESPathGraphQL(expression).toString()
+            const query = new JMESPathGraphQL(expression).toGraphQL()
             expect(query).toMatchSnapshot()
         })
     })
@@ -29,7 +29,7 @@ describe('jmespath to GraphQL', () => {
                 {
                     rootQuery: 'users'
                 }
-            ).toString()
+            ).toGraphQL()
             expect(query).toMatchSnapshot()
         })
 
@@ -40,7 +40,7 @@ describe('jmespath to GraphQL', () => {
                     rootQuery: 'users',
                     rootArgs: { where: { id: { _eq: '123' } } }
                 }
-            ).toString()
+            ).toGraphQL()
             expect(query).toMatchSnapshot()
         })
     })
