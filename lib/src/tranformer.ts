@@ -85,7 +85,7 @@ export class JMESPathGraphQL {
     }
 
     toGraphQL({
-        pretty = true,
+        pretty = false,
         ...options
     }: { pretty?: boolean } & Options = {}): string {
         const json = this.toJSONQuery(options)
@@ -145,7 +145,7 @@ const filterObjectPaths = (
         type = type.ofType
     }
     const childFields: GraphQLFieldMap<any, any> | undefined =
-        node._fields || type._fields || undefined
+        node?._fields || type?._fields || undefined
 
     const objectResult = Object.entries(obj).reduce<JsonObject>(
         (aggr, [key, value]) => {
