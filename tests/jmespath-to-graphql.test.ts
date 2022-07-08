@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest'
-import { jmespathToGraphQL } from '../src/lib'
+import { JMESPathGraphQL } from '../src/lib'
 import { validExpressions, invalidExpressions } from './expressions'
 
 describe('jmespath to GraphQL', () => {
@@ -8,7 +8,7 @@ describe('jmespath to GraphQL', () => {
             expression
         )} into a GraphQL query`, () => {
             expect(() =>
-                jmespathToGraphQL(expression)
+                new JMESPathGraphQL(expression).toString()
             ).toThrowErrorMatchingSnapshot()
         })
     })
@@ -17,24 +17,30 @@ describe('jmespath to GraphQL', () => {
         it(`should transform ${JSON.stringify(
             expression
         )} into a GraphQL query`, () => {
-            const query = jmespathToGraphQL(expression)
+            const query = new JMESPathGraphQL(expression).toString()
             expect(query).toMatchSnapshot()
         })
     })
 
     describe('jmespath to GraphQL using custom root query', () => {
         it('should work from a custom root query', () => {
-            const query = jmespathToGraphQL('[roles.[id, name], displayName]', {
-                rootQuery: 'users'
-            })
+            const query = new JMESPathGraphQL(
+                '[roles.[id, name], displayName]',
+                {
+                    rootQuery: 'users'
+                }
+            ).toString()
             expect(query).toMatchSnapshot()
         })
 
         it('should work from a custom root query with arguments', () => {
-            const query = jmespathToGraphQL('[roles.[id, name], displayName]', {
-                rootQuery: 'users',
-                rootArgs: { where: { id: { _eq: '123' } } }
-            })
+            const query = new JMESPathGraphQL(
+                '[roles.[id, name], displayName]',
+                {
+                    rootQuery: 'users',
+                    rootArgs: { where: { id: { _eq: '123' } } }
+                }
+            ).toString()
             expect(query).toMatchSnapshot()
         })
     })
