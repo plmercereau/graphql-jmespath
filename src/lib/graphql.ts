@@ -6,8 +6,5 @@ export const getIntrospectionSchema = async (endpoint: string) => {
         endpoint,
         getIntrospectionQuery({ descriptions: false })
     )
-    const schema = buildClientSchema(res)
-    console.log(schema)
-    console.log(schema.getQueryType()?.getFields().continents.type)
-    return schema
+    return buildClientSchema(res, { assumeValid: true })
 }

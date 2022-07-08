@@ -25,8 +25,9 @@ function App() {
                 Fetch
             </button>
             <button
-                onClick={() => {
-                    getIntrospectionSchema(API)
+                onClick={async () => {
+                    const schema = await getIntrospectionSchema(API)
+                    jmespathToGraphQL(expression, { schema })
                 }}
             >
                 Get schema
