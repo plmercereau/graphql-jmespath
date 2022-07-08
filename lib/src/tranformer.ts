@@ -55,7 +55,7 @@ export class JMESPathGraphQL {
         return recursiveJmespathToObject(this.ast).value
     }
 
-    toJSON(options: Options = {}) {
+    toJSONQuery(options: Options = {}) {
         const { schema, stopAtPath, unknownFields, rootQuery, rootArgs } = {
             ...this,
             ...options
@@ -88,7 +88,7 @@ export class JMESPathGraphQL {
         pretty = true,
         ...options
     }: { pretty?: boolean } & Options = {}): string {
-        const json = this.toJSON(options)
+        const json = this.toJSONQuery(options)
         return jsonToGraphQLQuery(json, { pretty })
     }
 
@@ -111,7 +111,6 @@ const filterObjectPaths = (
         path?: string
     } = {}
 ): JsonObject | boolean => {
-    // console.log('--------', path, node)
     const { stopAtPath, unknownFields, schema } = options
     if (schema) {
         // * When we have a schema, we only add parts of the graph that actually exist in the schema
@@ -120,11 +119,8 @@ const filterObjectPaths = (
         }
 
         // ! Ignore sub-obkect if one of its args is required
-        if (
-            node.args?.some(
-                (arg: any) => arg.type.constructor.name === 'GraphQLNonNull'
-            )
-        ) {
+        if (node.args?.some((arg: any) => arg.type.toString().endsWith('!'))) {
+            // * Note: in GraphQL, any type ending with ! is required
             return false
         }
     }
@@ -142,6 +138,8 @@ const filterObjectPaths = (
         return true
     }
 
+    // * Get the base type of the node, for instance required(list(something)) => something
+    // ? Would it work with unions or interfaces?
     let type = node?.type
     while (type && 'ofType' in type) {
         type = type.ofType

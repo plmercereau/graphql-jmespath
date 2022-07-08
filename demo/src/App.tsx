@@ -1,4 +1,4 @@
-import { JMESPathGraphQL, getIntrospectionSchema } from 'graphql-jmespath'
+import { JMESPathGraphQL, getIntrospectionSchema } from 'jmespath-graphql'
 const expression =
     "countries[].{name:name, statesCount: states[].name | length(@), languages:join(', ', languages[].code)} | sort_by(@, &statesCount) | reverse(@) | [:10]"
 
@@ -10,11 +10,8 @@ const API = 'https://countries.trevorblades.com/'
 
 getIntrospectionSchema(API).then((schema) => {
     const e = new JMESPathGraphQL('*[].{name:name}', { schema })
-    const q = e.toGraphQL({ pretty: true })
-    console.log('schema', schema, schema.getQueryType())
-    console.log()
-    console.log('query', q)
-    request(API, q).then((res) => {
+    const query = e.toGraphQL({ pretty: true })
+    request(API, query).then((res) => {
         console.log(res)
         console.log(e.search(res))
     })
