@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest'
-import { JMESPathGraphQL } from '../src/lib'
+import { JMESPathGraphQL } from '../src'
 import { expressions } from './expressions'
 
 describe('jmespath to object', () => {

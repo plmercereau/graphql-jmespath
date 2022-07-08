@@ -1,0 +1,50 @@
+{
+    "name": "graphql-jmespath",
+    "author": "Pierre-Louis Mercereau",
+    "version": "0.1.0",
+    "license": "MIT",
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.esm.js",
+    "types": "dist/index.d.ts",
+    "source": "src/index.ts",
+    "files": [
+        "dist",
+        "umd",
+        "README.md"
+    ],
+    "exports": {
+        ".": {
+            "import": {
+                "node": "./dist/index.cjs.js",
+                "default": "./dist/index.esm.js"
+            },
+            "require": "./dist/index.cjs.js"
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "dev": "vite build --watch",
+        "build": "run-p build:lib build:umd",
+        "build:lib": "vite build",
+        "build:umd": "vite build --config vite.umd.config.js",
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
+    "devDependencies": {
+        "c8": "^7.11.3",
+        "jsdom": "^20.0.0",
+        "typescript": "^4.5.4",
+        "vite": "^2.8.0",
+        "vitest": "^0.17.0"
+    },
+    "dependencies": {
+        "graphql": "^16.5.0",
+        "deepmerge": "^4.2.2",
+        "dot-prop": "^7.2.0",
+        "graphql-request": "^4.2.0",
+        "jmespath": "^0.16.0",
+        "json-to-graphql-query": "^2.2.3"
+    }
+}

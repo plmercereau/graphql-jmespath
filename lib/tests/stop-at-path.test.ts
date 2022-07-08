@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest'
-import { JMESPathGraphQL } from '../src/lib'
+import { JMESPathGraphQL } from '../src'
 
 describe('stop recursing at given paths', () => {
     const expression =

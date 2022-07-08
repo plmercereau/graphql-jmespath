@@ -1,11 +1,9 @@
-import { JMESPathGraphQL } from './lib'
+import { JMESPathGraphQL, getIntrospectionSchema } from 'graphql-jmespath'
 const expression =
     "countries[].{name:name, statesCount: states[].name | length(@), languages:join(', ', languages[].code)} | sort_by(@, &statesCount) | reverse(@) | [:10]"
 
 import { request } from 'graphql-request'
 import { useState } from 'react'
-import { search } from 'jmespath'
-import { getIntrospectionSchema } from './lib'
 
 const exp = new JMESPathGraphQL(expression)
 const API = 'https://countries.trevorblades.com/'
@@ -31,7 +29,7 @@ function App() {
                 onClick={async () => {
                     setResult(undefined)
                     const data = await request(API, exp.toString())
-                    setResult(search(data, expression))
+                    setResult(exp.search(data))
                 }}
             >
                 Fetch
