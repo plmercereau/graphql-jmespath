@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest'
-import { JMESPathGraphQL } from '../src'
+import { Expression } from '../src'
 import { validExpressions, invalidExpressions } from './expressions'
 
 describe('jmespath to GraphQL', () => {
@@ -8,7 +8,7 @@ describe('jmespath to GraphQL', () => {
             expression
         )} into a GraphQL query`, () => {
             expect(() =>
-                new JMESPathGraphQL(expression).toGraphQL()
+                new Expression(expression).toGraphQL()
             ).toThrowErrorMatchingSnapshot()
         })
     })
@@ -17,30 +17,24 @@ describe('jmespath to GraphQL', () => {
         it(`should transform ${JSON.stringify(
             expression
         )} into a GraphQL query`, () => {
-            const query = new JMESPathGraphQL(expression).toGraphQL()
+            const query = new Expression(expression).toGraphQL()
             expect(query).toMatchSnapshot()
         })
     })
 
     describe('jmespath to GraphQL using custom root query', () => {
         it('should work from a custom root query', () => {
-            const query = new JMESPathGraphQL(
-                '[roles.[id, name], displayName]',
-                {
-                    rootQuery: 'users'
-                }
-            ).toGraphQL()
+            const query = new Expression('[roles.[id, name], displayName]', {
+                rootQuery: 'users'
+            }).toGraphQL()
             expect(query).toMatchSnapshot()
         })
 
         it('should work from a custom root query with arguments', () => {
-            const query = new JMESPathGraphQL(
-                '[roles.[id, name], displayName]',
-                {
-                    rootQuery: 'users',
-                    rootArgs: { where: { id: { _eq: '123' } } }
-                }
-            ).toGraphQL()
+            const query = new Expression('[roles.[id, name], displayName]', {
+                rootQuery: 'users',
+                rootArgs: { where: { id: { _eq: '123' } } }
+            }).toGraphQL()
             expect(query).toMatchSnapshot()
         })
     })

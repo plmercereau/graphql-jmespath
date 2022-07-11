@@ -23,7 +23,7 @@ type Options = {
     unknownFields?: UnknownFieldsOption
 }
 
-export class JMESPathGraphQL {
+export class Expression {
     readonly expression: string
     rootQuery?: string
     rootArgs?: GraphQLArguments
