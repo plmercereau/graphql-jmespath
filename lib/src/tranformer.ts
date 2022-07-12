@@ -1,8 +1,8 @@
-import { ASTNode, compile, search } from 'jmespath'
+import { compile, search } from 'jmespath'
 import { jsonToGraphQLQuery } from 'json-to-graphql-query'
 import { recursiveJmespathToObject } from './compiler'
 import { assertName, GraphQLFieldMap, GraphQLSchema } from 'graphql/type'
-import { parse } from 'graphql'
+import { DocumentNode, parse } from 'graphql'
 
 type JsonObject = { [key: string]: JsonObject | boolean }
 
@@ -23,79 +23,131 @@ type Options = {
     unknownFields?: UnknownFieldsOption
 }
 
-export class Expression {
-    readonly expression: string
-    rootQuery?: string
-    rootArgs?: GraphQLArguments
-    stopAtPath: StopAtPathOption
-    unknownFields: UnknownFieldsOption
-    schema?: GraphQLSchema
-    readonly ast: ASTNode
+export { search }
 
-    constructor(
-        expression: string,
-        {
-            schema,
-            stopAtPath = [],
-            rootQuery,
-            rootArgs,
-            unknownFields = 'ignore'
-        }: Options = {}
-    ) {
-        this.expression = expression
-        this.rootQuery = rootQuery
-        this.rootArgs = rootArgs
-        this.stopAtPath = stopAtPath
-        this.unknownFields = unknownFields
-        this.schema = schema
-        this.ast = compile(expression)
-    }
-
-    toObject(): JsonObject | boolean {
-        return recursiveJmespathToObject(this.ast).value
-    }
-
-    toJSONQuery(options: Options = {}) {
-        const { schema, stopAtPath, unknownFields, rootQuery, rootArgs } = {
-            ...this,
-            ...options
-        }
-        const json = filterObjectPaths(
-            this.toObject(),
-            { stopAtPath, unknownFields, schema },
-            {
-                // TODO differs when rootQuery is provided
-                node: schema?.getQueryType()
-            }
-        )
-        if (typeof json === 'boolean' || !Object.keys(json).length) {
-            throw Error('Empty query')
-        }
-        const query = rootQuery
-            ? {
-                  [rootQuery]: { __args: rootArgs, ...json }
-              }
-            : json
-        return { query }
-    }
-
-    toGraphQLDocument(options: Options = {}) {
-        // TODO option: validate against schema
-        return parse(this.toGraphQL(options))
-    }
-
-    toGraphQL({
-        pretty = false,
-        ...options
-    }: { pretty?: boolean } & Options = {}): string {
-        const json = this.toJSONQuery(options)
-        return jsonToGraphQLQuery(json, { pretty })
-    }
-
-    search(obj: any) {
-        return search(obj, this.expression)
-    }
+export const expressionToObject = (
+    expression: string
+): JsonObject | boolean => {
+    const ast = compile(expression)
+    return recursiveJmespathToObject(ast).value
 }
+
+export const expressionToJSONQuery = (
+    expression: string,
+    {
+        schema,
+        stopAtPath = [],
+        unknownFields = 'ignore',
+        rootQuery,
+        rootArgs
+    }: Options = {}
+) => {
+    const json = filterObjectPaths(
+        expressionToObject(expression),
+        { stopAtPath, unknownFields, schema },
+        {
+            // TODO differs when rootQuery is provided
+            node: schema?.getQueryType()
+        }
+    )
+    if (typeof json === 'boolean' || !Object.keys(json).length) {
+        throw Error('Empty query')
+    }
+    const query = rootQuery
+        ? {
+              [rootQuery]: { __args: rootArgs, ...json }
+          }
+        : json
+    return { query }
+}
+
+export const expressionToGraphQL = (
+    expression: string,
+    { pretty = false, ...options }: { pretty?: boolean } & Options = {}
+): string => {
+    const json = expressionToJSONQuery(expression, options)
+    return jsonToGraphQLQuery(json, { pretty })
+}
+export const expressionToGraphQLDocument = (
+    expression: string,
+    options?: Options
+): DocumentNode => {
+    // TODO option: validate against schema
+    return parse(expressionToGraphQL(expression, options))
+}
+// export class Expression {
+//     readonly expression: string
+//     rootQuery?: string
+//     rootArgs?: GraphQLArguments
+//     stopAtPath: StopAtPathOption
+//     unknownFields: UnknownFieldsOption
+//     schema?: GraphQLSchema
+//     readonly ast: ASTNode
+
+//     constructor(
+//         expression: string,
+//         {
+//             schema,
+//             stopAtPath = [],
+//             rootQuery,
+//             rootArgs,
+//             unknownFields = 'ignore'
+//         }: Options = {}
+//     ) {
+//         this.expression = expression
+//         this.rootQuery = rootQuery
+//         this.rootArgs = rootArgs
+//         this.stopAtPath = stopAtPath
+//         this.unknownFields = unknownFields
+//         this.schema = schema
+//         this.ast = compile(expression)
+//     }
+
+//     toObject(): JsonObject | boolean {
+//         return recursiveJmespathToObject(this.ast).value
+//     }
+
+//     toJSONQuery(options: Options = {}) {
+//         const { schema, stopAtPath, unknownFields, rootQuery, rootArgs } = {
+//             ...this,
+//             ...options
+//         }
+//         const json = filterObjectPaths(
+//             this.toObject(),
+//             { stopAtPath, unknownFields, schema },
+//             {
+//                 // TODO differs when rootQuery is provided
+//                 node: schema?.getQueryType()
+//             }
+//         )
+//         if (typeof json === 'boolean' || !Object.keys(json).length) {
+//             throw Error('Empty query')
+//         }
+//         const query = rootQuery
+//             ? {
+//                   [rootQuery]: { __args: rootArgs, ...json }
+//               }
+//             : json
+//         return { query }
+//     }
+
+//     toGraphQLDocument(options: Options = {}) {
+//         // TODO option: validate against schema
+//         return parse(this.toGraphQL(options))
+//     }
+
+//     toGraphQL({
+//         pretty = false,
+//         ...options
+//     }: { pretty?: boolean } & Options = {}): string {
+//         const json = this.toJSONQuery(options)
+//         return jsonToGraphQLQuery(json, { pretty })
+//     }
+
+//     search(obj: any) {
+//         return search(obj, this.expression)
+//     }
+// }
 
 // ? move to class ?
 // TODO (big): compile jmespath syntax such as filter, sort, etc into Hasura "_where", "_orderby", "_limit", "_offset"...

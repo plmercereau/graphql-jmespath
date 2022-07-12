@@ -1,37 +1,197 @@
 import { useDebouncedValue } from '@mantine/hooks'
-import { useState } from 'react'
-import { Button, Container, TextInput } from '@mantine/core'
-import { Expression } from 'graphql-jmespath'
-import { Result } from './Result'
+import { useEffect, useState } from 'react'
+import {
+    Container,
+    Textarea,
+    Text,
+    Tabs,
+    ActionIcon,
+    Title,
+    Blockquote,
+    Alert
+} from '@mantine/core'
+import prettyBytes from 'pretty-bytes'
+import { Search, Refresh, AlertCircle } from 'tabler-icons-react'
+import { GrGraphQl } from 'react-icons/gr'
+import { VscJson } from 'react-icons/vsc'
+import { FaChartBar } from 'react-icons/fa'
+import { expressionToGraphQL, search } from 'graphql-jmespath'
+import { JsonResult } from './JsonResult'
 
 import { request } from 'graphql-request'
+import { Prism } from '@mantine/prism'
+import { ChartResult } from './ChartResult'
+import { Example } from 'src/examples'
+
 const API = 'https://countries.trevorblades.com/'
 
-export const ExpressionForm: React.FC<{ initial: string }> = ({ initial }) => {
+const Error: React.FC<{ error?: string; title: string }> = ({
+    error,
+    title
+}) => {
+    if (!error) return null
+    return (
+        <Alert icon={<AlertCircle size={16} />} title={title} color="red">
+            {error}
+        </Alert>
+    )
+}
+
+export const ExpressionForm: React.FC<Example> = ({
+    expression: initial,
+    chart,
+    title,
+    description
+}) => {
+    const [firstRun, setFirstRun] = useState(true)
     const [input, setInput] = useState(initial)
-    // TODO catch errors
-    const [expression] = useDebouncedValue(new Expression(input), 200)
-    const [data, setData] = useState()
+    const [activeTab, setActiveTab] = useState(initial ? (chart ? 3 : 2) : 0)
+    const [expression] = useDebouncedValue(input, 300)
+    const [gqlQuery, setGqlQuery] = useState('')
+    const [expressionError, setExpressionError] = useState('')
+    const [graphqlError, setGraphqlError] = useState('')
+    const [data, setData] = useState<any>()
+    const [result, setResult] = useState<any>()
+    const [jmesPathSearchError, setJmesPathSearchError] = useState('')
+
+    const reset = () => {
+        setInput('')
+        setActiveTab(0)
+        setGqlQuery('')
+        setExpressionError('')
+        setGraphqlError('')
+        setData(undefined)
+        setResult(undefined)
+        setInput(initial)
+        saveGraphQLQuery()
+    }
+
+    const saveGraphQLQuery = () => {
+        try {
+            const query = expressionToGraphQL(expression, { pretty: true })
+            setGqlQuery(query)
+            setExpressionError('')
+        } catch (e: any) {
+            setGqlQuery('')
+            setActiveTab(0)
+            setExpressionError(e.message)
+        }
+    }
+
+    const fetch = async () => {
+        setData(null)
+        setGraphqlError('')
+        setResult(null)
+        setJmesPathSearchError('')
+        try {
+            const data = await request(API, gqlQuery)
+            setData(data)
+            try {
+                const result = search(data, expression)
+                setResult(result)
+                if (!activeTab && !firstRun) {
+                    setActiveTab(2)
+                }
+            } catch (e: any) {
+                setActiveTab(2)
+                setJmesPathSearchError(e.message)
+            }
+        } catch (e: any) {
+            setActiveTab(1)
+            setGraphqlError(e.message)
+        }
+    }
+
+    useEffect(() => {
+        if (expression) {
+            setData(null)
+            setExpressionError('')
+            saveGraphQLQuery()
+        }
+    }, [expression])
+
+    useEffect(() => {
+        if (!!gqlQuery && firstRun) {
+            fetch()
+            setFirstRun(false)
+        }
+    }, [gqlQuery])
 
     return (
         <Container>
-            <TextInput
-                placeholder="Expression"
-                label="Full name"
-                required
-                value={input}
-                onChange={(event) => setInput(event.currentTarget.value)}
-            />
-            <Button
-                onClick={() =>
-                    request(API, expression.toGraphQL()).then((res) =>
-                        setData(res)
-                    )
+            <Title order={2}>{title}</Title>
+            <Blockquote>{description}</Blockquote>
+            <Textarea
+                placeholder="JMESPath expression"
+                minRows={2}
+                autosize
+                autoFocus
+                onInput={() => {}}
+                rightSection={
+                    <>
+                        <ActionIcon
+                            onClick={reset}
+                            style={{
+                                position: 'absolute',
+                                top: '0px',
+                                margin: '4px'
+                            }}
+                        >
+                            <Refresh />
+                        </ActionIcon>
+                        <ActionIcon
+                            disabled={!!expressionError}
+                            onClick={fetch}
+                            style={{
+                                position: 'absolute',
+                                bottom: '0px',
+                                margin: '4px'
+                            }}
+                        >
+                            <Search />
+                        </ActionIcon>
+                    </>
                 }
-            >
-                Fetch
-            </Button>
-            <Result expression={expression} data={data} />
+                value={input}
+                onChange={(event) => {
+                    if (event.target.value.trim() !== input.trim()) {
+                        setActiveTab(0)
+                    }
+                    setInput(event.currentTarget.value)
+                }}
+            />
+            <Tabs active={activeTab} onTabChange={setActiveTab} grow>
+                <Tabs.Tab icon={<GrGraphQl color="#D91F8B" />} label="Query">
+                    <Error title="Expression error" error={expressionError} />
+                    {gqlQuery && <Prism language="graphql">{gqlQuery}</Prism>}
+                </Tabs.Tab>
+                <Tabs.Tab icon={<GrGraphQl color="#D91F8B" />} label="Result">
+                    <Error title="GraphQL error" error={graphqlError} />
+                    {data && (
+                        // TODO first X lines
+                        <>
+                            <Text>
+                                Size: {prettyBytes(JSON.stringify(data).length)}
+                            </Text>
+                            <Prism language="json" trim={false}>
+                                {JSON.stringify(data, null, 2)}
+                            </Prism>
+                        </>
+                    )}
+                </Tabs.Tab>
+                <Tabs.Tab icon={<VscJson />} label="JMESPath">
+                    <Error
+                        title="JMESPath search error"
+                        error={jmesPathSearchError}
+                    />
+                    <JsonResult value={result} />
+                </Tabs.Tab>
+                {chart && (
+                    <Tabs.Tab icon={<FaChartBar />} label="Chart">
+                        <ChartResult value={result} {...chart} />
+                    </Tabs.Tab>
+                )}
+            </Tabs>
         </Container>
     )
 }

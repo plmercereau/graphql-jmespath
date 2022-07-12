@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { App } from './layout/App'
 import { Home } from './Home'
-import { Countries } from './Countries'
+import { examples } from './examples'
+import { ExpressionForm } from './components/ExpressionForm'
+
+import { paramCase } from 'param-case'
 
 ReactDOM.render(
     <React.StrictMode>
@@ -11,12 +14,13 @@ ReactDOM.render(
             <Routes>
                 <Route path="/" element={<App />}>
                     <Route index element={<Home />} />
-                    <Route path="countries" element={<Countries />} />
-                    {/* <Route path="teams" element={<Teams />}>
-                        <Route path=":teamId" element={<Team />} />
-                        <Route path="new" element={<NewTeamForm />} />
-                        <Route index element={<LeagueStandings />} />
-                    </Route> */}
+                    {examples.map((props) => (
+                        <Route
+                            key={props.title}
+                            path={paramCase(props.title)}
+                            element={<ExpressionForm {...props} />}
+                        />
+                    ))}
                 </Route>
             </Routes>
         </BrowserRouter>

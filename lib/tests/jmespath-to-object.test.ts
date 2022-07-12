@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest'
-import { Expression } from '../src'
+import { expressionToObject } from '../src'
 import { expressions } from './expressions'
 
 describe('jmespath to object', () => {
@@ -7,7 +7,7 @@ describe('jmespath to object', () => {
         it(`Should transform ${JSON.stringify(
             expression
         )} into a JSON object`, () => {
-            const obj = new Expression(expression).toObject()
+            const obj = expressionToObject(expression)
             expect(obj).toMatchSnapshot()
         })
     })
