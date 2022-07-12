@@ -4,7 +4,7 @@ import React from 'react'
 
 type Props<C> = {
     component: React.ComponentType<C>
-    value: string
+    value?: string
     limit?: number
 }
 

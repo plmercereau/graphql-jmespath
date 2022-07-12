@@ -165,26 +165,23 @@ export const ExpressionForm: React.FC<Example> = ({
                 </Tabs.Tab>
                 <Tabs.Tab icon={<GrGraphQl color="#D91F8B" />} label="Result">
                     <Error title="GraphQL error" error={graphqlError} />
-                    {data && (
-                        <Truncate
-                            value={JSON.stringify(data, null, 2)}
-                            component={Prism}
-                            language="json"
-                        />
-                    )}
+                    <Truncate
+                        value={data && JSON.stringify(data, null, 2)}
+                        component={Prism}
+                        language="json"
+                    />
                 </Tabs.Tab>
                 <Tabs.Tab icon={<VscJson />} label="JMESPath">
                     <Error
                         title="JMESPath search error"
                         error={jmesPathSearchError}
                     />
-                    {result && (
-                        <Truncate
-                            value={JSON.stringify(result, null, 2)}
-                            component={Prism}
-                            language="json"
-                        />
-                    )}
+
+                    <Truncate
+                        value={result && JSON.stringify(result, null, 2)}
+                        component={Prism}
+                        language="json"
+                    />
                 </Tabs.Tab>
                 {chart && (
                     <Tabs.Tab icon={<FaChartBar />} label="Chart">
