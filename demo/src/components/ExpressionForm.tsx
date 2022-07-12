@@ -3,25 +3,23 @@ import { useEffect, useState } from 'react'
 import {
     Container,
     Textarea,
-    Text,
     Tabs,
     ActionIcon,
     Title,
     Blockquote,
     Alert
 } from '@mantine/core'
-import prettyBytes from 'pretty-bytes'
 import { Search, Refresh, AlertCircle } from 'tabler-icons-react'
 import { GrGraphQl } from 'react-icons/gr'
 import { VscJson } from 'react-icons/vsc'
 import { FaChartBar } from 'react-icons/fa'
 import { expressionToGraphQL, search } from 'graphql-jmespath'
-import { JsonResult } from './JsonResult'
 
 import { request } from 'graphql-request'
 import { Prism } from '@mantine/prism'
 import { ChartResult } from './ChartResult'
 import { Example } from 'src/examples'
+import { Truncate } from './Truncate'
 
 const API = 'https://countries.trevorblades.com/'
 
@@ -168,15 +166,11 @@ export const ExpressionForm: React.FC<Example> = ({
                 <Tabs.Tab icon={<GrGraphQl color="#D91F8B" />} label="Result">
                     <Error title="GraphQL error" error={graphqlError} />
                     {data && (
-                        // TODO first X lines
-                        <>
-                            <Text>
-                                Size: {prettyBytes(JSON.stringify(data).length)}
-                            </Text>
-                            <Prism language="json" trim={false}>
-                                {JSON.stringify(data, null, 2)}
-                            </Prism>
-                        </>
+                        <Truncate
+                            value={JSON.stringify(data, null, 2)}
+                            component={Prism}
+                            language="json"
+                        />
                     )}
                 </Tabs.Tab>
                 <Tabs.Tab icon={<VscJson />} label="JMESPath">
@@ -184,7 +178,13 @@ export const ExpressionForm: React.FC<Example> = ({
                         title="JMESPath search error"
                         error={jmesPathSearchError}
                     />
-                    <JsonResult value={result} />
+                    {result && (
+                        <Truncate
+                            value={JSON.stringify(result, null, 2)}
+                            component={Prism}
+                            language="json"
+                        />
+                    )}
                 </Tabs.Tab>
                 {chart && (
                     <Tabs.Tab icon={<FaChartBar />} label="Chart">
