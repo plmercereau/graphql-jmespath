@@ -26,7 +26,8 @@ export type Options = CompilerOptions & {
 export { search }
 
 export const expressionToObject = (
-    expression: string, options?: CompilerOptions
+    expression: string,
+    options?: CompilerOptions
 ): JsonObject | boolean => {
     const ast = compile(expression)
     return recursiveJmespathToObject(ast, '', options).value
@@ -44,7 +45,7 @@ export const expressionToJSONQuery = (
     }: Options = {}
 ) => {
     const json = filterObjectPaths(
-        expressionToObject(expression, {whereArgumentPath}),
+        expressionToObject(expression, { whereArgumentPath }),
         { stopAtPath, unknownFields, schema },
         {
             // TODO differs when rootQuery is provided
@@ -106,7 +107,12 @@ const filterObjectPaths = (
         }
     }
     // * We reached a leaf node, so we return its value
-    if (typeof obj === 'boolean' || typeof obj === 'number' || typeof obj === 'string') {
+    if (
+        typeof obj === 'boolean' ||
+        typeof obj === 'number' ||
+        typeof obj === 'string' ||
+        obj === null
+    ) {
         return obj
     }
 
@@ -186,10 +192,11 @@ const filterObjectPaths = (
                         path: path ? `${path}.${key}` : key
                     })
                     if (
+                        subObject === null ||
                         (typeof subObject !== 'object' && subObject) ||
                         Object.keys(subObject).length
                     ) {
-                        // * Only add when the subObject is not empty, or is a litteral that is truthy
+                        // * Only add when the subObject is not empty, or is a litteral that is truthy, or is null
                         aggr[key] = subObject
                     }
                 }

@@ -116,10 +116,11 @@ const OPERATIONS: Record<string, OperationFunction> = {
                 third.type === 'Comparator' &&
                 right.type === 'Literal'
             ) {
-                if (typeof right.value === 'object') {
-                    // TODO
-                    console.warn('Litteral is an object', right.value)
-                } else {
+                if (Array.isArray(right.value)) {
+                    // TODO handle this case
+                    console.error('Litteral is an array', JSON.stringify({comparator: third.name, left, right}, null, 2))
+                    throw Error('Litteral is an array')
+                }
                     setProperty(
                         value,
                         whereArgumentPath(
@@ -129,7 +130,7 @@ const OPERATIONS: Record<string, OperationFunction> = {
                         ),
                         right.value
                     )
-                }
+                
             }
         }
         return {

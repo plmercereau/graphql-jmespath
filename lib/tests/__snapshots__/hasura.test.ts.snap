@@ -158,7 +158,7 @@ exports[`hasura > should transform "foo[?first == last].first" into a GraphQL qu
 
 exports[`hasura > should transform "foo[?key == \`{\\"bar\\": [0]}\`]" into a GraphQL query 1`] = `"query { foo { key } }"`;
 
-exports[`hasura > should transform "foo[?key == \`null\`]" into a GraphQL query 1`] = `"query { foo { key } }"`;
+exports[`hasura > should transform "foo[?key == \`null\`]" into a GraphQL query 1`] = `"query { foo (where: {key: {_eq: null}}) { key } }"`;
 
 exports[`hasura > should transform "foo[?key == \`true\`]" into a GraphQL query 1`] = `"query { foo (where: {key: {_eq: true}}) { key } }"`;
 
@@ -168,7 +168,7 @@ exports[`hasura > should transform "foo[?name == 'a']" into a GraphQL query 1`] 
 
 exports[`hasura > should transform "foo[?name == 'a']" into a GraphQL query 2`] = `"query { foo (where: {name: {_eq: \\"a\\"}}) { name } }"`;
 
-exports[`hasura > should transform "foo[?top == \`{\\"first\\": \\"foo\\", \\"last\\": \\"bar\\"}\`]" into a GraphQL query 1`] = `"query { foo { top } }"`;
+exports[`hasura > should transform "foo[?top == \`{\\"first\\": \\"foo\\", \\"last\\": \\"bar\\"}\`]" into a GraphQL query 1`] = `"query { foo (where: {top: {_eq: {first: \\"foo\\", last: \\"bar\\"}}}) { top } }"`;
 
 exports[`hasura > should transform "foo[?top.first == top.last]" into a GraphQL query 1`] = `"query { foo { top { first last } } }"`;
 
