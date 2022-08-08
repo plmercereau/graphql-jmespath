@@ -35,16 +35,25 @@
                         <div v-if="graphqlDataError">
                             {{ graphqlDataError }}
                         </div>
-                        <Code v-if="graphqlData" language="json" :value="JSON.stringify(graphqlData, null, 2)"
+                        <Code v-else-if="graphqlData" language="json" :value="JSON.stringify(graphqlData, null, 2)"
                             :truncate="2000" />
+                        <div v-else>Empty GraphQL result</div>
                     </q-tab-panel>
 
                     <q-tab-panel name="jmespath-result">
-                        <Code v-if="jmespathResult" language="json" :value="JSON.stringify(jmespathResult, null, 2)"
+                        <div v-if="graphqlDataError">
+                            {{ graphqlDataError }}
+                        </div>
+                        <Code v-else-if="jmespathResult" language="json" :value="JSON.stringify(jmespathResult, null, 2)"
                             :truncate="2000" />
+                        <div v-else>Empty JMESPath result</div>
                     </q-tab-panel>
                     <q-tab-panel name="jmespath-chart" v-if="props.chart">
-                        <v-chart class="chart" :option="option" :theme="mode" />
+                        <div v-if="graphqlDataError">
+                            {{ graphqlDataError }}
+                        </div>
+                        <v-chart v-else-if="jmespathResult" class="chart" :option="option" :theme="mode" />
+                        <div v-else>Empty JMESPath result</div>
                     </q-tab-panel>
                 </q-tab-panels>
             </q-card-section>
@@ -53,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { watchDebounced, watchOnce } from '@vueuse/core'
 import { useQuasar } from 'quasar'
 

@@ -1,0 +1,269 @@
+// Vitest Snapshot v1
+
+exports[`hasura > should transform "@.bar" into a GraphQL query 1`] = `"query { bar }"`;
+
+exports[`hasura > should transform "@.foo[0]" into a GraphQL query 1`] = `"query { foo }"`;
+
+exports[`hasura > should transform "@.foo[0]" into a GraphQL query 2`] = `"query { foo }"`;
+
+exports[`hasura > should transform "[foo.bar, foo.other, third] | [0]" into a GraphQL query 1`] = `"query { foo { bar other } third }"`;
+
+exports[`hasura > should transform "__L" into a GraphQL query 1`] = `"query { __L }"`;
+
+exports[`hasura > should transform "{\\"a\\": foo.bar, \\"b\\": foo.baz} | [a.other, b.sub]" into a GraphQL query 1`] = `"query { foo { bar { other } baz { sub } } }"`;
+
+exports[`hasura > should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | *.baz" into a GraphQL query 1`] = `"query { foo { bar { baz } other { baz } } }"`;
+
+exports[`hasura > should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | a" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "{\\"a\\": foo.bar, \\"b\\": foo.other} | b" into a GraphQL query 1`] = `"query { foo { other } }"`;
+
+exports[`hasura > should transform "{\\"x\\": foo, \\"y\\": bar} | [y.baz, x.boo]" into a GraphQL query 1`] = `"query { foo { boo } bar { baz } }"`;
+
+exports[`hasura > should transform "{\\"x\\": foo, \\"y\\": bar} | {\\"z\\": y.baz.boo}" into a GraphQL query 1`] = `"query { bar { baz { boo } } }"`;
+
+exports[`hasura > should transform "{\\"x\\": foo, \\"y\\": bof} | [y.bar]" into a GraphQL query 1`] = `"query { bof { bar } }"`;
+
+exports[`hasura > should transform "{bar: bar}" into a GraphQL query 1`] = `"query { bar }"`;
+
+exports[`hasura > should transform "{otherkey: bar}" into a GraphQL query 1`] = `"query { bar }"`;
+
+exports[`hasura > should transform "True && False" into a GraphQL query 1`] = `"query { True False }"`;
+
+exports[`hasura > should transform "Y_1623" into a GraphQL query 1`] = `"query { Y_1623 }"`;
+
+exports[`hasura > should transform "a.b.c.d" into a GraphQL query 1`] = `"query { a { b { c { d } } } }"`;
+
+exports[`hasura > should transform "a.b.c.d.e.f.g.h" into a GraphQL query 1`] = `"query { a { b { c { d { e { f { g { h } } } } } } } }"`;
+
+exports[`hasura > should transform "abs(array[1])" into a GraphQL query 1`] = `"query { array }"`;
+
+exports[`hasura > should transform "abs(foo)" into a GraphQL query 1`] = `"query { foo }"`;
+
+exports[`hasura > should transform "avg(numbers)" into a GraphQL query 1`] = `"query { numbers }"`;
+
+exports[`hasura > should transform "books.[author.[name,dob,themes], title]" into a GraphQL query 1`] = `"query { books { author { name dob themes } title } }"`;
+
+exports[`hasura > should transform "ceil(decimals[2])" into a GraphQL query 1`] = `"query { decimals }"`;
+
+exports[`hasura > should transform "contains(strings, 'a')" into a GraphQL query 1`] = `"query { strings }"`;
+
+exports[`hasura > should transform "foo | bar | baz" into a GraphQL query 1`] = `"query { foo { bar { baz } } }"`;
+
+exports[`hasura > should transform "foo | bar" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo | other || bar" into a GraphQL query 1`] = `"query { foo { other bar } }"`;
+
+exports[`hasura > should transform "foo" into a GraphQL query 1`] = `"query { foo }"`;
+
+exports[`hasura > should transform "foo.[bar,baz[0]]" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.[bar,baz[1]]" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.[bar,baz[2]]" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.[bar,baz[3]]" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.[bar,baz]" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.[bar,baz]" into a GraphQL query 2`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.[bar,noexist]" into a GraphQL query 1`] = `"query { foo { bar noexist } }"`;
+
+exports[`hasura > should transform "foo.[bar,qux]" into a GraphQL query 1`] = `"query { foo { bar qux } }"`;
+
+exports[`hasura > should transform "foo.[bar[0],baz[3]]" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.[bar]" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo.[baz[*].[bar, boo], qux[0]]" into a GraphQL query 1`] = `"query { foo { baz { bar boo } qux } }"`;
+
+exports[`hasura > should transform "foo.[baz[*].bar, qux[0]]" into a GraphQL query 1`] = `"query { foo { baz { bar } qux } }"`;
+
+exports[`hasura > should transform "foo.[baz[*].not_there || baz[*].bar, qux[0]]" into a GraphQL query 1`] = `"query { foo { baz { not_there bar } qux } }"`;
+
+exports[`hasura > should transform "foo.[baz][]" into a GraphQL query 1`] = `"query { foo { baz } }"`;
+
+exports[`hasura > should transform "foo.[includeme, bar.baz[*].common]" into a GraphQL query 1`] = `"query { foo { includeme bar { baz { common } } } }"`;
+
+exports[`hasura > should transform "foo.[includeme, bar.baz[*].none]" into a GraphQL query 1`] = `"query { foo { includeme bar { baz { none } } } }"`;
+
+exports[`hasura > should transform "foo.[includeme, bar.baz[].common]" into a GraphQL query 1`] = `"query { foo { includeme bar { baz { common } } } }"`;
+
+exports[`hasura > should transform "foo.[noexist,alsonoexist]" into a GraphQL query 1`] = `"query { foo { noexist alsonoexist } }"`;
+
+exports[`hasura > should transform "foo.{\\"bar.baz.two\\": bar.baz[1].two, includeme: includeme}" into a GraphQL query 1`] = `"query { foo { bar { baz { two } } includeme } }"`;
+
+exports[`hasura > should transform "foo.{\\"bar\\": bar, \\"baz\\": baz}" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.{\\"bar\\": bar}" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo.{\\"foo.bar\\": bar}" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo.{a: nested.one.a, b: nested.two.b}" into a GraphQL query 1`] = `"query { foo { nested { one { a } two { b } } } }"`;
+
+exports[`hasura > should transform "foo.{bar: bar, baz: baz}" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.{bar: bar, baz: baz}" into a GraphQL query 2`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.{bar: bar, noexist: noexist}" into a GraphQL query 1`] = `"query { foo { bar noexist } }"`;
+
+exports[`hasura > should transform "foo.{bar: bar,qux: qux}" into a GraphQL query 1`] = `"query { foo { bar qux } }"`;
+
+exports[`hasura > should transform "foo.{bar: bar.baz[1],includeme: includeme}" into a GraphQL query 1`] = `"query { foo { bar { baz } includeme } }"`;
+
+exports[`hasura > should transform "foo.{bar: bar}" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo.{bar:bar,baz:baz}" into a GraphQL query 1`] = `"query { foo { bar baz } }"`;
+
+exports[`hasura > should transform "foo.{noexist: noexist, alsonoexist: alsonoexist}" into a GraphQL query 1`] = `"query { foo { noexist alsonoexist } }"`;
+
+exports[`hasura > should transform "foo.badkey.{nokey: nokey, alsonokey: alsonokey}" into a GraphQL query 1`] = `"query { foo { badkey { nokey alsonokey } } }"`;
+
+exports[`hasura > should transform "foo.bam || bar | baz" into a GraphQL query 1`] = `"query { foo { bam { baz } } bar { baz } }"`;
+
+exports[`hasura > should transform "foo.bar[].a" into a GraphQL query 1`] = `"query { foo { bar { a } } }"`;
+
+exports[`hasura > should transform "foo.bar[-2]" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo.baz | [0]" into a GraphQL query 1`] = `"query { foo { baz } }"`;
+
+exports[`hasura > should transform "foo.nested.three.{a: a, c: c.inner.bad.key}" into a GraphQL query 1`] = `"query { foo { nested { three { a c { inner { bad { key } } } } } } }"`;
+
+exports[`hasura > should transform "foo.nested.three.{a: a, cinner: c.inner}" into a GraphQL query 1`] = `"query { foo { nested { three { a c { inner } } } } }"`;
+
+exports[`hasura > should transform "foo[*].bar[*] | [0][0]" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo[*].bar[*].kind" into a GraphQL query 1`] = `"query { foo { bar { kind } } }"`;
+
+exports[`hasura > should transform "foo[*].bar[0].kind" into a GraphQL query 1`] = `"query { foo { bar { kind } } }"`;
+
+exports[`hasura > should transform "foo[:20]" into a GraphQL query 1`] = `"query { foo }"`;
+
+exports[`hasura > should transform "foo[?!(key||bar)]" into a GraphQL query 1`] = `"query { foo { key bar } }"`;
+
+exports[`hasura > should transform "foo[?a == \`1\` && b == \`2\`]" into a GraphQL query 1`] = `"query { foo { a b } }"`;
+
+exports[`hasura > should transform "foo[?a==\`1\`].b.c" into a GraphQL query 1`] = `"query { foo (where: {a: {_eq: 1}}) { b { c } a } }"`;
+
+exports[`hasura > should transform "foo[?age > \`25\`]" into a GraphQL query 1`] = `"query { foo (where: {age: {_gt: 25}}) { age } }"`;
+
+exports[`hasura > should transform "foo[?bar==\`1\`].bar[0]" into a GraphQL query 1`] = `"query { foo (where: {bar: {_eq: 1}}) { bar } }"`;
+
+exports[`hasura > should transform "foo[?c == \`3\` || a == \`1\` && b == \`4\`]" into a GraphQL query 1`] = `"query { foo { c a b } }"`;
+
+exports[`hasura > should transform "foo[?first == last]" into a GraphQL query 1`] = `"query { foo { first last } }"`;
+
+exports[`hasura > should transform "foo[?first == last].first" into a GraphQL query 1`] = `"query { foo { first last } }"`;
+
+exports[`hasura > should transform "foo[?key == \`{\\"bar\\": [0]}\`]" into a GraphQL query 1`] = `"query { foo { key } }"`;
+
+exports[`hasura > should transform "foo[?key == \`null\`]" into a GraphQL query 1`] = `"query { foo { key } }"`;
+
+exports[`hasura > should transform "foo[?key == \`true\`]" into a GraphQL query 1`] = `"query { foo (where: {key: {_eq: true}}) { key } }"`;
+
+exports[`hasura > should transform "foo[?name == 'a' || name == 'b']" into a GraphQL query 1`] = `"query { foo { name } }"`;
+
+exports[`hasura > should transform "foo[?name == 'a']" into a GraphQL query 1`] = `"query { foo (where: {name: {_eq: \\"a\\"}}) { name } }"`;
+
+exports[`hasura > should transform "foo[?name == 'a']" into a GraphQL query 2`] = `"query { foo (where: {name: {_eq: \\"a\\"}}) { name } }"`;
+
+exports[`hasura > should transform "foo[?top == \`{\\"first\\": \\"foo\\", \\"last\\": \\"bar\\"}\`]" into a GraphQL query 1`] = `"query { foo { top } }"`;
+
+exports[`hasura > should transform "foo[?top.first == top.last]" into a GraphQL query 1`] = `"query { foo { top { first last } } }"`;
+
+exports[`hasura > should transform "foo[?top.name == 'a']" into a GraphQL query 1`] = `"query { foo (where: {top: {name: {_eq: \\"a\\"}}}) { top { name } } }"`;
+
+exports[`hasura > should transform "foo[]" into a GraphQL query 1`] = `"query { foo }"`;
+
+exports[`hasura > should transform "foo[]" into a GraphQL query 2`] = `"query { foo }"`;
+
+exports[`hasura > should transform "foo[].[baz, qux]" into a GraphQL query 1`] = `"query { foo { baz qux } }"`;
+
+exports[`hasura > should transform "foo[].bar" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo[].bar[]" into a GraphQL query 1`] = `"query { foo { bar } }"`;
+
+exports[`hasura > should transform "foo[].bar[].[baz, qux]" into a GraphQL query 1`] = `"query { foo { bar { baz qux } } }"`;
+
+exports[`hasura > should transform "foo[].bar[].[baz, qux][]" into a GraphQL query 1`] = `"query { foo { bar { baz qux } } }"`;
+
+exports[`hasura > should transform "foo[].bar[].[baz]" into a GraphQL query 1`] = `"query { foo { bar { baz } } }"`;
+
+exports[`hasura > should transform "foo[].not_null(f, e, d, c, b, a)" into a GraphQL query 1`] = `"query { foo { f e d c b a } }"`;
+
+exports[`hasura > should transform "foo[0:20]" into a GraphQL query 1`] = `"query { foo }"`;
+
+exports[`hasura > should transform "foo\\n.\\nbar\\n.baz" into a GraphQL query 1`] = `"query { foo { bar { baz } } }"`;
+
+exports[`hasura > should transform "instances[].[tags[?Key=='Name'].Values[] | [0]]" into a GraphQL query 1`] = `"query { instances { tags (where: {Key: {_eq: \\"Name\\"}}) { Values Key } } }"`;
+
+exports[`hasura > should transform "length(strings[0])" into a GraphQL query 1`] = `"query { strings }"`;
+
+exports[`hasura > should transform "locations[?state == 'WA'].name | sort(@)[-2:] | {WashingtonCities: join(', ', @)}" into a GraphQL query 1`] = `"query { locations (where: {state: {_eq: \\"WA\\"}}) { name state } }"`;
+
+exports[`hasura > should transform "map(&[], array)" into a GraphQL query 1`] = `"query { array }"`;
+
+exports[`hasura > should transform "map(&a, people)" into a GraphQL query 1`] = `"query { people { a } }"`;
+
+exports[`hasura > should transform "map(&foo.bar, array)" into a GraphQL query 1`] = `"query { array { foo { bar } } }"`;
+
+exports[`hasura > should transform "map(&foo.bar.baz, array)" into a GraphQL query 1`] = `"query { array { foo { bar { baz } } } }"`;
+
+exports[`hasura > should transform "max_by(people, &to_number(age_str))" into a GraphQL query 1`] = `"query { people { age_str } }"`;
+
+exports[`hasura > should transform "not_null(unknown_key, foo.bar, empty_list, str)" into a GraphQL query 1`] = `"query { unknown_key foo { bar } empty_list str }"`;
+
+exports[`hasura > should transform "not_null(unknown_key, str)" into a GraphQL query 1`] = `"query { unknown_key str }"`;
+
+exports[`hasura > should transform "not_there | [0]" into a GraphQL query 1`] = `"query { not_there }"`;
+
+exports[`hasura > should transform "one < two" into a GraphQL query 1`] = `"query { one two }"`;
+
+exports[`hasura > should transform "outer.foo || outer.bar" into a GraphQL query 1`] = `"query { outer { foo bar } }"`;
+
+exports[`hasura > should transform "people[*].{name: name, tags: tags[0]}" into a GraphQL query 1`] = `"query { people { name tags } }"`;
+
+exports[`hasura > should transform "people[*].first" into a GraphQL query 1`] = `"query { people { first } }"`;
+
+exports[`hasura > should transform "people[?age > \`20\`].[name, age]" into a GraphQL query 1`] = `"query { people (where: {age: {_gt: 20}}) { name age } }"`;
+
+exports[`hasura > should transform "people[?age > \`20\`].[name]" into a GraphQL query 1`] = `"query { people (where: {age: {_gt: 20}}) { name age } }"`;
+
+exports[`hasura > should transform "people[?age > \`20\`].{the_name: name, the_age: age}" into a GraphQL query 1`] = `"query { people (where: {age: {_gt: 20}}) { name age } }"`;
+
+exports[`hasura > should transform "people[?general.id==\`100\`] | [0].general" into a GraphQL query 1`] = `"query { people (where: {general: {id: {_eq: 100}}}) { general { id } } }"`;
+
+exports[`hasura > should transform "people[?general.id==\`100\`].general | [0]" into a GraphQL query 1`] = `"query { people (where: {general: {id: {_eq: 100}}}) { general { id } } }"`;
+
+exports[`hasura > should transform "reservations[*].instances[*].{id: id, name: name}" into a GraphQL query 1`] = `"query { reservations { instances { id name } } }"`;
+
+exports[`hasura > should transform "reservations[].instances" into a GraphQL query 1`] = `"query { reservations { instances } }"`;
+
+exports[`hasura > should transform "reservations[].instances[?bar==\`1\`]" into a GraphQL query 1`] = `"query { reservations { instances (where: {bar: {_eq: 1}}) { bar } } }"`;
+
+exports[`hasura > should transform "reservations[].instances[?bar==\`1\`]" into a GraphQL query 2`] = `"query { reservations { instances (where: {bar: {_eq: 1}}) { bar } } }"`;
+
+exports[`hasura > should transform "reservations[].instances[?bar==\`1\`]" into a GraphQL query 3`] = `"query { reservations { instances (where: {bar: {_eq: 1}}) { bar } } }"`;
+
+exports[`hasura > should transform "reservations[].instances[?bar==\`1\`][]" into a GraphQL query 1`] = `"query { reservations { instances (where: {bar: {_eq: 1}}) { bar } } }"`;
+
+exports[`hasura > should transform "reservations[].instances[].[id, name]" into a GraphQL query 1`] = `"query { reservations { instances { id name } } }"`;
+
+exports[`hasura > should transform "reservations[].instances[].[tags[?Key=='Name'].Values[] | [0], type, state.name]" into a GraphQL query 1`] = `"query { reservations { instances { tags (where: {Key: {_eq: \\"Name\\"}}) { Values Key } type state { name } } } }"`;
+
+exports[`hasura > should transform "reservations[].instances[].{id: id, name: name}" into a GraphQL query 1`] = `"query { reservations { instances { id name } } }"`;
+
+exports[`hasura > should transform "sort(keys(objects))" into a GraphQL query 1`] = `"query { objects }"`;
+
+exports[`hasura > should transform "sort_by(Contents, &Date)[*].{Key: Key, Size: Size}" into a GraphQL query 1`] = `"query { Contents { Date Key Size } }"`;
+
+exports[`hasura > should transform "sort_by(people, &age)" into a GraphQL query 1`] = `"query { people { age } }"`;
+
+exports[`hasura > should transform "sort_by(people, &age)[].extra" into a GraphQL query 1`] = `"query { people { age extra } }"`;
+
+exports[`hasura > should transform "sort_by(people, &age)[].name" into a GraphQL query 1`] = `"query { people { age name } }"`;
+
+exports[`hasura > should transform "sort_by(people, &to_number(age_str))" into a GraphQL query 1`] = `"query { people { age_str } }"`;
+
+exports[`hasura > should transform "two < one || three < one" into a GraphQL query 1`] = `"query { two one three }"`;

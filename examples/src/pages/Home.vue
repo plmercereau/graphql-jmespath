@@ -1,5 +1,5 @@
 <template>
     <q-page padding>
-        hello
+        GraphQL JMESPath examples
     </q-page>
 </template>

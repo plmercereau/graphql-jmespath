@@ -1,6 +1,6 @@
 declare module 'jmespath' {
     export type ObjectType = any // TODO
-
+    export type JmespathComparator = 'EQ' | 'NE' | 'GT' | 'LT' | 'LTE' | 'GTE'
     //   TODO check type - which properties are optional?
     export type ASTNode = {
         value: any // TODO

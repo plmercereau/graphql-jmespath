@@ -2,6 +2,7 @@ import { it, describe, expect } from 'vitest'
 import { expressionToGraphQL } from '../src'
 import { validExpressions, invalidExpressions } from './expressions'
 
+// TODO test against a graphql schema
 describe('jmespath to GraphQL', () => {
     invalidExpressions.forEach((expression) => {
         it(`should fail transforming ${JSON.stringify(
