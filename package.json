@@ -21,6 +21,7 @@
     "author": "Pierre-Louis Mercereau",
     "workspaces": [
         "lib",
-        "demo"
+        "demo",
+        "examples"
     ]
 }

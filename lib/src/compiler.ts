@@ -6,7 +6,7 @@ export const recursiveJmespathToObject = (
     node: ASTNode,
     path: string = '',
     // TODO do we really need to keep track of wildcards in the compiler, now that it is tracked in the post ast->object compilation phase?
-    wildcard = false
+    wildcard = true
 ) => OPERATIONS[node.type](node, path, wildcard)
 
 const joinPaths = (left?: string, right?: string) =>
