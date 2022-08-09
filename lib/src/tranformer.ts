@@ -111,7 +111,8 @@ const filterObjectPaths = (
         typeof obj === 'boolean' ||
         typeof obj === 'number' ||
         typeof obj === 'string' ||
-        obj === null
+        obj === null ||
+        Array.isArray(obj)
     ) {
         return obj
     }

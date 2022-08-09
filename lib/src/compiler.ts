@@ -114,23 +114,32 @@ const OPERATIONS: Record<string, OperationFunction> = {
             if (
                 whereArgumentPath &&
                 third.type === 'Comparator' &&
+                // ! Does not recurse value - will only work with litterals
                 right.type === 'Literal'
             ) {
                 if (Array.isArray(right.value)) {
                     // TODO handle this case
-                    console.error('Litteral is an array', JSON.stringify({comparator: third.name, left, right}, null, 2))
+                    // * In particular: jmespath expression equivalent to hasura's '_in' operator
+                    console.error(
+                        'Litteral is an array',
+                        JSON.stringify(
+                            { comparator: third.name, left, right },
+                            null,
+                            2
+                        )
+                    )
                     throw Error('Litteral is an array')
                 }
-                    setProperty(
-                        value,
-                        whereArgumentPath(
-                            firstResult.path,
-                            left.name,
-                            third.name as JmespathComparator
-                        ),
-                        right.value
-                    )
-                
+                // TODO _and, _or...
+                setProperty(
+                    value,
+                    whereArgumentPath(
+                        firstResult.path,
+                        recursiveJmespathToObject(left, '', options).path,
+                        third.name as JmespathComparator
+                    ),
+                    right.value
+                )
             }
         }
         return {

@@ -156,7 +156,7 @@ exports[`hasura > should transform "foo[?first == last]" into a GraphQL query 1`
 
 exports[`hasura > should transform "foo[?first == last].first" into a GraphQL query 1`] = `"query { foo { first last } }"`;
 
-exports[`hasura > should transform "foo[?key == \`{\\"bar\\": [0]}\`]" into a GraphQL query 1`] = `"query { foo { key } }"`;
+exports[`hasura > should transform "foo[?key == \`{\\"bar\\": [0]}\`]" into a GraphQL query 1`] = `"query { foo (where: {key: {_eq: {bar: [0]}}}) { key } }"`;
 
 exports[`hasura > should transform "foo[?key == \`null\`]" into a GraphQL query 1`] = `"query { foo (where: {key: {_eq: null}}) { key } }"`;
 
