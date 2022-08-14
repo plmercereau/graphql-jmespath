@@ -1,6 +1,6 @@
 import { compile, search } from 'jmespath'
 import { jsonToGraphQLQuery } from 'json-to-graphql-query'
-import { recursiveJmespathToObject } from './compiler'
+import { CompilerOptions, recursiveJmespathToObject } from './compiler'
 import { assertName, GraphQLFieldMap, GraphQLSchema } from 'graphql/type'
 import { DocumentNode, parse } from 'graphql'
 
@@ -15,7 +15,7 @@ type GraphQLArguments = {
     [key: string]: GraphQLArguments | ArgumentValue | ArgumentValue[]
 }
 
-type Options = {
+export type Options = CompilerOptions & {
     schema?: GraphQLSchema
     stopAtPath?: StopAtPathOption
     rootQuery?: string
@@ -26,10 +26,11 @@ type Options = {
 export { search }
 
 export const expressionToObject = (
-    expression: string
+    expression: string,
+    options?: CompilerOptions
 ): JsonObject | boolean => {
     const ast = compile(expression)
-    return recursiveJmespathToObject(ast).value
+    return recursiveJmespathToObject(ast, '', options).value
 }
 
 export const expressionToJSONQuery = (
@@ -39,11 +40,12 @@ export const expressionToJSONQuery = (
         stopAtPath = [],
         unknownFields = 'ignore',
         rootQuery,
-        rootArgs
+        rootArgs,
+        whereArgumentPath
     }: Options = {}
 ) => {
     const json = filterObjectPaths(
-        expressionToObject(expression),
+        expressionToObject(expression, { whereArgumentPath }),
         { stopAtPath, unknownFields, schema },
         {
             // TODO differs when rootQuery is provided
@@ -53,6 +55,7 @@ export const expressionToJSONQuery = (
     if (typeof json === 'boolean' || !Object.keys(json).length) {
         throw Error('Empty query')
     }
+    // ? merge json.__args (when present) and rootArgs ?
     const query = rootQuery
         ? {
               [rootQuery]: { __args: rootArgs, ...json }
@@ -68,6 +71,7 @@ export const expressionToGraphQL = (
     const json = expressionToJSONQuery(expression, options)
     return jsonToGraphQLQuery(json, { pretty })
 }
+
 export const expressionToGraphQLDocument = (
     expression: string,
     options?: Options
@@ -75,81 +79,7 @@ export const expressionToGraphQLDocument = (
     // TODO option: validate against schema
     return parse(expressionToGraphQL(expression, options))
 }
-// export class Expression {
-//     readonly expression: string
-//     rootQuery?: string
-//     rootArgs?: GraphQLArguments
-//     stopAtPath: StopAtPathOption
-//     unknownFields: UnknownFieldsOption
-//     schema?: GraphQLSchema
-//     readonly ast: ASTNode
 
-//     constructor(
-//         expression: string,
-//         {
-//             schema,
-//             stopAtPath = [],
-//             rootQuery,
-//             rootArgs,
-//             unknownFields = 'ignore'
-//         }: Options = {}
-//     ) {
-//         this.expression = expression
-//         this.rootQuery = rootQuery
-//         this.rootArgs = rootArgs
-//         this.stopAtPath = stopAtPath
-//         this.unknownFields = unknownFields
-//         this.schema = schema
-//         this.ast = compile(expression)
-//     }
-
-//     toObject(): JsonObject | boolean {
-//         return recursiveJmespathToObject(this.ast).value
-//     }
-
-//     toJSONQuery(options: Options = {}) {
-//         const { schema, stopAtPath, unknownFields, rootQuery, rootArgs } = {
-//             ...this,
-//             ...options
-//         }
-//         const json = filterObjectPaths(
-//             this.toObject(),
-//             { stopAtPath, unknownFields, schema },
-//             {
-//                 // TODO differs when rootQuery is provided
-//                 node: schema?.getQueryType()
-//             }
-//         )
-//         if (typeof json === 'boolean' || !Object.keys(json).length) {
-//             throw Error('Empty query')
-//         }
-//         const query = rootQuery
-//             ? {
-//                   [rootQuery]: { __args: rootArgs, ...json }
-//               }
-//             : json
-//         return { query }
-//     }
-
-//     toGraphQLDocument(options: Options = {}) {
-//         // TODO option: validate against schema
-//         return parse(this.toGraphQL(options))
-//     }
-
-//     toGraphQL({
-//         pretty = false,
-//         ...options
-//     }: { pretty?: boolean } & Options = {}): string {
-//         const json = this.toJSONQuery(options)
-//         return jsonToGraphQLQuery(json, { pretty })
-//     }
-
-//     search(obj: any) {
-//         return search(obj, this.expression)
-//     }
-// }
-
-// ? move to class ?
 // TODO (big): compile jmespath syntax such as filter, sort, etc into Hasura "_where", "_orderby", "_limit", "_offset"...
 const filterObjectPaths = (
     obj: JsonObject | boolean,
@@ -170,14 +100,20 @@ const filterObjectPaths = (
             return false
         }
 
-        // ! Ignore sub-obkect if one of its args is required
+        // ! Ignore sub-object if one of its args is required
         if (node.args?.some((arg: any) => arg.type.toString().endsWith('!'))) {
             // * Note: in GraphQL, any type ending with ! is required
             return false
         }
     }
-    // * We reached a leaf node, so we return the boolean value
-    if (typeof obj === 'boolean') {
+    // * We reached a leaf node, so we return its value
+    if (
+        typeof obj === 'boolean' ||
+        typeof obj === 'number' ||
+        typeof obj === 'string' ||
+        obj === null ||
+        Array.isArray(obj)
+    ) {
         return obj
     }
 
@@ -256,8 +192,12 @@ const filterObjectPaths = (
                         node: childFields?.[key],
                         path: path ? `${path}.${key}` : key
                     })
-                    if (subObject === true || Object.keys(subObject).length) {
-                        // * Only add when the subObject is not empty
+                    if (
+                        subObject === null ||
+                        (typeof subObject !== 'object' && subObject) ||
+                        Object.keys(subObject).length
+                    ) {
+                        // * Only add when the subObject is not empty, or is a litteral that is truthy, or is null
                         aggr[key] = subObject
                     }
                 }

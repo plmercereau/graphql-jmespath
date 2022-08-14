@@ -12,15 +12,15 @@
     "scripts": {
         "dev": "pnpm run --parallel dev",
         "build": "pnpm run --filter=* build",
-        "preview": "pnpm run --filter=graphql-jmespath-demo preview",
+        "preview": "pnpm run --filter=graphql-jmespath-examples preview",
         "test": "pnpm run --filter=graphql-jmespath test",
         "test:watch": "pnpm run --filter=graphql-jmespath test:watch",
-        "clean:all": "pnpm clean && rm -rf ./{lib,demo}/{.nhost,node_modules} node_modules",
-        "clean": "rm -rf ./{lib,demo}/{dist,umd,coverage}"
+        "clean:all": "pnpm clean && rm -rf ./{lib,examples}/{.nhost,node_modules} node_modules",
+        "clean": "rm -rf ./{lib,examples}/{dist,umd,coverage}"
     },
     "author": "Pierre-Louis Mercereau",
     "workspaces": [
         "lib",
-        "demo"
+        "examples"
     ]
 }

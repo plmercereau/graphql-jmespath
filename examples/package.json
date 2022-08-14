@@ -1,0 +1,34 @@
+{
+  "name": "graphql-jmespath-examples",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.14.3",
+    "@quasar/quasar-ui-qmarkdown": "2.0.0-beta.7",
+    "@vueuse/core": "^8.9.4",
+    "echarts": "^5.3.3",
+    "graphql-request": "^4.2.0",
+    "param-case": "^3.0.4",
+    "pretty-bytes": "^6.0.0",
+    "vue": "^3.2.37",
+    "vue-echarts": "^6.2.3",
+    "vue-router": "4",
+    "vue3-highlightjs": "^1.0.5"
+  },
+  "devDependencies": {
+    "@quasar/vite-plugin": "^1.0.10",
+    "@vitejs/plugin-vue": "^3.0.0",
+    "graphql-jmespath": "workspace:*",
+    "quasar": "^2.7.5",
+    "sass": "1.32.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.0",
+    "vue-tsc": "^0.38.4"
+  }
+}

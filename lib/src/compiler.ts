@@ -1,13 +1,17 @@
-import { ASTNode } from 'jmespath'
+import { ASTNode, JmespathComparator } from 'jmespath'
 import merge from 'deepmerge'
 import { setProperty, getProperty } from 'dot-prop'
+import { WhereArgumentPath } from './arguments'
 
-export const recursiveJmespathToObject = (
-    node: ASTNode,
-    path: string = '',
-    // TODO do we really need to keep track of wildcards in the compiler, now that it is tracked in the post ast->object compilation phase?
-    wildcard = false
-) => OPERATIONS[node.type](node, path, wildcard)
+export type CompilerOptions = {
+    whereArgumentPath?: WhereArgumentPath
+}
+
+export const recursiveJmespathToObject: OperationFunction = (
+    node,
+    path,
+    options
+) => OPERATIONS[node.type](node, path, options)
 
 const joinPaths = (left?: string, right?: string) =>
     left && right ? `${left}.${right}` : left || right || ''
@@ -15,12 +19,12 @@ const joinPaths = (left?: string, right?: string) =>
 type OperationResult = {
     value: any
     path: string
-    wildcard: boolean
 }
+
 type OperationFunction = (
     node: ASTNode,
     path: string,
-    wildcard: boolean
+    options?: CompilerOptions
 ) => OperationResult
 
 function mergeProperty<ObjectType extends Record<string, any>>(
@@ -33,55 +37,48 @@ function mergeProperty<ObjectType extends Record<string, any>>(
     return setProperty(object, path, newValue)
 }
 
-const Merge: OperationFunction = (node, path, wc) => {
+const Merge: OperationFunction = (node, ...rest) => {
     const [left, right] = node.children
-    const leftResult = recursiveJmespathToObject(left, path, wc)
-    const rightResult = recursiveJmespathToObject(right, path, wc)
-    const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+    const leftResult = recursiveJmespathToObject(left, ...rest)
+    const rightResult = recursiveJmespathToObject(right, ...rest)
     return {
         path: joinPaths(leftResult.path, rightResult.path),
-        value: merge(leftResult.value, rightResult.value),
-        wildcard
+        value: merge(leftResult.value, rightResult.value)
     }
 }
 
-const Identity: OperationFunction = (_, path, wildcard) => {
+const Identity: OperationFunction = (_, path) => {
     return {
         path,
-        value: true,
-        wildcard
+        value: true
     }
 }
 
-const FirstChild: OperationFunction = (node, path, wildcard) =>
-    recursiveJmespathToObject(node.children[0], path, wildcard)
+const FirstChild: OperationFunction = (node, ...rest) =>
+    recursiveJmespathToObject(node.children[0], ...rest)
 
-const MultiSelect: OperationFunction = (node, path, wc) => {
+const MultiSelect: OperationFunction = (node, path, options) => {
     let value = {}
-    let wildcard = wc
     for (const child of node.children) {
-        const res = recursiveJmespathToObject(child, path, wc)
+        const res = recursiveJmespathToObject(child, path, options)
         value = merge(value, res.value)
-        wildcard = wildcard || res.wildcard
     }
-    return { value, path, wildcard }
+    return { value, path }
 }
 
 const OPERATIONS: Record<string, OperationFunction> = {
     // * Operations defined in JMESPath's abstract syntax, but not yet encountered in the tests: Index, Slice
-    Field: (node, _, wildcard) => {
-        return { value: { [node.name]: true }, path: node.name, wildcard }
+    Field: (node) => {
+        return { value: { [node.name]: true }, path: node.name }
     },
-    Subexpression: (node, path, wc) => {
+    Subexpression: (node, ...rest) => {
         const [left, right] = node.children
-        const leftResult = recursiveJmespathToObject(left, path, wc)
-        const rightResult = recursiveJmespathToObject(right, path, wc)
-        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+        const leftResult = recursiveJmespathToObject(left, ...rest)
+        const rightResult = recursiveJmespathToObject(right, ...rest)
         if (leftResult.path) {
             const result = {
                 value: {},
-                path: joinPaths(leftResult.path, rightResult.path),
-                wildcard
+                path: joinPaths(leftResult.path, rightResult.path)
             }
             setProperty(result.value, leftResult.path, rightResult.value)
             return result
@@ -89,29 +86,22 @@ const OPERATIONS: Record<string, OperationFunction> = {
             return rightResult
         }
     },
-    OrExpression: (node, path, wc) => {
+    OrExpression: (node, path, options) => {
         const [left, right] = node.children
-        const leftResult = recursiveJmespathToObject(left, path, wc)
-        const rightResult = recursiveJmespathToObject(right, path, wc)
-        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+        const leftResult = recursiveJmespathToObject(left, path, options)
+        const rightResult = recursiveJmespathToObject(right, path, options)
         return {
             path,
-            value: merge(leftResult.value, rightResult.value),
-            wildcard
+            value: merge(leftResult.value, rightResult.value)
         }
     },
     Comparator: Merge,
     AndExpression: Merge,
-    FilterProjection: (node, path, wc) => {
+    FilterProjection: (node, path, options) => {
         const [first, second, third] = node.children
-        const firstResult = recursiveJmespathToObject(first, path, wc)
-        const secondResult = recursiveJmespathToObject(second, path, wc)
-        const thirdResult = recursiveJmespathToObject(third, path, wc)
-        const wildcard =
-            wc ||
-            firstResult.wildcard ||
-            secondResult.wildcard ||
-            thirdResult.wildcard
+        const firstResult = recursiveJmespathToObject(first, path, options)
+        const secondResult = recursiveJmespathToObject(second, path, options)
+        const thirdResult = recursiveJmespathToObject(third, path, options)
         const value = firstResult.value
         if (firstResult.path) {
             setProperty(
@@ -119,24 +109,53 @@ const OPERATIONS: Record<string, OperationFunction> = {
                 firstResult.path,
                 merge(secondResult.value, thirdResult.value)
             )
+            const whereArgumentPath = options?.whereArgumentPath
+            const [left, right] = third.children
+            if (
+                whereArgumentPath &&
+                third.type === 'Comparator' &&
+                // ! Does not recurse value - will only work with litterals
+                right.type === 'Literal'
+            ) {
+                if (Array.isArray(right.value)) {
+                    // TODO handle this case
+                    // * In particular: jmespath expression equivalent to hasura's '_in' operator
+                    console.error(
+                        'Litteral is an array',
+                        JSON.stringify(
+                            { comparator: third.name, left, right },
+                            null,
+                            2
+                        )
+                    )
+                    throw Error('Litteral is an array')
+                }
+                // TODO _and, _or...
+                setProperty(
+                    value,
+                    whereArgumentPath(
+                        firstResult.path,
+                        recursiveJmespathToObject(left, '', options).path,
+                        third.name as JmespathComparator
+                    ),
+                    right.value
+                )
+            }
         }
         return {
             path: firstResult.path,
-            value,
-            wildcard
+            value
         }
     },
     Identity,
     Literal: Identity,
-    Projection: (node, path, wc) => {
+    Projection: (node, ...rest) => {
         const [left, right] = node.children
-        const leftResult = recursiveJmespathToObject(left, path, wc)
-        const rightResult = recursiveJmespathToObject(right, path, wc)
-        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+        const leftResult = recursiveJmespathToObject(left, ...rest)
+        const rightResult = recursiveJmespathToObject(right, ...rest)
         const result = {
             value: leftResult.value,
-            path: joinPaths(leftResult.path, rightResult.path),
-            wildcard
+            path: joinPaths(leftResult.path, rightResult.path)
         }
         // ! right.type !== 'Identity' is hacky, but it works so far in all the tests
         if (leftResult.path && right.type !== 'Identity') {
@@ -146,17 +165,15 @@ const OPERATIONS: Record<string, OperationFunction> = {
     },
     Flatten: FirstChild,
     IndexExpression: FirstChild,
-    Pipe: (node, path, wc) => {
+    Pipe: (node, path, options) => {
         const [left, right] = node.children
-        const leftResult = recursiveJmespathToObject(left, path, wc)
-        const rightResult = recursiveJmespathToObject(right, path, wc)
-        const wildcard = wc || leftResult.wildcard || rightResult.wildcard
+        const leftResult = recursiveJmespathToObject(left, path, options)
+        const rightResult = recursiveJmespathToObject(right, path, options)
         if (rightResult.path && leftResult.path) {
             const newPath = `${leftResult.path}.${rightResult.path}`
             const result = {
                 value: leftResult.value,
-                path: newPath,
-                wildcard
+                path: newPath
             }
             if (!getProperty(leftResult.value, newPath)) {
                 // * Only expressions like 'foo | bar' but not like 'people[?general.id==`100`] | [0].general'
@@ -174,12 +191,12 @@ const OPERATIONS: Record<string, OperationFunction> = {
                     const realPath = recursiveJmespathToObject(
                         leftChild,
                         path,
-                        wc
+                        options
                     ).path
                     setProperty(value, realPath, rightValue)
                 }
             }
-            return { value, path: '', wildcard }
+            return { value, path: '' }
         } else if (left.type === 'OrExpression') {
             // * 'foo.bam || bar | baz'
             const value = {}
@@ -187,14 +204,13 @@ const OPERATIONS: Record<string, OperationFunction> = {
                 const realPath = recursiveJmespathToObject(
                     leftChild,
                     path,
-                    wc
+                    options
                 ).path
                 setProperty(value, realPath, rightResult.value)
             }
             return {
                 value,
-                path,
-                wildcard: wildcard
+                path
             }
         } else {
             // * 'foo | other || bar'
@@ -207,36 +223,33 @@ const OPERATIONS: Record<string, OperationFunction> = {
             }
             return {
                 value: leftResult.value,
-                path,
-                wildcard: wildcard
+                path
             }
         }
     },
     MultiSelectList: MultiSelect,
     MultiSelectHash: MultiSelect,
-    KeyValuePair: (node, path, wildcard) => {
-        return recursiveJmespathToObject(node.value, path, wildcard)
+    KeyValuePair: (node, ...rest) => {
+        return recursiveJmespathToObject(node.value, ...rest)
     },
-    ValueProjection: (node, path, wc) => {
+    ValueProjection: (node, ...rest) => {
         const [left, right] = node.children
-        const leftResult = recursiveJmespathToObject(left, path, wc)
-        const rightResult = recursiveJmespathToObject(right, path, wc)
+        const leftResult = recursiveJmespathToObject(left, ...rest)
+        const rightResult = recursiveJmespathToObject(right, ...rest)
         const newPath = joinPaths(leftResult.path, '*')
         const value = {}
         setProperty(value, newPath, rightResult.value)
         return {
             value,
-            path: joinPaths(newPath, rightResult.path),
-            wildcard: true
+            path: joinPaths(newPath, rightResult.path)
         }
     },
-    Function: (node, path, wc) => {
-        // ? check wildcard in children
+    Function: (node, ...rest) => {
         let root = {}
         let rootPath = ''
         let children = {}
         for (const child of node.children) {
-            const result = recursiveJmespathToObject(child, path, wc)
+            const result = recursiveJmespathToObject(child, ...rest)
             if (child.type === 'ExpressionReference') {
                 children = merge(children, result.value)
             } else if (child.type !== 'Literal') {
@@ -248,11 +261,11 @@ const OPERATIONS: Record<string, OperationFunction> = {
         if (rootPath && Object.keys(children).length) {
             setProperty(root, rootPath, children)
         }
-        return { value: root, path: rootPath, wildcard: wc }
+        return { value: root, path: rootPath }
     },
     ExpressionReference: FirstChild,
     NotExpression: FirstChild,
-    Current: (_, path, wildcard) => {
-        return { value: {}, path, wildcard }
+    Current: (_, path) => {
+        return { value: {}, path }
     }
 }
