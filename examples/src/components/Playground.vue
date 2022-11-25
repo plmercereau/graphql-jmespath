@@ -1,6 +1,5 @@
 <template>
     <q-card>
-        <q-card-section class="text-h6"> Expression </q-card-section>
         <q-card-section>
             <q-btn color="primary" label="Load an example">
                 <q-menu>
