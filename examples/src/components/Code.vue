@@ -5,14 +5,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch, computed } from 'vue'
+import { onMounted, onUnmounted, computed } from 'vue'
 import prettyBytes from 'pretty-bytes'
 
 import darkCss from 'vue3-highlightjs/styles/dark.css?raw'
 import lightCss from 'vue3-highlightjs/styles/default.css?raw'
 
-import { useDarkLightMode } from '../composables/dark-light-mode'
-
+import { useQuasar } from 'quasar'
 const props = defineProps<{ language: string, value?: string, truncate?: number }>()
 
 const size = computed(() => props.value?.length ?? 0)
@@ -21,14 +20,7 @@ const prettyLimit = computed(() => prettyBytes(props.truncate ?? 0))
 const truncatedValue = computed(() => props.value?.substring(0, props.truncate))
 
 const id = "hl-style"
-const { isDark } = useDarkLightMode()
-
-watch(isDark, (value) => {
-    let styleTag = document.getElementById(id)
-    if (styleTag) {
-        styleTag.innerHTML = value ? darkCss : lightCss
-    }
-})
+const $q = useQuasar()
 
 onMounted(() => {
     let styleTag = document.getElementById(id)
@@ -37,7 +29,7 @@ onMounted(() => {
         styleTag.id = id
         document.head.appendChild(styleTag)
     }
-    styleTag!.innerHTML = isDark.value ? darkCss : lightCss
+    styleTag!.innerHTML = $q.dark.isActive ? darkCss : lightCss
 })
 onUnmounted(() => {
     document.getElementById(id)?.remove()
