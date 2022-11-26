@@ -13,7 +13,7 @@ export const examples: Example[] = [
     },
     {
         description:
-            'Names of the ten countries with the highest number of states, their number of states, and a comma-separated list of their language codes, sorted by number of states in descending order.',
+            'Names of the ten countries with most states, their number of states, and a comma-separated list of their language codes, sorted by number of states in descending order.',
         expression:
             "countries[].{name:name, statesCount: states[].name | length(@), languages:join(', ', languages[].code)} | sort_by(@, &statesCount) | reverse(@) | [:10]",
         chart: {

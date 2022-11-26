@@ -9,22 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@quasar/extras": "^1.15.6",
-    "@quasar/quasar-ui-qmarkdown": "2.0.0-beta.7",
-    "@vueuse/core": "^8.9.4",
-    "echarts": "^5.3.3",
+    "@emotion/react": "^11.10.5",
+    "@mantine/core": "^5.8.3",
+    "@mantine/hooks": "^5.8.3",
+    "@mantine/prism": "^5.8.3",
+    "@tabler/icons": "^1.113.0",
+    "chroma-js": "^2.4.2",
     "graphql-request": "^4.2.0",
-    "pretty-bytes": "^6.0.0",
-    "vue": "^3.2.37",
-    "vue-echarts": "^6.2.3",
-    "vue3-highlightjs": "^1.0.5"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.1.16"
   },
   "devDependencies": {
-    "@quasar/vite-plugin": "^1.2.3",
-    "@vitejs/plugin-vue": "^3.0.0",
+    "@types/chroma-js": "^2.1.4",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
+    "@vitejs/plugin-react": "^2.2.0",
     "graphql-jmespath": "workspace:*",
-    "quasar": "^2.10.2",
-    "sass": "1.32.12",
     "typescript": "^4.6.4",
     "vite": "^3.2.4",
     "vue-tsc": "^0.38.4"
