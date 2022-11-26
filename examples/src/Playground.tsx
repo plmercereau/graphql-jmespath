@@ -4,10 +4,11 @@ import {
     Blockquote,
     Button,
     Container,
-    Menu,
+    Drawer,
     Tabs,
     Textarea,
-    Title
+    Title,
+    NavLink
 } from '@mantine/core'
 import chroma from 'chroma-js'
 import { Example, examples } from './examples'
@@ -17,9 +18,6 @@ import request from 'graphql-request'
 import { Prism } from '@mantine/prism'
 import { Cell, Pie, PieChart } from 'recharts'
 import { IconAlertCircle } from '@tabler/icons'
-
-// TODO not great, but the render is very slow when the data is large
-const LIMIT = 5000
 
 export const Playground: React.FC = () => {
     const [backendUrl, setBackendUrl] = useState(
@@ -74,26 +72,33 @@ export const Playground: React.FC = () => {
         }
     }
 
+    const [examplesDrawerOpened, setExamplesDrawerOpened] = useState(false)
     return (
         <Container>
             <Title>Playground</Title>
 
-            <Menu shadow="md">
-                <Menu.Target>
-                    <Button>Load an example</Button>
-                </Menu.Target>
-
-                <Menu.Dropdown>
-                    {examples.map((example) => (
-                        <Menu.Item
-                            key={example.expression}
-                            onClick={() => loadExample(example)}
-                        >
-                            {example.expression}
-                        </Menu.Item>
-                    ))}
-                </Menu.Dropdown>
-            </Menu>
+            <Drawer
+                opened={examplesDrawerOpened}
+                onClose={() => setExamplesDrawerOpened(false)}
+                title="Examples"
+                padding="md"
+                size="xl"
+            >
+                {examples.map((example) => (
+                    <NavLink
+                        key={example.expression}
+                        onClick={() => {
+                            setExamplesDrawerOpened(false)
+                            loadExample(example)
+                        }}
+                        label={example.expression}
+                        description={example.description}
+                    />
+                ))}
+            </Drawer>
+            <Button onClick={() => setExamplesDrawerOpened(true)}>
+                Load an example
+            </Button>
 
             {example && <Blockquote>{example.description}</Blockquote>}
 
@@ -142,25 +147,19 @@ export const Playground: React.FC = () => {
                 </Tabs.Panel>
 
                 <Tabs.Panel value="graphql-data" pt="xs">
-                    <Prism language="json">
-                        {graphqlData
-                            ? JSON.stringify(graphqlData, null, 2).slice(
-                                  0,
-                                  LIMIT
-                              )
-                            : ''}
-                    </Prism>
+                    {graphqlData && (
+                        <Prism language="json">
+                            {JSON.stringify(graphqlData, null, 2)}
+                        </Prism>
+                    )}
                 </Tabs.Panel>
 
                 <Tabs.Panel value="jmespath-result" pt="xs">
-                    <Prism language="json">
-                        {jmesPathResult
-                            ? JSON.stringify(jmesPathResult, null, 2).slice(
-                                  0,
-                                  LIMIT
-                              )
-                            : ''}
-                    </Prism>
+                    {jmesPathResult && (
+                        <Prism language="json">
+                            {JSON.stringify(jmesPathResult, null, 2)}
+                        </Prism>
+                    )}
                 </Tabs.Panel>
 
                 <Tabs.Panel value="jmespath-chart" pt="xs">
