@@ -12,7 +12,7 @@
     "scripts": {
         "dev": "pnpm run --parallel dev",
         "build": "pnpm run --filter=* build",
-        "preview": "pnpm run --filter=graphql-jmespath-examples preview",
+        "preview": "pnpm run --filter=graphql-jmespath-playground preview",
         "test": "pnpm run --filter=graphql-jmespath test",
         "test:watch": "pnpm run --filter=graphql-jmespath test:watch",
         "clean:all": "pnpm clean && rm -rf ./{lib,examples}/{.nhost,node_modules} node_modules",
@@ -21,6 +21,6 @@
     "author": "Pierre-Louis Mercereau",
     "workspaces": [
         "lib",
-        "examples"
+        "playground"
     ]
 }

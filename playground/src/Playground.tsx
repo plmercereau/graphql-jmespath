@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
     Alert,
     Blockquote,
@@ -14,7 +14,7 @@ import chroma from 'chroma-js'
 import { Example, examples } from './examples'
 
 import { expressionToGraphQL, search } from 'graphql-jmespath'
-import request from 'graphql-request'
+import { request } from 'graphql-request'
 import { Prism } from '@mantine/prism'
 import { Cell, Pie, PieChart } from 'recharts'
 import { IconAlertCircle } from '@tabler/icons'
@@ -34,10 +34,16 @@ export const Playground: React.FC = () => {
     const loadExample = async (selectedExample: Example) => {
         setExample(selectedExample)
         setExpression(selectedExample.expression)
+        refInput.current?.setSelectionRange(
+            selectedExample.expression.length,
+            selectedExample.expression.length
+        )
+        refInput.current?.focus()
         await run(selectedExample.expression)
         setActiveTab(
             selectedExample.chart ? 'jmespath-chart' : 'jmespath-result'
         )
+        refInput.current?.focus()
     }
 
     const [activeTab, setActiveTab] = useState<string | null>('graphql-query')
@@ -72,6 +78,8 @@ export const Playground: React.FC = () => {
         }
     }
 
+    const refInput = useRef<HTMLTextAreaElement>(null)
+
     const [examplesDrawerOpened, setExamplesDrawerOpened] = useState(false)
     return (
         <Container>
@@ -103,11 +111,13 @@ export const Playground: React.FC = () => {
             {example && <Blockquote>{example.description}</Blockquote>}
 
             <Textarea
+                ref={refInput}
                 placeholder="Expression"
                 label="Expression"
                 value={expression}
                 rows={1}
                 autosize
+                autoFocus
                 onChange={(event) =>
                     setExpression(event.currentTarget.value.replace(/\n/g, ''))
                 }

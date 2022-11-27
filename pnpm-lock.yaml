@@ -5,47 +5,6 @@ importers:
   .:
     specifiers: {}
 
-  examples:
-    specifiers:
-      '@emotion/react': ^11.10.5
-      '@mantine/core': ^5.8.3
-      '@mantine/hooks': ^5.8.3
-      '@mantine/prism': ^5.8.3
-      '@tabler/icons': ^1.113.0
-      '@types/chroma-js': ^2.1.4
-      '@types/react': ^18.0.24
-      '@types/react-dom': ^18.0.8
-      '@vitejs/plugin-react': ^2.2.0
-      chroma-js: ^2.4.2
-      graphql-jmespath: workspace:*
-      graphql-request: ^4.2.0
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      recharts: ^2.1.16
-      typescript: ^4.6.4
-      vite: ^3.2.4
-      vue-tsc: ^0.38.4
-    dependencies:
-      '@emotion/react': 11.10.5_fan5qbzahqtxlm5dzefqlqx5ia
-      '@mantine/core': 5.8.3_2vc2xgx7q2ij62urx5h5ijvzqm
-      '@mantine/hooks': 5.8.3_react@18.2.0
-      '@mantine/prism': 5.8.3_gtqqcbkbecpo5mfxa3iuc57uvi
-      '@tabler/icons': 1.113.0_biqbaboplfbrettd7655fr4n2y
-      chroma-js: 2.4.2
-      graphql-request: 4.3.0
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      recharts: 2.1.16_biqbaboplfbrettd7655fr4n2y
-    devDependencies:
-      '@types/chroma-js': 2.1.4
-      '@types/react': 18.0.25
-      '@types/react-dom': 18.0.9
-      '@vitejs/plugin-react': 2.2.0_vite@3.2.4
-      graphql-jmespath: link:../lib
-      typescript: 4.7.4
-      vite: 3.2.4
-      vue-tsc: 0.38.5_typescript@4.7.4
-
   lib:
     specifiers:
       c8: ^7.11.3
@@ -78,6 +37,49 @@ importers:
       vite-plugin-dts: 1.2.1_vite@3.2.4
       vite-tsconfig-paths: 3.5.0_vite@3.2.4
       vitest: 0.17.1_c8@7.11.3+jsdom@20.0.0
+
+  playground:
+    specifiers:
+      '@emotion/react': ^11.10.5
+      '@mantine/core': ^5.8.3
+      '@mantine/hooks': ^5.8.3
+      '@mantine/prism': ^5.8.3
+      '@tabler/icons': ^1.113.0
+      '@types/chroma-js': ^2.1.4
+      '@types/react': ^18.0.24
+      '@types/react-dom': ^18.0.8
+      '@vitejs/plugin-react': ^2.2.0
+      chroma-js: ^2.4.2
+      graphql: ^16.5.0
+      graphql-jmespath: workspace:*
+      graphql-request: ^5.0.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      recharts: ^2.1.16
+      typescript: ^4.6.4
+      vite: ^3.2.4
+      vue-tsc: ^0.38.4
+    dependencies:
+      '@emotion/react': 11.10.5_fan5qbzahqtxlm5dzefqlqx5ia
+      '@mantine/core': 5.8.3_2vc2xgx7q2ij62urx5h5ijvzqm
+      '@mantine/hooks': 5.8.3_react@18.2.0
+      '@mantine/prism': 5.8.3_gtqqcbkbecpo5mfxa3iuc57uvi
+      '@tabler/icons': 1.113.0_biqbaboplfbrettd7655fr4n2y
+      chroma-js: 2.4.2
+      graphql: 16.5.0
+      graphql-request: 5.0.0_graphql@16.5.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      recharts: 2.1.16_biqbaboplfbrettd7655fr4n2y
+    devDependencies:
+      '@types/chroma-js': 2.1.4
+      '@types/react': 18.0.25
+      '@types/react-dom': 18.0.9
+      '@vitejs/plugin-react': 2.2.0_vite@3.2.4
+      graphql-jmespath: link:../lib
+      typescript: 4.7.4
+      vite: 3.2.4
+      vue-tsc: 0.38.5_typescript@4.7.4
 
 packages:
 
@@ -216,10 +218,6 @@ packages:
     resolution: {integrity: sha512-nHtDoQcuqFmwYNYPz3Rah5ph2p8PFeFCsZk9A/48dPc/rGocJ5J3hAAZ7pb76VWX3fZKu+uEr/FhH5jLx7umrw==}
     engines: {node: '>=6.9.0'}
 
-  /@babel/helper-validator-identifier/7.18.6:
-    resolution: {integrity: sha512-MmetCkz9ej86nJQV+sFCxoGGrUbU3q02kgLciwkrt9QqEB7cP39oKEY0PakknEO0Gu20SskMRi+AYZ3b1TpN9g==}
-    engines: {node: '>=6.9.0'}
-
   /@babel/helper-validator-identifier/7.19.1:
     resolution: {integrity: sha512-awrNfaMtnHUr653GgGEs++LlAvW6w+DcPrOliSMXWCKo597CwL5Acf/wWdNkf/tfEQE3mjkeD1YOVZOUV/od1w==}
     engines: {node: '>=6.9.0'}
@@ -244,17 +242,9 @@ packages:
     resolution: {integrity: sha512-u7stbOuYjaPezCuLj29hNW1v64M2Md2qupEKP1fHc7WdOA3DgLh37suiSrZYY7haUB7iBeQZ9P1uiRF359do3g==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/helper-validator-identifier': 7.18.6
+      '@babel/helper-validator-identifier': 7.19.1
       chalk: 2.4.2
       js-tokens: 4.0.0
-
-  /@babel/parser/7.18.8:
-    resolution: {integrity: sha512-RSKRfYX20dyH+elbJK2uqAkVyucL+xXzhqlMD5/ZXx+dAAwpyB7HsvnHe/ZUGOF+xLr5Wx9/JoXVTj6BQE2/oA==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-    dependencies:
-      '@babel/types': 7.18.8
-    dev: true
 
   /@babel/parser/7.20.3:
     resolution: {integrity: sha512-OP/s5a94frIPXwjzEcv5S/tpQfc6XhxYUnmWpgdqMWGgYCuErA3SzozaRAMQgSZWKeTJxht9aWAkUY+0UzvOFg==}
@@ -359,14 +349,6 @@ packages:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@babel/types/7.18.8:
-    resolution: {integrity: sha512-qwpdsmraq0aJ3osLJRApsc2ouSJCdnMeZwB0DhbtHAtRpZNZCdlbRnHIgcRKzdE1g0iOGg644fzjOBcdOz9cPw==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-validator-identifier': 7.18.6
-      to-fast-properties: 2.0.0
     dev: true
 
   /@babel/types/7.20.2:
@@ -531,6 +513,14 @@ packages:
       '@floating-ui/dom': 1.0.7
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@graphql-typed-document-node/core/3.1.1_graphql@16.5.0:
+    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.5.0
     dev: false
 
   /@istanbuljs/schema/0.1.3:
@@ -1007,7 +997,7 @@ packages:
   /@vue/compiler-core/3.2.37:
     resolution: {integrity: sha512-81KhEjo7YAOh0vQJoSmAD68wLfYqJvoiD4ulyedzF+OEk/bk6/hx3fTNVfuzugIIaTrOx4PGx6pAiBRe5e9Zmg==}
     dependencies:
-      '@babel/parser': 7.18.8
+      '@babel/parser': 7.20.3
       '@vue/shared': 3.2.37
       estree-walker: 2.0.2
       source-map: 0.6.1
@@ -1023,7 +1013,7 @@ packages:
   /@vue/compiler-sfc/3.2.37:
     resolution: {integrity: sha512-+7i/2+9LYlpqDv+KTtWhOZH+pa8/HnX/905MdVmAcI/mPQOBwkHHIzrsEsucyOIZQYMkXUiTkmZq5am/NyXKkg==}
     dependencies:
-      '@babel/parser': 7.18.8
+      '@babel/parser': 7.20.3
       '@vue/compiler-core': 3.2.37
       '@vue/compiler-dom': 3.2.37
       '@vue/compiler-ssr': 3.2.37
@@ -1031,7 +1021,7 @@ packages:
       '@vue/shared': 3.2.37
       estree-walker: 2.0.2
       magic-string: 0.25.9
-      postcss: 8.4.14
+      postcss: 8.4.19
       source-map: 0.6.1
     dev: true
 
@@ -1045,7 +1035,7 @@ packages:
   /@vue/reactivity-transform/3.2.37:
     resolution: {integrity: sha512-IWopkKEb+8qpu/1eMKVeXrK0NLw9HicGviJzhJDEyfxTR9e1WtpnnbYkJWurX6WwoFP0sz10xQg8yL8lgskAZg==}
     dependencies:
-      '@babel/parser': 7.18.8
+      '@babel/parser': 7.20.3
       '@vue/compiler-core': 3.2.37
       '@vue/shared': 3.2.37
       estree-walker: 2.0.2
@@ -1332,7 +1322,7 @@ packages:
     optional: true
 
   /concat-map/0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
   /convert-source-map/1.8.0:
@@ -2046,7 +2036,7 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
     dev: true
 
-  /graphql-request/4.3.0:
+  /graphql-request/4.3.0_graphql@16.5.0:
     resolution: {integrity: sha512-2v6hQViJvSsifK606AliqiNiijb1uwWp6Re7o0RTyH+uRTv/u7Uqm2g4Fjq/LgZIzARB38RZEvVBFOQOVdlBow==}
     peerDependencies:
       graphql: 14 - 16
@@ -2054,15 +2044,17 @@ packages:
       cross-fetch: 3.1.5
       extract-files: 9.0.0
       form-data: 3.0.1
+      graphql: 16.5.0
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /graphql-request/4.3.0_graphql@16.5.0:
-    resolution: {integrity: sha512-2v6hQViJvSsifK606AliqiNiijb1uwWp6Re7o0RTyH+uRTv/u7Uqm2g4Fjq/LgZIzARB38RZEvVBFOQOVdlBow==}
+  /graphql-request/5.0.0_graphql@16.5.0:
+    resolution: {integrity: sha512-SpVEnIo2J5k2+Zf76cUkdvIRaq5FMZvGQYnA4lUWYbc99m+fHh4CZYRRO/Ff4tCLQ613fzCm3SiDT64ubW5Gyw==}
     peerDependencies:
       graphql: 14 - 16
     dependencies:
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.5.0
       cross-fetch: 3.1.5
       extract-files: 9.0.0
       form-data: 3.0.1
@@ -2775,15 +2767,6 @@ packages:
   /postcss-value-parser/3.3.1:
     resolution: {integrity: sha512-pISE66AbVkp4fDQ7VHBwRNXzAAKJjw4Vw7nWI/+Q3vuly7SNfgYXvm6i5IgFylHGK5sP/xHAbB7N49OS4gWNyQ==}
     dev: false
-
-  /postcss/8.4.14:
-    resolution: {integrity: sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.4
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-    dev: true
 
   /postcss/8.4.19:
     resolution: {integrity: sha512-h+pbPsyhlYj6N2ozBmHhHrs9DzGmbaarbLvWipMRO7RLS+v4onj26MPFXA5OBYFxyqYhUJK456SwDcY9H2/zsA==}
